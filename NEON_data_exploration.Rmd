@@ -1,0 +1,119 @@
+---
+title: "example_nmdc_api_interactions"
+output: html_document
+date: "2023-10-11"
+---
+
+Rshiny app to plot pH measurements for soil samples as a function of time by NEON site
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(jsonlite)
+```
+
+
+# Get samples associated with NEON sites
+name.search:National Ecological Observatory Network
+request url
+https://api.microbiomedata.org/studies?filter=name.search%3ANational%20Ecological%20Observatory%20Network&per_page=25
+
+```{r}
+base_url = "https://api.microbiomedata.org"
+# meta_count = 0
+# page_chunk = 100
+# while (meta_count < page_chunk){
+#     url = paste0(
+#         base_url, "/studies?filter=name.search%3ANational%20Ecological%20Observatory%20Network&per_page=", page_chunk)
+# }
+#    
+
+url = paste0(base_url, "/studies?filter=name.search%3ANational%20Ecological%20Observatory%20Network&per_page=50")
+#TODO: check pagination
+
+response = fromJSON(url)
+study_ids = response[["results"]][["id"]]
+```
+
+
+# M
+```{r}
+bio_samps  = list()
+ph = list()
+for (i in 1:length(study_ids)){
+    study_id = study_ids[i]
+    filt = paste0("part_of:", study_id)
+    url = paste0(base_url, "/biosamples?filter=", filt)
+    resp = fromJSON(url)
+    bio_samps[i] = resp[['results']]['id']
+    ph[i] = resp[['results']]['ph']
+}
+```
+
+```{r}
+per_page = 100
+dat_all = tibble()
+for (i in 1:length(study_ids)){
+    study_id = study_ids[i]
+    filt = paste0("part_of:", study_id)
+    get_more = TRUE
+    tot = 0
+    page = 1
+    while (get_more){
+        url = paste0(
+            base_url, 
+            "/biosamples?filter=", 
+            filt,
+            "&per_page=",
+            per_page,
+            "&page=",
+            page)
+        print(url)
+        data = fromJSON(url)
+        data_results = data[['results']] %>% as.data.frame()
+        dat_all = bind_rows(dat_all, data_results)
+        if (nrow(dat_all) < data[['meta']]['count']){
+            page = page +1
+        } else { get_more = FALSE}
+    }
+}
+
+```
+
+```{r}
+library(lubridate)
+df <- dat_all %>%
+    select(collection_date, ph, geo_loc_name, lat_lon) %>%
+    unnest(cols = c(collection_date, geo_loc_name,
+  lat_lon), names_sep = "_") %>%
+    rename(collection_date = collection_date_has_raw_value ,
+           geo_loc = geo_loc_name_has_raw_value)
+
+df2 <- df %>%
+    mutate(collection_date2 = as.Date(collection_date))
+
+g <- ggplot(data = df2) +
+    geom_point(aes(x=collection_date, y = ph)) +
+    facet_wrap(facets = vars(geo_loc))
+
+```
+
+
+```{r}
+library("rnaturalearth")
+library("rnaturalearthdata")
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+g2 <- ggplot(data = world) +
+    geom_sf() +
+    geom_point(
+        data = locs_with_ph, 
+        aes(x = lat_lon_longitude, y = lat_lon_latitude, color = geo_loc)) +
+    my_theme +
+    labs(x = "Longitude", y = "Latitude")+
+    theme(legend.position =  "none")+
+        coord_sf(xlim = c(-165, -66), ylim = c(17, 72), expand = FALSE)
+g2
+
+````
