@@ -23,6 +23,7 @@ To add a new notebook to this repository:
 1.  Create a folder in the base directory 
     - Name the folder with a short version of the analysis/question that will be explored.
     - Make name of folder `snake_case`
-2. Create a sub-folder for each language that will be demonstrated
+2. Create a `README.md` in the folder outlining the analysis or question.
+3. Create a sub-folder for each language that will be demonstrated
     - e.g. one subfolder named `R` and one subfolder named `python`
-3. Instantiate a Jupyter Notebook for each folder coded in its corresponding language
+4. Instantiate a Jupyter Notebook for each folder coded in its corresponding language
