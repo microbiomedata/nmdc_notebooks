@@ -27,3 +27,8 @@ To add a new notebook to this repository:
 3. Create a sub-folder for each language that will be demonstrated
     - e.g. one subfolder named `R` and one subfolder named `python`
 4. Instantiate a Jupyter Notebook for each folder coded in its corresponding language
+
+## Dependency Management
+
+### R
+This project uses `renv` for package management.  After cloning the github repository, open the R project and run `renv::restore()` to make sure your packages match. To learn more about how renv works, [see this resource](https://rstudio.github.io/renv/articles/renv.html).
