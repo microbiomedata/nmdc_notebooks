@@ -1,16 +1,23 @@
-example_nmdc_api_interactions
-================
-2023-10-11
+---
+title: "example_nmdc_api_interactions"
+output: 
+  html_document:
+    keep_md: true
+date: "2023-10-11"
+---
 
-Rshiny app to plot pH measurements for soil samples as a function of
-time by NEON site
+Rshiny app to plot pH measurements for soil samples as a function of time by NEON site
+
+
+
 
 # Get samples associated with NEON sites
+name.search:National Ecological Observatory Network
+request url
+https://api.microbiomedata.org/studies?filter=name.search%3ANational%20Ecological%20Observatory%20Network&per_page=25
 
-name.search:National Ecological Observatory Network request url
-<https://api.microbiomedata.org/studies?filter=name.search%3ANational%20Ecological%20Observatory%20Network&per_page=25>
 
-``` r
+```r
 base_url = "https://api.microbiomedata.org"
 # meta_count = 0
 # page_chunk = 100
@@ -27,9 +34,10 @@ response = fromJSON(url)
 study_ids = response[["results"]][["id"]]
 ```
 
+
 # M
 
-``` r
+```r
 bio_samps  = list()
 ph = list()
 for (i in 1:length(study_ids)){
@@ -42,7 +50,8 @@ for (i in 1:length(study_ids)){
 }
 ```
 
-``` r
+
+```r
 per_page = 100
 dat_all = tibble()
 for (i in 1:length(study_ids)){
@@ -71,55 +80,58 @@ for (i in 1:length(study_ids)){
 }
 ```
 
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=1"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=2"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=3"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=4"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=5"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=6"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=7"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=8"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=9"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=10"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=11"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=12"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=13"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=14"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=15"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=16"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=17"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=18"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=19"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=20"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=21"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=22"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=23"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=24"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=25"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=26"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=27"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=28"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=29"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=30"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=31"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=32"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=33"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=34"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=35"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=36"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=37"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=38"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=39"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=40"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=41"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=42"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=43"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=44"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=45"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-hht5sb92&per_page=100&page=1"
-    ## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-pzmd0x14&per_page=100&page=1"
+```
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=1"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=2"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=3"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=4"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=5"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=6"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=7"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=8"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=9"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=10"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=11"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=12"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=13"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=14"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=15"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=16"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=17"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=18"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=19"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=20"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=21"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=22"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=23"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=24"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=25"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=26"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=27"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=28"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=29"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=30"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=31"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=32"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=33"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=34"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=35"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=36"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=37"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=38"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=39"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=40"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=41"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=42"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=43"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=44"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=45"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-hht5sb92&per_page=100&page=1"
+## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-pzmd0x14&per_page=100&page=1"
+```
 
-``` r
+
+```r
 library(lubridate)
 my_theme <- theme_bw()
 df <- dat_all %>%
@@ -160,35 +172,47 @@ g <- ggplot(data = df3) +
 g
 ```
 
-    ## Warning: Removed 60 rows containing missing values (`geom_point()`).
+```
+## Warning: Removed 60 rows containing missing values (`geom_point()`).
+```
 
-![](NEON_data_exploration_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](NEON_data_exploration_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
-``` r
+
+
+```r
 library("rnaturalearth")
 ```
 
-    ## The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
-    ## which was just loaded, were retired in October 2023.
-    ## Please refer to R-spatial evolution reports for details, especially
-    ## https://r-spatial.org/r/2023/05/15/evolution4.html.
-    ## It may be desirable to make the sf package available;
-    ## package maintainers should consider adding sf to Suggests:.
+```
+## The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
+## which was just loaded, were retired in October 2023.
+## Please refer to R-spatial evolution reports for details, especially
+## https://r-spatial.org/r/2023/05/15/evolution4.html.
+## It may be desirable to make the sf package available;
+## package maintainers should consider adding sf to Suggests:.
+```
 
-    ## Support for Spatial objects (`sp`) will be deprecated in {rnaturalearth} and will be removed in a future release of the package. Please use `sf` objects with {rnaturalearth}. For example: `ne_download(returnclass = 'sf')`
+```
+## Support for Spatial objects (`sp`) will be deprecated in {rnaturalearth} and will be removed in a future release of the package. Please use `sf` objects with {rnaturalearth}. For example: `ne_download(returnclass = 'sf')`
+```
 
-``` r
+```r
 library("rnaturalearthdata")
 ```
 
-    ## 
-    ## Attaching package: 'rnaturalearthdata'
+```
+## 
+## Attaching package: 'rnaturalearthdata'
+```
 
-    ## The following object is masked from 'package:rnaturalearth':
-    ## 
-    ##     countries110
+```
+## The following object is masked from 'package:rnaturalearth':
+## 
+##     countries110
+```
 
-``` r
+```r
 locs_with_ph <- df2 %>%
   group_by(
     geo_loc
@@ -208,9 +232,11 @@ world <- ne_countries(scale = "medium", returnclass = "sf")
 class(world)
 ```
 
-    ## [1] "sf"         "data.frame"
+```
+## [1] "sf"         "data.frame"
+```
 
-``` r
+```r
 g2 <- ggplot(data = world) +
     geom_sf() +
     geom_point(
@@ -224,4 +250,4 @@ g2 <- ggplot(data = world) +
 g2
 ```
 
-![](NEON_data_exploration_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](NEON_data_exploration_files/figure-html/unnamed-chunk-5-1.png)<!-- -->

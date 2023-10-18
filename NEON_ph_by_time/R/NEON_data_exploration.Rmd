@@ -1,6 +1,8 @@
 ---
 title: "example_nmdc_api_interactions"
-output: rmarkdown::github_document
+output: 
+  html_document:
+    keep_md: true
 date: "2023-10-11"
 ---
 
