@@ -31,4 +31,32 @@ To add a new notebook to this repository:
 ## Dependency Management
 
 ### R
+
 This project uses `renv` for package management.  After cloning the github repository, open the R project and run `renv::restore()` to make sure your packages match. To learn more about how renv works, [see this resource](https://rstudio.github.io/renv/articles/renv.html).
+
+### Python
+
+Python's pip is used to manage dependencies. 
+
+#### To install the dependencies:
+
+1. Clone the github repository
+2. create a virtual environment:
+    `python -m venv venv`
+3. Activate the virtual environment:
+    `source venv/bin/activate`
+4. Install the necessary packages:
+    `pip install -r requirements.txt`
+    **Note** to update your package installations:
+        `pip install -U -r requirements.txt`
+
+#### To add new packages:
+
+1. Activate the virtual environment:
+    `source venv/bin/activate`
+2. Install any new packages:
+    `pip install <package>`
+3. Capture the new requirements:
+    `pip freeze > requirements.txt`
+4. Push changes to github
+
