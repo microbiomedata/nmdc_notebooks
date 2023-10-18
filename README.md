@@ -36,7 +36,7 @@ This project uses `renv` for package management.  After cloning the github repos
 
 ### Python
 
-Python's pip is used to manage dependencies. 
+This project uses pip paired with venv to manage dependencies. 
 
 #### To install the dependencies:
 
