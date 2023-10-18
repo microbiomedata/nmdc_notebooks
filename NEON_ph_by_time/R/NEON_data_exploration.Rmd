@@ -1,56 +1,34 @@
 ---
-title: "example_nmdc_api_interactions"
-output: 
-  html_document:
-    keep_md: true
+title: "NEON pH data exploration"
+output: rmarkdown::github_document
 date: "2023-10-11"
 ---
 
-Rshiny app to plot pH measurements for soil samples as a function of time by NEON site
-
 ```{r setup, include=FALSE}
+# Load essential libraries
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(jsonlite)
+library(lubridate)
+library("rnaturalearth")
+library("rnaturalearthdata")
+
 ```
 
 
-# Get samples associated with NEON sites
-name.search:National Ecological Observatory Network
-request url
-https://api.microbiomedata.org/studies?filter=name.search%3ANational%20Ecological%20Observatory%20Network&per_page=25
-
+## Get study IDs associated with NEON sites using API
 ```{r}
 base_url = "https://api.microbiomedata.org"
-# meta_count = 0
-# page_chunk = 100
-# while (meta_count < page_chunk){
-#     url = paste0(
-#         base_url, "/studies?filter=name.search%3ANational%20Ecological%20Observatory%20Network&per_page=", page_chunk)
-# }
-#    
-
 url = paste0(base_url, "/studies?filter=name.search%3ANational%20Ecological%20Observatory%20Network&per_page=50")
-#TODO: check pagination
 
 response = fromJSON(url)
 study_ids = response[["results"]][["id"]]
+print(study_ids)
 ```
 
 
-# M
-```{r}
-bio_samps  = list()
-ph = list()
-for (i in 1:length(study_ids)){
-    study_id = study_ids[i]
-    filt = paste0("part_of:", study_id)
-    url = paste0(base_url, "/biosamples?filter=", filt)
-    resp = fromJSON(url)
-    bio_samps[i] = resp[['results']]['id']
-    ph[i] = resp[['results']]['ph']
-}
-```
+## Using the study ids, pull out bio sample IDs
+Note that we are pulling 100 records at a time until we have retrieved all biosamples for the three study ids above, place the data retrieved for each bio sample into a tibble
 
 ```{r}
 per_page = 100
@@ -70,7 +48,6 @@ for (i in 1:length(study_ids)){
             per_page,
             "&page=",
             page)
-        print(url)
         data = fromJSON(url)
         data_results = data[['results']] %>% as.data.frame()
         dat_all = bind_rows(dat_all, data_results)
@@ -80,11 +57,11 @@ for (i in 1:length(study_ids)){
     }
 }
 
+glimpse(dat_all)
 ```
-
+## Clean up results for more usability
+Pull out collection date, ph, geo_loc_name, lat_lon; unnest as needed; and convert collection_date into date object 
 ```{r}
-library(lubridate)
-my_theme <- theme_bw()
 df <- dat_all %>%
     select(
       collection_date, ph, geo_loc_name, lat_lon
@@ -96,66 +73,70 @@ df <- dat_all %>%
         lat_lon
         ), names_sep = "_") %>%
     rename(collection_date = collection_date_has_raw_value ,
-           geo_loc = geo_loc_name_has_raw_value)
+           geo_loc = geo_loc_name_has_raw_value) %>%
+    mutate(collection_date = as.Date(collection_date))
+glimpse(df)
+```
 
+
+## Plot locations of geo_loc scaled by number of samples with ph
+Get median lat long for each geo_loc and count of samples with pH
+```{r}
+# Prepare location df data
+loc_sum_df <- df %>%
+  filter(!(is.na(ph))) %>%
+  group_by(
+    geo_loc
+    ) %>%
+  mutate(
+    count_with_ph = n(),
+    lat_med = median(lat_lon_latitude),
+    long_med = median(lat_lon_longitude),
+    ) %>%
+  select(
+    geo_loc, 
+    lat_med,
+    long_med,
+    count_with_ph
+    ) %>%
+  distinct()
+
+# Plot summary data
+my_theme <- theme_bw()
+world <- ne_countries(scale = "medium", returnclass = "sf")
+g2 <- ggplot(data = world) +
+    geom_sf() +
+    geom_point(
+        data = loc_sum_df, 
+        aes(x = long_med, y = lat_med, 
+        size = count_with_ph)) +
+    my_theme +
+    labs(x = "Longitude", y = "Latitude", size = "# of biosamples with \n pH measurements")+
+    theme()+
+        coord_sf(xlim = c(-165, -65), ylim = c(15, 72), expand = FALSE)
+g2
+
+```
+
+## Plot full time series of pH at the six sites with the most biosamples
+
+```{r, warning=FALSE}
+# Prep dataframe with new column of factored sites
 df2 <- df %>%
-    mutate(collection_date2 = as.Date(collection_date))
-
-df3 <- df2 %>%
   mutate(geo_loc_grouped = geo_loc %>% 
            factor() %>% 
            fct_lump(n = 6)
          ) %>%
   filter(geo_loc_grouped != "Other")
-  
 
+
+# Plot data
 g <- ggplot(data = df2) +
     geom_point(aes(x=collection_date, y = ph)) +
-  my_theme +
-    facet_wrap(facets = vars(geo_loc))
-
-g <- ggplot(data = df3) +
-    geom_point(aes(x=collection_date2, y = ph)) +
     my_theme +
     scale_x_date()+
+    labs(x = "Collection Date", y = "pH")+
     facet_wrap(facets = vars(geo_loc_grouped),
                labeller = label_wrap_gen(width=30)) 
 g
-
 ```
-
-
-```{r}
-library("rnaturalearth")
-library("rnaturalearthdata")
-
-locs_with_ph <- df2 %>%
-  group_by(
-    geo_loc
-    ) %>%
-  mutate(
-    count_with_ph = n()
-    ) %>%
-  select(
-    geo_loc, 
-    lat_lon_longitude, 
-    lat_lon_latitude,
-    count_with_ph
-    ) %>%
-  distinct()
-
-world <- ne_countries(scale = "medium", returnclass = "sf")
-class(world)
-g2 <- ggplot(data = world) +
-    geom_sf() +
-    geom_point(
-        data = locs_with_ph, 
-        aes(x = lat_lon_longitude, y = lat_lon_latitude, 
-        size = count_with_ph)) +
-    my_theme +
-    labs(x = "Longitude", y = "Latitude", size = "Samples with \n pH measurements")+
-    theme()+
-        coord_sf(xlim = c(-165, -66), ylim = c(17, 72), expand = FALSE)
-g2
-
-````

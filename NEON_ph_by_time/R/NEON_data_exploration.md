@@ -1,57 +1,27 @@
----
-title: "example_nmdc_api_interactions"
-output: 
-  html_document:
-    keep_md: true
-date: "2023-10-11"
----
+NEON pH data exploration
+================
+2023-10-11
 
-Rshiny app to plot pH measurements for soil samples as a function of time by NEON site
+## Get study IDs associated with NEON sites using API
 
-
-
-
-# Get samples associated with NEON sites
-name.search:National Ecological Observatory Network
-request url
-https://api.microbiomedata.org/studies?filter=name.search%3ANational%20Ecological%20Observatory%20Network&per_page=25
-
-
-```r
+``` r
 base_url = "https://api.microbiomedata.org"
-# meta_count = 0
-# page_chunk = 100
-# while (meta_count < page_chunk){
-#     url = paste0(
-#         base_url, "/studies?filter=name.search%3ANational%20Ecological%20Observatory%20Network&per_page=", page_chunk)
-# }
-#    
-
 url = paste0(base_url, "/studies?filter=name.search%3ANational%20Ecological%20Observatory%20Network&per_page=50")
-#TODO: check pagination
 
 response = fromJSON(url)
 study_ids = response[["results"]][["id"]]
+print(study_ids)
 ```
 
+    ## [1] "nmdc:sty-11-34xj1150" "nmdc:sty-11-hht5sb92" "nmdc:sty-11-pzmd0x14"
 
-# M
+## Using the study ids, pull out bio sample IDs
 
-```r
-bio_samps  = list()
-ph = list()
-for (i in 1:length(study_ids)){
-    study_id = study_ids[i]
-    filt = paste0("part_of:", study_id)
-    url = paste0(base_url, "/biosamples?filter=", filt)
-    resp = fromJSON(url)
-    bio_samps[i] = resp[['results']]['id']
-    ph[i] = resp[['results']]['ph']
-}
-```
+Note that we are pulling 100 records at a time until we have retrieved
+all biosamples for the three study ids above, place the data retrieved
+for each bio sample into a tibble
 
-
-```r
+``` r
 per_page = 100
 dat_all = tibble()
 for (i in 1:length(study_ids)){
@@ -69,7 +39,6 @@ for (i in 1:length(study_ids)){
             per_page,
             "&page=",
             page)
-        print(url)
         data = fromJSON(url)
         data_results = data[['results']] %>% as.data.frame()
         dat_all = bind_rows(dat_all, data_results)
@@ -78,62 +47,52 @@ for (i in 1:length(study_ids)){
         } else { get_more = FALSE}
     }
 }
+
+glimpse(dat_all)
 ```
 
-```
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=1"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=2"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=3"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=4"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=5"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=6"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=7"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=8"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=9"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=10"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=11"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=12"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=13"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=14"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=15"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=16"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=17"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=18"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=19"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=20"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=21"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=22"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=23"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=24"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=25"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=26"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=27"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=28"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=29"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=30"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=31"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=32"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=33"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=34"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=35"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=36"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=37"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=38"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=39"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=40"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=41"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=42"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=43"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=44"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-34xj1150&per_page=100&page=45"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-hht5sb92&per_page=100&page=1"
-## [1] "https://api.microbiomedata.org/biosamples?filter=part_of:nmdc:sty-11-pzmd0x14&per_page=100&page=1"
-```
+    ## Rows: 4,443
+    ## Columns: 33
+    ## $ analysis_type              <list> "metagenomics", "metagenomics", "metagenom…
+    ## $ collection_date            <df[,1]> <data.frame[26 x 1]>
+    ## $ depth                      <df[,3]> <data.frame[26 x 3]>
+    ## $ elev                       <dbl> 586.1, 586.1, 586.1, 534.2, 534.2, 534.2…
+    ## $ env_broad_scale            <df[,1]> <data.frame[26 x 1]>
+    ## $ env_local_scale            <df[,1]> <data.frame[26 x 1]>
+    ## $ env_medium                 <df[,1]> <data.frame[26 x 1]>
+    ## $ id                         <chr> "nmdc:bsm-11-06qrej20", "nmdc:bsm-11-ftr…
+    ## $ name                       <chr> "ABBY_004-M-0.5-8-20170605", "ABBY_004-M-32…
+    ## $ part_of                    <list> "nmdc:sty-11-34xj1150", "nmdc:sty-11-34x…
+    ## $ ph                         <dbl> 5.51, 5.58, 5.53, 5.59, 4.70, 4.74, 4.95…
+    ## $ samp_collec_device         <chr> "corer", "corer", "corer", "corer", "bro…
+    ## $ soil_horizon               <chr> "M horizon", "M horizon", "M horizon", "M h…
+    ## $ temp                       <df[,2]> <data.frame[26 x 2]>
+    ## $ type                       <chr> "nmdc:Biosample", "nmdc:Biosample", "nmdc:B…
+    ## $ water_content              <list> "0.465 g of water/g of dry soil", "0.346 g…
+    ## $ geo_loc_name               <df[,1]> <data.frame[26 x 1]>
+    ## $ biosample_categories       <list> "NEON", "NEON", "NEON", "NEON", "NEON", "NE…
+    ## $ lat_lon                    <df[,2]> <data.frame[26 x 2]>
+    ## $ gold_biosample_identifiers <list> "gold:Gb0255529", "gold:Gb0255529", "gold:G…
+    ## $ ecosystem                  <chr> "Environmental", "Environmental", "Environm…
+    ## $ ecosystem_category         <chr> "Terrestrial", "Terrestrial", "Terrestri…
+    ## $ ecosystem_type             <chr> "Soil", "Soil", "Soil", "Soil", "Soil", "So…
+    ## $ ecosystem_subtype          <chr> "Unclassified", "Unclassified", "Unclassif…
+    ## $ ammonium_nitrogen          <df[,2]> <data.frame[26 x 2]>
+    ## $ env_package                <df[,1]> <data.frame[26 x 1]>
+    ## $ org_carb                   <df[,2]> <data.frame[26 x 2]>
+    ## $ tot_nitro_content          <df[,2]> <data.frame[26 x 2]>
+    ## $ carb_nitro_ratio           <df[,1]> <data.frame[26 x 1]>
+    ## $ nitro                      <df[,2]> <data.frame[26 x 2]>
+    ## $ img_identifiers            <list> <NULL>, <NULL>, <NULL>, <NULL>, <NULL>, …
+    ## $ specific_ecosystem         <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+    ## $ samp_taxon_id              <df[,2]> <data.frame[26 x 2]>
 
+## Clean up results for more usability
 
-```r
-library(lubridate)
-my_theme <- theme_bw()
+Pull out collection date, ph, geo_loc_name, lat_lon; unnest as needed;
+and convert collection_date into date object
+
+``` r
 df <- dat_all %>%
     select(
       collection_date, ph, geo_loc_name, lat_lon
@@ -145,109 +104,82 @@ df <- dat_all %>%
         lat_lon
         ), names_sep = "_") %>%
     rename(collection_date = collection_date_has_raw_value ,
-           geo_loc = geo_loc_name_has_raw_value)
+           geo_loc = geo_loc_name_has_raw_value) %>%
+    mutate(collection_date = as.Date(collection_date))
+glimpse(df)
+```
 
+    ## Rows: 4,443
+    ## Columns: 5
+    ## $ collection_date   <date> 2017-06-05, 2017-06-05, 2017-06-05, 2017-06-05, 201…
+    ## $ ph                <dbl> 5.51, 5.58, 5.53, 5.59, 4.70, 4.74, 4.95, 4.28, 5.15…
+    ## $ geo_loc           <chr> "USA: Washington, Abby Road", "USA: Washington, Abby…
+    ## $ lat_lon_latitude  <dbl> 45.76858, 45.76858, 45.76858, 45.75405, 45.75405, 45…
+    ## $ lat_lon_longitude <dbl> -122.2987, -122.2987, -122.2987, -122.2985, -122.298…
+
+## Plot locations of geo_loc scaled by number of samples with ph
+
+Get median lat long for each geo_loc and count of samples with pH
+
+``` r
+# Prepare location df data
+loc_sum_df <- df %>%
+  filter(!(is.na(ph))) %>%
+  group_by(
+    geo_loc
+    ) %>%
+  mutate(
+    count_with_ph = n(),
+    lat_med = median(lat_lon_latitude),
+    long_med = median(lat_lon_longitude),
+    ) %>%
+  select(
+    geo_loc, 
+    lat_med,
+    long_med,
+    count_with_ph
+    ) %>%
+  distinct()
+
+# Plot summary data
+my_theme <- theme_bw()
+world <- ne_countries(scale = "medium", returnclass = "sf")
+g2 <- ggplot(data = world) +
+    geom_sf() +
+    geom_point(
+        data = loc_sum_df, 
+        aes(x = long_med, y = lat_med, 
+        size = count_with_ph)) +
+    my_theme +
+    labs(x = "Longitude", y = "Latitude", size = "# of biosamples with \n pH measurements")+
+    theme()+
+        coord_sf(xlim = c(-165, -65), ylim = c(15, 72), expand = FALSE)
+g2
+```
+
+![](NEON_data_exploration_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+## Plot full time series of pH at the six sites with the most biosamples
+
+``` r
+# Prep dataframe with new column of factored sites
 df2 <- df %>%
-    mutate(collection_date2 = as.Date(collection_date))
-
-df3 <- df2 %>%
   mutate(geo_loc_grouped = geo_loc %>% 
            factor() %>% 
            fct_lump(n = 6)
          ) %>%
   filter(geo_loc_grouped != "Other")
-  
 
+
+# Plot data
 g <- ggplot(data = df2) +
     geom_point(aes(x=collection_date, y = ph)) +
-  my_theme +
-    facet_wrap(facets = vars(geo_loc))
-
-g <- ggplot(data = df3) +
-    geom_point(aes(x=collection_date2, y = ph)) +
     my_theme +
     scale_x_date()+
+    labs(x = "Collection Date", y = "pH")+
     facet_wrap(facets = vars(geo_loc_grouped),
                labeller = label_wrap_gen(width=30)) 
 g
 ```
 
-```
-## Warning: Removed 60 rows containing missing values (`geom_point()`).
-```
-
-![](NEON_data_exploration_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
-
-
-
-```r
-library("rnaturalearth")
-```
-
-```
-## The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
-## which was just loaded, were retired in October 2023.
-## Please refer to R-spatial evolution reports for details, especially
-## https://r-spatial.org/r/2023/05/15/evolution4.html.
-## It may be desirable to make the sf package available;
-## package maintainers should consider adding sf to Suggests:.
-```
-
-```
-## Support for Spatial objects (`sp`) will be deprecated in {rnaturalearth} and will be removed in a future release of the package. Please use `sf` objects with {rnaturalearth}. For example: `ne_download(returnclass = 'sf')`
-```
-
-```r
-library("rnaturalearthdata")
-```
-
-```
-## 
-## Attaching package: 'rnaturalearthdata'
-```
-
-```
-## The following object is masked from 'package:rnaturalearth':
-## 
-##     countries110
-```
-
-```r
-locs_with_ph <- df2 %>%
-  group_by(
-    geo_loc
-    ) %>%
-  mutate(
-    count_with_ph = n()
-    ) %>%
-  select(
-    geo_loc, 
-    lat_lon_longitude, 
-    lat_lon_latitude,
-    count_with_ph
-    ) %>%
-  distinct()
-
-world <- ne_countries(scale = "medium", returnclass = "sf")
-class(world)
-```
-
-```
-## [1] "sf"         "data.frame"
-```
-
-```r
-g2 <- ggplot(data = world) +
-    geom_sf() +
-    geom_point(
-        data = locs_with_ph, 
-        aes(x = lat_lon_longitude, y = lat_lon_latitude, 
-        size = count_with_ph)) +
-    my_theme +
-    labs(x = "Longitude", y = "Latitude", size = "Samples with \n pH measurements")+
-    theme()+
-        coord_sf(xlim = c(-165, -66), ylim = c(17, 72), expand = FALSE)
-g2
-```
-
-![](NEON_data_exploration_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](NEON_data_exploration_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
