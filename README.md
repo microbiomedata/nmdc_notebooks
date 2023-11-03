@@ -46,9 +46,9 @@ This project uses pip paired with venv to manage dependencies.
 3. Activate the virtual environment:
     `source venv/bin/activate`
 4. Install the necessary packages:
-    `pip install -r requirements.txt`
+    `pip install -r binder/requirements.txt`
     **Note** to update your package installations:
-        `pip install -U -r requirements.txt`
+        `pip install -U -r binder/requirements.txt`
 
 #### To add new packages:
 
@@ -64,7 +64,15 @@ This project uses pip paired with venv to manage dependencies.
 ### Jupyter Notebook (for python)
 [![Binder](http://mybinder.org/badge.svg)](http://mybinder.org/v2/gh/microbiomedata/notebook_hackathons/rmd_dev?urlpath=lab)
 
+
+
+#https://mybinder.org/v2/gh/microbiomedata/notebook_hackathons/HEAD?labpath=https%3A%2F%2Fgithub.com%2Fmicrobiomedata%2Fnotebook_hackathons%2Fblob%2Fmain%2FNEON_ph_by_time%2Fpython%2Fneon_time_series_data_with_map.ipynb
+
+
 ### RStudio (for R)
 [Binder](http://mybinder.org/badge.svg)](http://mybinder.org/v2/gh/microbiomedata/notebook_hackathons/rmd_dev?urlpath=rstudio)
+
+## Google colabs
+#https://colab.research.google.com/github/microbiomedata/notebook_hackathons/blob/main/NEON_ph_by_time/python/neon_time_series_data_with_map.ipynb
 
 
