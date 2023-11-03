@@ -60,3 +60,9 @@ This project uses pip paired with venv to manage dependencies.
     `pip freeze > requirements.txt`
 4. Push changes to github
 
+## Binders
+http://mybinder.org/v2/gh/microbiomedata/notebook_hackathons/rmd_dev?urlpath=lab
+
+http://mybinder.org/v2/gh/microbiomedata/notebook_hackathons/rmd_dev?urlpath=rstudio
+
+
