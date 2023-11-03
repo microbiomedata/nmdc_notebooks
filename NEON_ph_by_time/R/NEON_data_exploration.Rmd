@@ -13,7 +13,7 @@ library(tidyr)
 library(ggplot2)
 library(forcats)
 library(lubridate)
-library(maps)
+if (!require('maps')) install.packages('maps'); library('maps')
 ```
 
 
