@@ -51,8 +51,8 @@ for (i in 1:length(study_ids)){
 glimpse(dat_all)
 ```
 
-    ## Rows: 4,443
-    ## Columns: 33
+    ## Rows: 5,003
+    ## Columns: 34
     ## $ analysis_type              <list> "metagenomics", "metagenomics", "metagenom…
     ## $ collection_date            <df[,1]> <data.frame[26 x 1]>
     ## $ depth                      <df[,3]> <data.frame[26 x 3]>
@@ -86,6 +86,7 @@ glimpse(dat_all)
     ## $ img_identifiers            <list> <NULL>, <NULL>, <NULL>, <NULL>, <NULL>, …
     ## $ specific_ecosystem         <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
     ## $ samp_taxon_id              <df[,2]> <data.frame[26 x 2]>
+    ## $ samp_size                  <df[,2]> <data.frame[26 x 2]>
 
 ## Clean up results for more usability
 
@@ -109,7 +110,7 @@ df <- dat_all %>%
 glimpse(df)
 ```
 
-    ## Rows: 4,443
+    ## Rows: 5,003
     ## Columns: 5
     ## $ collection_date   <date> 2017-06-05, 2017-06-05, 2017-06-05, 2017-06-05, 201…
     ## $ ph                <dbl> 5.51, 5.58, 5.53, 5.59, 4.70, 4.74, 4.95, 4.28, 5.15…
@@ -141,19 +142,23 @@ loc_sum_df <- df %>%
     ) %>%
   distinct()
 
-# Plot summary data
+#Plot summary data
 my_theme <- theme_bw()
-world <- ne_countries(scale = "medium", returnclass = "sf")
-g2 <- ggplot(data = world) +
-    geom_sf() +
+world <- map_data("world")
+g2 <- ggplot() +
+  geom_map(
+    data = world, 
+    map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  )  +
     geom_point(
-        data = loc_sum_df, 
-        aes(x = long_med, y = lat_med, 
+        data = loc_sum_df,
+        aes(long_med, lat_med,
         size = count_with_ph)) +
-    my_theme +
-    labs(x = "Longitude", y = "Latitude", size = "# of biosamples with \n pH measurements")+
-    theme()+
-        coord_sf(xlim = c(-165, -65), ylim = c(15, 72), expand = FALSE)
+    theme_void() +
+    labs(size = "# of biosamples with \n pH measurements")+
+    coord_cartesian(xlim = c(-165, -65), ylim = c(15, 72), expand = FALSE)
 g2
 ```
 

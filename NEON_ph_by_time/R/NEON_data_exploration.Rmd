@@ -7,12 +7,13 @@ date: "2023-10-11"
 ```{r setup, include=FALSE}
 # Load essential libraries
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
 library(jsonlite)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(forcats)
 library(lubridate)
-library("rnaturalearth")
-library("rnaturalearthdata")
-
+if (!require('maps')) install.packages('maps'); library('maps')
 ```
 
 
@@ -59,6 +60,7 @@ for (i in 1:length(study_ids)){
 
 glimpse(dat_all)
 ```
+
 ## Clean up results for more usability
 Pull out collection date, ph, geo_loc_name, lat_lon; unnest as needed; and convert collection_date into date object 
 ```{r}
@@ -81,7 +83,7 @@ glimpse(df)
 
 ## Plot locations of geo_loc scaled by number of samples with ph
 Get median lat long for each geo_loc and count of samples with pH
-```{r}
+```{r, warning=FALSE}
 # Prepare location df data
 loc_sum_df <- df %>%
   filter(!(is.na(ph))) %>%
@@ -101,19 +103,23 @@ loc_sum_df <- df %>%
     ) %>%
   distinct()
 
-# Plot summary data
+#Plot summary data
 my_theme <- theme_bw()
-world <- ne_countries(scale = "medium", returnclass = "sf")
-g2 <- ggplot(data = world) +
-    geom_sf() +
+world <- map_data("world")
+g2 <- ggplot() +
+  geom_map(
+    data = world, 
+    map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  )  +
     geom_point(
-        data = loc_sum_df, 
-        aes(x = long_med, y = lat_med, 
+        data = loc_sum_df,
+        aes(long_med, lat_med,
         size = count_with_ph)) +
-    my_theme +
-    labs(x = "Longitude", y = "Latitude", size = "# of biosamples with \n pH measurements")+
-    theme()+
-        coord_sf(xlim = c(-165, -65), ylim = c(15, 72), expand = FALSE)
+    theme_void() +
+    labs(size = "# of biosamples with \n pH measurements")+
+    coord_cartesian(xlim = c(-165, -65), ylim = c(15, 72), expand = FALSE)
 g2
 
 ```

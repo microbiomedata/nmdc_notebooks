@@ -27,6 +27,8 @@ To add a new notebook to this repository:
 3. Create a sub-folder for each language that will be demonstrated
     - e.g. one subfolder named `R` and one subfolder named `python`
 4. Instantiate a Jupyter Notebook for each folder coded in its corresponding language
+_or_
+4. Create a .Rmd and convert it to a Jupyter Notebook. Several methods for this exist and none are perfect, but [this open source method](https://github.com/mkearney/rmd2jupyter) currently works.
 
 ## Dependency Management
 
@@ -36,7 +38,7 @@ This project uses `renv` for package management.  After cloning the github repos
 
 ### Python
 
-This project uses pip paired with venv to manage dependencies. 
+This project uses pip paired with venv to manage dependencies. Note that requirements_dev.txt should be used for development dependencies, and requirements.txt should be used for production/binder dependencies (added manually and with discretion).
 
 #### To install the dependencies:
 
@@ -46,9 +48,9 @@ This project uses pip paired with venv to manage dependencies.
 3. Activate the virtual environment:
     `source venv/bin/activate`
 4. Install the necessary packages:
-    `pip install -r requirements.txt`
+    `pip install -r requirements_dev.txt`
     **Note** to update your package installations:
-        `pip install -U -r requirements.txt`
+        `pip install -U -r requirements_dev.txt`
 
 #### To add new packages:
 
@@ -57,6 +59,12 @@ This project uses pip paired with venv to manage dependencies.
 2. Install any new packages:
     `pip install <package>`
 3. Capture the new requirements:
-    `pip freeze > requirements.txt`
+    `pip freeze > requirements_dev.txt`
 4. Push changes to github
+
+
+### RStudio (for R)
+[Binder](http://mybinder.org/badge.svg)](http://mybinder.org/v2/gh/microbiomedata/notebook_hackathons/rmd_dev?urlpath=rstudio)
+
+
 
