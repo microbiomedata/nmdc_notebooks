@@ -7,11 +7,15 @@ date: "2023-10-11"
 ```{r setup, include=FALSE}
 # Load essential libraries
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
+#library(tidyverse)
 library(jsonlite)
-library(lubridate)
-library("rnaturalearth")
-library("rnaturalearthdata")
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(forcats)
+#library(lubridate)
+#library("rnaturalearth")
+#library("rnaturalearthdata")
 
 ```
 
@@ -102,19 +106,19 @@ loc_sum_df <- df %>%
   distinct()
 
 # Plot summary data
-my_theme <- theme_bw()
-world <- ne_countries(scale = "medium", returnclass = "sf")
-g2 <- ggplot(data = world) +
-    geom_sf() +
-    geom_point(
-        data = loc_sum_df, 
-        aes(x = long_med, y = lat_med, 
-        size = count_with_ph)) +
-    my_theme +
-    labs(x = "Longitude", y = "Latitude", size = "# of biosamples with \n pH measurements")+
-    theme()+
-        coord_sf(xlim = c(-165, -65), ylim = c(15, 72), expand = FALSE)
-g2
+# my_theme <- theme_bw()
+# world <- ne_countries(scale = "medium", returnclass = "sf")
+# g2 <- ggplot(data = world) +
+#     geom_sf() +
+#     geom_point(
+#         data = loc_sum_df, 
+#         aes(x = long_med, y = lat_med, 
+#         size = count_with_ph)) +
+#     my_theme +
+#     labs(x = "Longitude", y = "Latitude", size = "# of biosamples with \n pH measurements")+
+#     theme()+
+#         coord_sf(xlim = c(-165, -65), ylim = c(15, 72), expand = FALSE)
+# g2
 
 ```
 
