@@ -1,4 +1,4 @@
-# NNMC Data and Metadata R and Python Sample Jupyter Notebooks
+# NMDC Data and Metadata R and Python Sample Jupyter Notebooks
 
 ## Overview 
 
