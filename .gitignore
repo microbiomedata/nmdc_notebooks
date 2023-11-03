@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+.Rprofile
 .ipynb_checkpoints
 venv/
