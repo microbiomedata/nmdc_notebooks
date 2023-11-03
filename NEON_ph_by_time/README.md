@@ -5,8 +5,8 @@ This folder includes two notebooks, in R and Python, that how soil pH changes ov
 ## R
 - [Static rendered R notebook](https://github.com/microbiomedata/notebook_hackathons/blob/main/NEON_ph_by_time/R/NEON_data_exploration.md)
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/microbiomedata/rmd_dev?labpath=%2FNEON_ph_by_time%2FR%2FNEON_data_exploration.Rmd)
-
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/microbiomedata/rmd_dev/HEAD?=rstudio)
+https://mybinder.org/v2/gh/binder-examples/r/master?urlpath=rstudio
 
 
 ## Python
