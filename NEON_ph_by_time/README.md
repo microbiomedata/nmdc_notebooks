@@ -1,4 +1,4 @@
-# Interactive application exploring NEON sites of pH vs. time
+# Exploring NEON sites of pH vs. time
 
 This folder includes two notebooks, in R and Python, that how soil pH changes over time for the various NEON sites.
  
