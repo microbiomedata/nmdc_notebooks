@@ -36,11 +36,9 @@ _or_
 
 This project uses `renv` for package management.  After cloning the github repository, open the R project and run `renv::restore()` to make sure your packages match. To learn more about how renv works, [see this resource](https://rstudio.github.io/renv/articles/renv.html).
 
-
-
 ### Python
 
-This project uses pip paired with venv to manage dependencies. 
+This project uses pip paired with venv to manage dependencies. Note that requirements_dev.txt should be used for development dependencies, and requirements.txt should be used for production/binder dependencies (added manually and with discretion).
 
 #### To install the dependencies:
 
@@ -50,9 +48,9 @@ This project uses pip paired with venv to manage dependencies.
 3. Activate the virtual environment:
     `source venv/bin/activate`
 4. Install the necessary packages:
-    `pip install -r binder/requirements.txt`
+    `pip install -r requirements_dev.txt`
     **Note** to update your package installations:
-        `pip install -U -r binder/requirements.txt`
+        `pip install -U -r requirements_dev.txt`
 
 #### To add new packages:
 
@@ -61,22 +59,12 @@ This project uses pip paired with venv to manage dependencies.
 2. Install any new packages:
     `pip install <package>`
 3. Capture the new requirements:
-    `pip freeze > requirements.txt`
+    `pip freeze > requirements_dev.txt`
 4. Push changes to github
-
-## Binders
-### Jupyter Notebook (for python)
-[![Binder](http://mybinder.org/badge.svg)](http://mybinder.org/v2/gh/microbiomedata/notebook_hackathons/rmd_dev?urlpath=lab)
-
-
-
-#https://mybinder.org/v2/gh/microbiomedata/notebook_hackathons/HEAD?labpath=https%3A%2F%2Fgithub.com%2Fmicrobiomedata%2Fnotebook_hackathons%2Fblob%2Fmain%2FNEON_ph_by_time%2Fpython%2Fneon_time_series_data_with_map.ipynb
 
 
 ### RStudio (for R)
 [Binder](http://mybinder.org/badge.svg)](http://mybinder.org/v2/gh/microbiomedata/notebook_hackathons/rmd_dev?urlpath=rstudio)
 
-## Google colabs
-#https://colab.research.google.com/github/microbiomedata/notebook_hackathons/blob/main/NEON_ph_by_time/python/neon_time_series_data_with_map.ipynb
 
 
