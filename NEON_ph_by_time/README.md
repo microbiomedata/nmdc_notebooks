@@ -4,10 +4,7 @@ This folder includes two notebooks, in R and Python, that how soil pH changes ov
  
 ## R
 - [Static rendered R notebook](https://github.com/microbiomedata/notebook_hackathons/blob/main/NEON_ph_by_time/R/NEON_data_exploration.md)
-
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/microbiomedata/rmd_dev/HEAD?=rstudio)
-https://mybinder.org/v2/gh/binder-examples/r/master?urlpath=rstudio
-
+- [![Binder](https://mybinder.org/badge_logo.svg)](http://mybinder.org/v2/gh/microbiomedata/notebook_hackathons/rmd_dev?urlpath=rstudio). _Note that this opens at the project level, to interact with the R markdown notebook, open the `NEON_data_exploration.Rmd` file in the `R` folder_.  This will take a while to load, dependent on server capacity.
 
 ## Python
 - [Static rendered Jupyter notebook](https://nbviewer.org/github/microbiomedata/notebook_hackathons/blob/main/NEON_ph_by_time/python/neon_time_series_data_with_map.ipynb). _Viewing only, not editable_
