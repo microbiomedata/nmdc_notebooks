@@ -1,5 +1,5 @@
 ---
-title: "NEON pH data exploration"
+title: "NEON metadata exploration"
 output: rmarkdown::github_document
 date: "2023-10-11"
 ---
@@ -18,6 +18,7 @@ if (!require('maps')) install.packages('maps'); library('maps')
 
 
 ## Get study IDs associated with NEON sites using API
+
 ```{r}
 base_url = "https://api.microbiomedata.org"
 url = paste0(base_url, "/studies?filter=name.search%3ANational%20Ecological%20Observatory%20Network&per_page=50")
@@ -28,58 +29,92 @@ print(study_ids)
 ```
 
 
-## Using the study ids, pull out bio sample IDs
-Note that we are pulling 100 records at a time until we have retrieved all biosamples for the three study ids above, place the data retrieved for each bio sample into a tibble
+## Using the study ids, pull out bio sample IDs 
+
+Note that we are pulling 100 records at a time until we have retrieved all biosamples for the three study ids above, place the data retrieved for each bio sample into a tibble.
+
+According to the [data portal](https://data.microbiomedata.org/), the first study listed (sty-11-34xj1150) has associated biosamples, so we will pull out the biosamples associated with that study.
 
 ```{r}
-per_page = 100
+study_id = study_ids[1]
+
+# Prepare a tibble to hold results
 dat_all = tibble()
-for (i in 1:length(study_ids)){
-    study_id = study_ids[i]
-    filt = paste0("part_of:", study_id)
-    get_more = TRUE
-    tot = 0
-    page = 1
-    while (get_more){
-        url = paste0(
-            base_url, 
-            "/biosamples?filter=", 
-            filt,
-            "&per_page=",
-            per_page,
-            "&page=",
-            page)
-        data = fromJSON(url)
-        data_results = data[['results']] %>% as.data.frame()
-        dat_all = bind_rows(dat_all, data_results)
-        if (nrow(dat_all) < data[['meta']]['count']){
-            page = page +1
-        } else { get_more = FALSE}
-    }
+
+# Set up query
+per_page = 100  # number of records to retrieve per page
+filt = paste0("part_of:", study_id) # filter to only get biosamples from the study of interest
+get_more = TRUE # flag to indicate whether we need to get more records
+page = 1 # page number to retrieve
+while (get_more){
+    # construct the url for the query
+    url = paste0(
+        base_url, 
+        "/biosamples?filter=", 
+        filt,
+        "&per_page=",
+        per_page,
+        "&page=",
+        page)
+    # get the data
+    data = fromJSON(url)
+    data_results = data[['results']] %>% as.data.frame() 
+    # add the data to the tibble
+    dat_all = bind_rows(dat_all, data_results)
+    # check if we need to get more records
+    if (nrow(dat_all) < data[['meta']]['count']){
+        page = page +1
+    } else { get_more = FALSE}
 }
+
 
 glimpse(dat_all)
 ```
 
 ## Clean up results for more usability
-Pull out collection date, ph, geo_loc_name, lat_lon; unnest as needed; and convert collection_date into date object 
+Pull out collection date, environmental media, ph, geo_loc_name, lat_lon; unnest as needed; and convert collection_date into date object 
 ```{r}
 df <- dat_all %>%
     select(
-      collection_date, ph, geo_loc_name, lat_lon
+      collection_date, water_content, ph, geo_loc_name, lat_lon, env_medium
       ) %>%
+    mutate(water_content = as.character(water_content)) %>%
+    separate(water_content, sep = " ", into = c("water_content", "water_content_units"), extra = "merge") %>%
+    mutate(water_content = as.numeric(water_content)) %>%
     unnest(
       cols = c(
+          env_medium,
         collection_date, 
         geo_loc_name,
         lat_lon
         ), names_sep = "_") %>%
+    unnest(
+        cols = c(env_medium_term
+        ), names_sep = "_") %>%
     rename(collection_date = collection_date_has_raw_value ,
+           env_medium = env_medium_term_name,
            geo_loc = geo_loc_name_has_raw_value) %>%
-    mutate(collection_date = as.Date(collection_date))
+    mutate(collection_date = as.Date(collection_date)) %>%
+    suppressWarnings()
 glimpse(df)
 ```
 
+## Summarize metadata by environmental medium
+This shows us that all biosamples are soil samples and most have pH and water content measurements
+```{r}
+df_sum <- df %>%
+  group_by(
+    env_medium
+    ) %>%
+  summarise(
+    count = n(),
+    fraction_with_ph = sum(!is.na(ph))/n(),
+    fraction_with_water_content = sum(!is.na(water_content))/n(),
+    fraction_with_collection_date = sum(!is.na(collection_date))/n(),
+    ) %>%
+  arrange(desc(count))
+df_sum
+```
 
 ## Plot locations of geo_loc scaled by number of samples with ph
 Get median lat long for each geo_loc and count of samples with pH
@@ -88,7 +123,8 @@ Get median lat long for each geo_loc and count of samples with pH
 loc_sum_df <- df %>%
   filter(!(is.na(ph))) %>%
   group_by(
-    geo_loc
+    geo_loc,
+    env_medium
     ) %>%
   mutate(
     count_with_ph = n(),
@@ -97,6 +133,7 @@ loc_sum_df <- df %>%
     ) %>%
   select(
     geo_loc, 
+    env_medium,
     lat_med,
     long_med,
     count_with_ph
@@ -125,7 +162,6 @@ g2
 ```
 
 ## Plot full time series of pH at the six sites with the most biosamples
-
 ```{r, warning=FALSE}
 # Prep dataframe with new column of factored sites
 df2 <- df %>%
@@ -146,3 +182,18 @@ g <- ggplot(data = df2) +
                labeller = label_wrap_gen(width=30)) 
 g
 ```
+
+
+## Plot full time series of water content at the six sites with the most biosamples
+```{r, warning=FALSE}
+# Plot data
+g <- ggplot(data = df2) +
+    geom_point(aes(x=collection_date, y = water_content)) +
+    my_theme +
+    scale_x_date()+
+    labs(x = "Collection Date", y = "Water Content in g of water/g of dry soil")+
+    facet_wrap(facets = vars(geo_loc_grouped),
+               labeller = label_wrap_gen(width=30)) 
+g
+```
+

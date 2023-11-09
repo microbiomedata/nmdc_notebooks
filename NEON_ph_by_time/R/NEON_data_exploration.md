@@ -1,4 +1,4 @@
-NEON pH data exploration
+NEON metadata exploration
 ================
 2023-10-11
 
@@ -19,40 +19,50 @@ print(study_ids)
 
 Note that we are pulling 100 records at a time until we have retrieved
 all biosamples for the three study ids above, place the data retrieved
-for each bio sample into a tibble
+for each bio sample into a tibble.
+
+According to the [data portal](https://data.microbiomedata.org/), the
+first study listed (sty-11-34xj1150) has associated biosamples, so we
+will pull out the biosamples associated with that study.
 
 ``` r
-per_page = 100
+study_id = study_ids[1]
+
+# Prepare a tibble to hold results
 dat_all = tibble()
-for (i in 1:length(study_ids)){
-    study_id = study_ids[i]
-    filt = paste0("part_of:", study_id)
-    get_more = TRUE
-    tot = 0
-    page = 1
-    while (get_more){
-        url = paste0(
-            base_url, 
-            "/biosamples?filter=", 
-            filt,
-            "&per_page=",
-            per_page,
-            "&page=",
-            page)
-        data = fromJSON(url)
-        data_results = data[['results']] %>% as.data.frame()
-        dat_all = bind_rows(dat_all, data_results)
-        if (nrow(dat_all) < data[['meta']]['count']){
-            page = page +1
-        } else { get_more = FALSE}
-    }
+
+# Set up query
+per_page = 100  # number of records to retrieve per page
+filt = paste0("part_of:", study_id) # filter to only get biosamples from the study of interest
+get_more = TRUE # flag to indicate whether we need to get more records
+page = 1 # page number to retrieve
+while (get_more){
+    # construct the url for the query
+    url = paste0(
+        base_url, 
+        "/biosamples?filter=", 
+        filt,
+        "&per_page=",
+        per_page,
+        "&page=",
+        page)
+    # get the data
+    data = fromJSON(url)
+    data_results = data[['results']] %>% as.data.frame() 
+    # add the data to the tibble
+    dat_all = bind_rows(dat_all, data_results)
+    # check if we need to get more records
+    if (nrow(dat_all) < data[['meta']]['count']){
+        page = page +1
+    } else { get_more = FALSE}
 }
+
 
 glimpse(dat_all)
 ```
 
-    ## Rows: 5,003
-    ## Columns: 34
+    ## Rows: 4,443
+    ## Columns: 33
     ## $ analysis_type              <list> "metagenomics", "metagenomics", "metagenom…
     ## $ collection_date            <df[,1]> <data.frame[26 x 1]>
     ## $ depth                      <df[,3]> <data.frame[26 x 3]>
@@ -86,37 +96,75 @@ glimpse(dat_all)
     ## $ img_identifiers            <list> <NULL>, <NULL>, <NULL>, <NULL>, <NULL>, …
     ## $ specific_ecosystem         <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
     ## $ samp_taxon_id              <df[,2]> <data.frame[26 x 2]>
-    ## $ samp_size                  <df[,2]> <data.frame[26 x 2]>
 
 ## Clean up results for more usability
 
-Pull out collection date, ph, geo_loc_name, lat_lon; unnest as needed;
-and convert collection_date into date object
+Pull out collection date, environmental media, ph, geo_loc_name,
+lat_lon; unnest as needed; and convert collection_date into date object
 
 ``` r
 df <- dat_all %>%
     select(
-      collection_date, ph, geo_loc_name, lat_lon
+      collection_date, water_content, ph, geo_loc_name, lat_lon, env_medium
       ) %>%
+    mutate(water_content = as.character(water_content)) %>%
+    separate(water_content, sep = " ", into = c("water_content", "water_content_units"), extra = "merge") %>%
+    mutate(water_content = as.numeric(water_content)) %>%
     unnest(
       cols = c(
+          env_medium,
         collection_date, 
         geo_loc_name,
         lat_lon
         ), names_sep = "_") %>%
+    unnest(
+        cols = c(env_medium_term
+        ), names_sep = "_") %>%
     rename(collection_date = collection_date_has_raw_value ,
+           env_medium = env_medium_term_name,
            geo_loc = geo_loc_name_has_raw_value) %>%
-    mutate(collection_date = as.Date(collection_date))
+    mutate(collection_date = as.Date(collection_date)) %>%
+    suppressWarnings()
 glimpse(df)
 ```
 
-    ## Rows: 5,003
-    ## Columns: 5
-    ## $ collection_date   <date> 2017-06-05, 2017-06-05, 2017-06-05, 2017-06-05, 201…
-    ## $ ph                <dbl> 5.51, 5.58, 5.53, 5.59, 4.70, 4.74, 4.95, 4.28, 5.15…
-    ## $ geo_loc           <chr> "USA: Washington, Abby Road", "USA: Washington, Abby…
-    ## $ lat_lon_latitude  <dbl> 45.76858, 45.76858, 45.76858, 45.75405, 45.75405, 45…
-    ## $ lat_lon_longitude <dbl> -122.2987, -122.2987, -122.2987, -122.2985, -122.298…
+    ## Rows: 4,443
+    ## Columns: 9
+    ## $ collection_date     <date> 2017-06-05, 2017-06-05, 2017-06-05, 2017-06-05, 2…
+    ## $ water_content       <dbl> 0.465, 0.346, 0.392, 0.461, 2.630, 2.876, 2.106, 1…
+    ## $ water_content_units <chr> "g of water/g of dry soil", "g of water/g of dry s…
+    ## $ ph                  <dbl> 5.51, 5.58, 5.53, 5.59, 4.70, 4.74, 4.95, 4.28, 5.…
+    ## $ geo_loc             <chr> "USA: Washington, Abby Road", "USA: Washington, Ab…
+    ## $ lat_lon_latitude    <dbl> 45.76858, 45.76858, 45.76858, 45.75405, 45.75405, …
+    ## $ lat_lon_longitude   <dbl> -122.2987, -122.2987, -122.2987, -122.2985, -122.2…
+    ## $ env_medium_term_id  <chr> "ENVO:00001998", "ENVO:00001998", "ENVO:00001998",…
+    ## $ env_medium          <chr> "soil", "soil", "soil", "soil", "soil", "soil", "s…
+
+## Summarize metadata by environmental medium
+
+This shows us that all biosamples are soil samples and most have pH and
+water content measurements
+
+``` r
+df_sum <- df %>%
+  group_by(
+    env_medium
+    ) %>%
+  summarise(
+    count = n(),
+    fraction_with_ph = sum(!is.na(ph))/n(),
+    fraction_with_water_content = sum(!is.na(water_content))/n(),
+    fraction_with_collection_date = sum(!is.na(collection_date))/n(),
+    ) %>%
+  arrange(desc(count))
+df_sum
+```
+
+    ## # A tibble: 1 × 5
+    ##   env_medium count fraction_with_ph fraction_with_water_content
+    ##   <chr>      <int>            <dbl>                       <dbl>
+    ## 1 soil        4443            0.959                       0.943
+    ## # ℹ 1 more variable: fraction_with_collection_date <dbl>
 
 ## Plot locations of geo_loc scaled by number of samples with ph
 
@@ -127,7 +175,8 @@ Get median lat long for each geo_loc and count of samples with pH
 loc_sum_df <- df %>%
   filter(!(is.na(ph))) %>%
   group_by(
-    geo_loc
+    geo_loc,
+    env_medium
     ) %>%
   mutate(
     count_with_ph = n(),
@@ -136,6 +185,7 @@ loc_sum_df <- df %>%
     ) %>%
   select(
     geo_loc, 
+    env_medium,
     lat_med,
     long_med,
     count_with_ph
@@ -162,7 +212,7 @@ g2 <- ggplot() +
 g2
 ```
 
-![](NEON_data_exploration_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](NEON_data_exploration_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ## Plot full time series of pH at the six sites with the most biosamples
 
@@ -187,4 +237,20 @@ g <- ggplot(data = df2) +
 g
 ```
 
-![](NEON_data_exploration_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](NEON_data_exploration_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+## Plot full time series of water content at the six sites with the most biosamples
+
+``` r
+# Plot data
+g <- ggplot(data = df2) +
+    geom_point(aes(x=collection_date, y = water_content)) +
+    my_theme +
+    scale_x_date()+
+    labs(x = "Collection Date", y = "Water Content in g of water/g of dry soil")+
+    facet_wrap(facets = vars(geo_loc_grouped),
+               labeller = label_wrap_gen(width=30)) 
+g
+```
+
+![](NEON_data_exploration_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
