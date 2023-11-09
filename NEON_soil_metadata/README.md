@@ -1,6 +1,6 @@
-# Exploring NEON sites of pH vs. time
+# Exploring the NEON metadata or soil metagenomes (DP1.10107.001)
 
-This folder includes two notebooks, in R and Python, that how soil pH changes over time for the various NEON sites.
+This folder includes two notebooks, in R and Python, that explore various ways of analyzing and visualizing the metadata the NEON soil metagenomes study using the [NMDC-runtime API](https://api.microbiomedata.org/docs#/metadata/list_from_collection_nmdcschema__collection_name__get).
  
 ## R
 - [Static rendered R markdown notebook](https://github.com/microbiomedata/notebook_hackathons/blob/main/NEON_ph_by_time/R/NEON_data_exploration.md). _Viewing only, not editable_
