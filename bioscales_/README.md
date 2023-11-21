@@ -4,8 +4,8 @@ This folder includes two notebooks, in R and Python, that explore the chemical m
  
 ## R
 - [Static rendered R markdown notebook](link_TBD). _Viewing only, not editable_
-- [![Open In Colab](link_TBD). This is the recommended way to interact with the notebook.  _You need a google account to use this option_
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](link_TBD). This is the recommended way to interact with the notebook.  _You need a google account to use this option_
 
 ## Python
 - [Static rendered Jupyter notebook](link_TBD). _Viewing only, not editable_
-- [![Open In Colab](link_TBD).This is the recommended way to interact with the notebook. _You need a google account to use this option_
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](link_TBD).This is the recommended way to interact with the notebook. _You need a google account to use this option_
