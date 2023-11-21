@@ -63,8 +63,4 @@ This project uses pip paired with venv to manage dependencies. Note that require
 4. Push changes to github
 
 
-### RStudio (for R)
-[Binder](http://mybinder.org/badge.svg)](http://mybinder.org/v2/gh/microbiomedata/notebook_hackathons/rmd_dev?urlpath=rstudio)
-
-
 
