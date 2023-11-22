@@ -1,4 +1,4 @@
-# Exploring the NEON metadata or soil metagenomes (DP1.10107.001)
+# Exploring the NEON metadata of soil metagenomes (DP1.10107.001)
 
 This folder includes two notebooks, in R and Python, that explore various ways of analyzing and visualizing the metadata the NEON soil metagenomes study using the [NMDC-runtime API](https://api.microbiomedata.org/docs#/metadata/list_from_collection_nmdcschema__collection_name__get).
  
