@@ -1,5 +1,11 @@
 # NMDC Data and Metadata R and Python Sample Jupyter Notebooks
 
+## Quick Start
+Notebooks that are ready for use and exploration.
+
+- [NEON Soil MetaData](https://github.com/microbiomedata/notebook_hackathons/tree/main/NEON_soil_metadata)
+
+
 ## Overview 
 
 This repository includes jupyter notebooks that explore and analyze microbiome data from the National Microbiome Data Collaborative's (NMDC) data portal. These notebooks aim to:
@@ -61,10 +67,6 @@ This project uses pip paired with venv to manage dependencies. Note that require
 3. Capture the new requirements:
     `pip freeze > requirements_dev.txt`
 4. Push changes to github
-
-
-### RStudio (for R)
-[Binder](http://mybinder.org/badge.svg)](http://mybinder.org/v2/gh/microbiomedata/notebook_hackathons/rmd_dev?urlpath=rstudio)
 
 
 
