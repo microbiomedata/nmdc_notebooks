@@ -1,6 +1,6 @@
 Bio-Scales metadata exploration
 ================
-2023-11-21
+2023-11-29
 
 ## Get study IDs associated with Bio-Scales sites using API
 
@@ -198,7 +198,10 @@ Create paired correlation matrix using GGally package’s [ggpairs
 function](https://ggobi.github.io/ggally/articles/ggpairs.html)
 
 ``` r
-g <- ggpairs(df, 
+# Drop rows with NAs before plotting to avoid NA warning
+df_complete <- na.omit(df)
+
+g <- ggpairs(df_complete, 
         columns = c(3:7), 
         title = "Correlation Matrix of Chemicals in Bio-Scales Data",
         lower = list(continuous = wrap("points", alpha = 0.5, size = 0.7)),
