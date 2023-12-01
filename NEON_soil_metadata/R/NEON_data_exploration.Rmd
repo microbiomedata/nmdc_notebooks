@@ -158,7 +158,8 @@ g2 <- ggplot() +
     labs(size = "# of biosamples with \n pH measurements")+
     coord_cartesian(xlim = c(-165, -65), ylim = c(15, 72), expand = FALSE)
 g2
-
+library(plotly)
+ggplotly()
 ```
 
 ## Plot full time series of pH at the six sites with the most biosamples
