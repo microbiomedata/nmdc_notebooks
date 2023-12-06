@@ -5,3 +5,4 @@
 .Rprofile
 .ipynb_checkpoints
 venv/
+.virtual_documents/
