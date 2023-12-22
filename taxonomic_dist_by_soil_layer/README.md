@@ -4,4 +4,4 @@ This folder includes one notebooks, in Python, that explores how the taxonomic d
 
 ## Python
 - [Static rendered Jupyter notebook](https://nbviewer.org/github/microbiomedata/notebook_hackathons/blob/main/taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb). _Viewing only, not editable_
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/notebook_hackathons/blob/main/taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb).This is the recommended way to interact with the notebook. _You need a google account to use this option_
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/notebook_hackathons/blob/main/taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb).This is the recommended way to interact with the notebook. _You need a google account to use this option_ Rerunning this notebook in the colab interactive environment is not recommended due to large pickle files.
