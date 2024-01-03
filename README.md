@@ -5,6 +5,7 @@ Notebooks that are ready for use and exploration.
 
 - [NEON Soil MetaData](https://github.com/microbiomedata/notebook_hackathons/tree/main/NEON_soil_metadata)
 - [Bio-Scales Biogeochemical MetaData](https://github.com/microbiomedata/notebook_hackathons/tree/main/bioscales_biogeochemical_metadata)
+- [NEON Soil Microbial Community Composition](https://github.com/microbiomedata/notebook_hackathons/tree/main/taxonomic_dist_by_soil_layer)
 
 
 ## Overview 
