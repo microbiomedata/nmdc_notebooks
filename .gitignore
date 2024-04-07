@@ -7,3 +7,5 @@
 venv/
 .virtual_documents/
 taxonomic_dist_by_soil_layer/python/contig_notebook_session.pkl
+
+.idea
