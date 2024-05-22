@@ -1,0 +1,108 @@
+# How does the taxonomic distribution of contigs differ by soil layer (mineral vs organic) in Colorado?
+
+This notebook uses the existing NMDC-runtime API endpoints (as of May 2024) to explore how the taxononomic distribution of contigs differ by the mineral and organic soil layers in Colorado. It involves 9 API requests to reach the scaffold lineage TSV data objects in order to analyze the taxanomic distribution. Iterating through the TSV files includes 350+ API calls to get the necessary taxonomic counts and is time consuming. 
+
+```{r}
+# Load essential libraries
+library(jsonlite, warn.conflicts=FALSE)
+library(dplyr, warn.conflicts=FALSE)
+library(tidyr, warn.conflicts=FALSE)
+library(ggplot2, warn.conflicts=FALSE)
+```
+
+## Define a general API call funtion to nmdc-runtime
+
+This function provides a general-purpose way to make an API request to NMDC's runtime API. Note that this function will only return the first page of results. The function's input includes the name of the collection to access (e.g. biosample_set), the filter to be performed, the maximum page size, and a list of the fields to be retrieved. It returns the metadata as a json object.
+```{r}
+get_first_page_results <- function(collection, filter, max_page_size, fields) {
+  og_url <- paste0(
+      'https://api.microbiomedata.org/nmdcschema/', 
+      collection, '?&filter=', filter, '&max_page_size=', max_page_size, '&projection=', fields
+      )
+  
+  response <- jsonlite::fromJSON(URLencode(og_url, repeated = TRUE))
+  
+  return(response)
+}
+```
+
+#Define an nmdc-runtime API call function to include pagination
+
+The get_next_results function uses the get_first_page_results function, defined above, to retrieve the rest of the results from a call with multiple pages. It takes the same inputs as the get_first_page_results function above: the name of the collection to be retrieved, the filter string, the maximum page size, and a list of the fields to be returned. This function returns the list of the results. It uses the next_page_token key in each page of results to retrieve the following page.
+```{r}
+get_next_results <- function(collection, filter_text, max_page_size, fields) {
+  initial_data <- get_first_page_results(collection, filter_text, max_page_size, fields)
+  results_df <- initial_data$resources
+  
+  if (!is.null(initial_data$next_page_token)) {
+    next_page_token <- initial_data$next_page_token
+    
+    while (TRUE) {
+      url <- paste0('https://api.microbiomedata.org/nmdcschema/', collection, '?&filter=', filter_text, '&max_page_size=', max_page_size, '&page_token=', next_page_token, '&projection=', fields)
+      print(url)
+      response <- jsonlite::fromJSON(URLencode(url, repeated = TRUE))
+
+      results_df <- results_df %>% bind_rows(response$resources)
+      next_page_token <- response$next_page_token
+      
+      if (is.null(next_page_token)) {
+        break
+      }
+    }
+  }
+  
+  return(results_df)
+}
+```
+
+# 1. Get all biosamples where soil_horizon exists and the geo_loc_name has "Colorado" in the name
+
+The first step in answering how the taxonomic distribution of contigs differ by soil layer is to get a list of all the biosamples that have metadata for soil_horizon and a string matching "Colorado, Rocky Mountains" for the geo_loc_name. We use the get_next_results function to do this. We query the biosample_set collection with a mongo-like filter of {"soil_horizon":{"$exists": true}, "geo_loc_name.has_raw_value": {"$regex": "Colorado"}}, a maximum page size of 100, and specifying that we want three fields returned id, soil_horizon, and geo_loc_name. Note that id is returned no matter what. Since we will be joining the results of multiple API requests with a field of id for different collections, we can change the name of the id key to be more explicit - calling it biosample_id instead. Finally, we convert the biosample results to a dataframe called biosample_df. Note that about 517 biosamples are returned.
+
+```{r}
+# Get biosamples using get_next_results function
+biosample_df <- get_next_results(
+    collectio = 'biosample_set', 
+    filter_text = '{"soil_horizon":{"$exists": true}, "geo_loc_name.has_raw_value": {"$regex": "Colorado"}}', 
+    max_page_size = 100, 
+    fields = 'id,soil_horizon,geo_loc_name'
+    )
+
+# Clarify the column names
+biosample_df <- biosample_df %>%
+    unnest(
+        cols = c(
+            geo_loc_name
+        ), names_sep = "_") %>% 
+    rename(biosample_id = id,
+           geo_loc_name = geo_loc_name_has_raw_value)
+head(biosample_df)
+```
+
+# Define function to query a collection by IDs using filters
+
+
+
+```{r}
+# Grab 5 random biosamples to use to get pooling_set data
+set.seed(123)
+random_biosamples <- sample(biosample_df$biosample_id, 50)
+# Cast as a character vector and add double quotes around each ID
+mongo_id_string <- as.character(random_biosamples) %>%
+    paste0('"', ., '"') %>%
+    paste(collapse = ', ')
+mongo_id_string
+
+query_collection = 'pooling_set'
+match_id_field = 'has_input'
+filter = paste0('{"', match_id_field, '": {"$in": [', mongo_id_string, ']}}')
+
+
+data = get_next_results(
+    collection = query_collection,
+    filter = filter,
+    max_page_size = 100,
+    fields = 'id,has_input'
+)
+
+```
