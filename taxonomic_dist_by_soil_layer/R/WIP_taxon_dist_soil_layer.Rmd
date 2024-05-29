@@ -173,7 +173,7 @@ head(process_set1_df)
 ```
 
 
-# Merge the processed sample data with the biosample and pooling data, where the processed sample id is the same as the pooling_has_output
+Merge the processed sample data with the biosample and pooling data, where the processed sample id is the same as the pooling_has_output
 ```{r}
 biosample_df3 <- biosample_df2 %>%
     rename(processed_sample_id = pooling_has_output) %>%
@@ -207,7 +207,7 @@ extraction_df <- extraction_df %>%
 head(extraction_df)
 ```
 
-# Merge the extraction data with the biosample, pooling, and processed sample data
+Merge the extraction data with the biosample, pooling, and processed sample data
 ```{r}
 biosample_df4 <- biosample_df3 %>%
     left_join(extraction_df, by = join_by(processed_sample_id))
@@ -230,7 +230,7 @@ process_set2_df <- process_set2_df %>%
 head(process_set2_df)
 ```
 
-# Merge the processed sample data with the biosample, pooling, processed sample, and extraction data
+Merge the processed sample data with the biosample, pooling, processed sample, and extraction data
 ```{r}
 biosample_df5 <- biosample_df4 %>%
     rename(processed_sample_id2 = extraction_has_output) %>%
@@ -263,7 +263,7 @@ library_prep_df <- library_prep_df %>%
 head(library_prep_df)
 ```
 
-# Merge the library preparation data with the biosample, pooling, processed sample, extraction, and processed sample data
+Merge the library preparation data with the biosample, pooling, processed sample, extraction, and processed sample data
 ```{r}
 biosample_df6 <- biosample_df5 %>%
     left_join(library_prep_df, by = join_by(processed_sample_id2))
@@ -288,7 +288,7 @@ process_set3_df <- process_set3_df %>%
 head(process_set3_df)
 ```
 
-# Merge the processed sample data with the biosample, pooling, processed sample, extraction, processed sample, and library preparation data
+Merge the processed sample data with the biosample, pooling, processed sample, extraction, processed sample, and library preparation data
 ```{r}
 biosample_df7 <- biosample_df6 %>%
     rename(processed_sample_id3 = library_preparation_has_output) %>%
@@ -318,7 +318,7 @@ omics_processing_df <- omics_processing_df %>%
 head(omics_processing_df)
 ```
 
-# Merge the omics processing data with the biosample, pooling, processed sample, extraction, processed sample, library preparation, and processed sample data
+Merge the omics processing data with the biosample, pooling, processed sample, extraction, processed sample, library preparation, and processed sample data
 ```{r}
 biosample_df8 <- biosample_df7 %>%
     left_join(omics_processing_df, by = join_by(processed_sample_id3))
@@ -349,7 +349,7 @@ metagenome_annotation_df <- metagenome_annotation_df %>%
 head(metagenome_annotation_df)
 ```
 
-# Merge the metagenome annotation data with the biosample, pooling, processed sample, extraction, processed sample, library preparation, processed sample, omics processing, and processed sample data
+Merge the metagenome annotation data with the biosample, pooling, processed sample, extraction, processed sample, library preparation, processed sample, omics processing, and processed sample data
 ```{r}
 biosample_df9 <- biosample_df8 %>%
     left_join(metagenome_annotation_df, by = join_by(omics_processing_id))
@@ -376,7 +376,7 @@ data_object_df <- data_object_df %>%
 head(data_object_df)
 ```
 
-# Merge the data object data with the biosample, pooling, processed sample, extraction, processed sample, library preparation, processed sample, omics processing, processed sample, and metagenome annotation data
+Merge the data object data with the biosample, pooling, processed sample, extraction, processed sample, library preparation, processed sample, omics processing, processed sample, and metagenome annotation data
 ```{r}
 biosample_df10 <- biosample_df9 %>%
     rename(data_object_id = matagenome_annotation_has_output) %>%
@@ -490,12 +490,6 @@ biosample_taxa_df <- biosample_taxa_df_wide %>%
     pivot_longer(cols = -c(url, soil_horizon, geo_loc_name), names_to = 'taxa', values_to = 'relative_abundance')
 ```
 
-
-Calculate the average relative abundance for each taxa in each soil horizon
-```{r}
-
-head(horizon_taxa)
-```
 
 ## Plot the taxa abundance of M and O horizon soil samples for each location
 First calculate the average relative abundance for each taxa in each soil horizon.  Next, we'll pull out the top ten taxa and lump all others into an "Other" category for plotting purposes using the `forcats::fct_other` function.  Then we'll calculate the mean relative abundance of each taxa for each soil horizon. Finally, we'll choose an appropriate color palette for the plot, and plot the relative abundance of each taxa for each soil horizon at each location.
