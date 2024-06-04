@@ -13,6 +13,11 @@ to contribute.
     * [Reporting issues](#reporting-issues)
     * [Making pull requests](#pull-requests)
 - [Best practices](#best-practices)
+- [Adding new notebooks](#adding-new-notebooks)
+- [Dependency Management](#dependency-management)
+
+[//]: # (This is a comment, it will not be included)
+[//]: # (in the output markdown file.
 
 <a id="code-of-conduct"></a>
 
@@ -29,7 +34,7 @@ Please carefully read NMDC's [Code of Conduct](https://github.com/microbiomedata
 
 <a id="reporting-issues"></a>
 
-### Reporting issues with the schema
+### Reporting issues with exisiting notebooks
 
 Please use the [Issue Tracker](https://github.com/microbiomedata/nmdc_notebooks/issues/) for reporting problems or suggest enhancements for the notebooks. Issues should be focused and actionable (a PR could close an issue). Complex issues should be broken down into simpler issues where possible.
 
@@ -45,7 +50,9 @@ and make your changes on a [new branch][about-branches].
 
 We recommend also reading [GitHub Pull Requests: 10 Tips to Know](https://blog.mergify.com/github-pull-requests-10-tips-to-know/)
 
-## GitHub Best Practice
+## Best Practices
+
+<a id="best-practices"></a>
 
 - Read ["About Issues"][about-issues] and ["About Pull Requests"][about-pulls]
 - Issues should be focused and actionable
@@ -66,6 +73,8 @@ We recommend also reading [GitHub Pull Requests: 10 Tips to Know](https://blog.m
 
 ## Adding new notebooks
 
+<a id="adding-new-notebooks"></a>
+
 To add a new notebook to this repository:
 
 1.  Create a folder in the base directory 
@@ -77,9 +86,13 @@ To add a new notebook to this repository:
 4. Instantiate a Jupyter Notebook for each folder coded in its corresponding language
 _or_
 4. Create a .Rmd and convert it to a Jupyter Notebook. Several methods for this exist and none are perfect, but [this open source method](https://github.com/mkearney/rmd2jupyter) currently works.
+5. Run the entire notebook to ensure it is working as expected and save the *rendered* notebook in the folder.
+6. Update the `README.md` in the folder to include links to the rendered notebook (using [nbviewer](https://nbviewer.org/) and [google colab](https://colab.research.google.com/)).
 
 
 ## Dependency Management
+
+<a id="dependency-management"></a>
 
 ### R
 
@@ -87,7 +100,7 @@ This project uses `renv` for package management.  After cloning the github repos
 
 ### Python
 
-This project uses pip paired with venv to manage dependencies. Note that requirements_dev.txt should be used for development dependencies, and requirements.txt should be used for production/binder dependencies (added manually and with discretion).
+This project uses pip paired with venv to manage dependencies. Note that requirements_dev.txt should be used and updated for local development dependencies, and requirements.txt should be used for production/binder dependencies (updated manually and with discretion).
 
 #### To install the dependencies:
 
