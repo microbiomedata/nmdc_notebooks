@@ -26,7 +26,7 @@ A challenging aspect that has been highlighted with this process is accessing th
 
 ## Contributing
 
-We welcome contributions to this repository. Please see the [Contributing document](CONTRIBUTING.md) for more information on how to contribute.
+We welcome contributions to this repository. Please see the [Contributing document](.github/CONTRIBUTING.md) for more information on how to contribute.
 
 
 
