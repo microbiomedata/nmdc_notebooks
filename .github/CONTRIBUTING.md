@@ -16,9 +16,6 @@ to contribute.
 - [Adding new notebooks](#adding-new-notebooks)
 - [Dependency Management](#dependency-management)
 
-[//]: # (This is a comment, it will not be included)
-[//]: # (in the output markdown file.
-
 <a id="code-of-conduct"></a>
 
 ## Code of Conduct
