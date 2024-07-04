@@ -1,0 +1,164 @@
+---
+title: "Natural Organic Matter Data Notebook"
+author: "Bea Meluch"
+date: "2024-07-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = FALSE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(jsonlite)
+```
+
+
+## Define a general API call funtion to nmdc-runtime
+
+This function provides a general-purpose way to make an API request to NMDC's runtime API. Note that this function will only return the first page of results. The function's input includes the name of the collection to access (e.g. biosample_set), the filter to be performed, the maximum page size, and a list of the fields to be retrieved. It returns the metadata as a dataframe.
+
+```{r first-page-call}
+get_first_page_results <- function(collection, filter, max_page_size, fields) {
+  og_url <- paste0(
+      'https://api.microbiomedata.org/nmdcschema/', 
+      collection, '?&filter=', filter, '&max_page_size=', max_page_size, '&projection=', fields
+      )
+  
+  response <- jsonlite::fromJSON(URLencode(og_url, repeated = TRUE))
+  
+  return(response)
+}
+```
+
+## Define an nmdc-runtime API call function to include pagination
+
+The get_next_results function uses the get_first_page_results function, defined above, to retrieve the rest of the results from a call with multiple pages. It takes the same inputs as the get_first_page_results function above: the name of the collection to be retrieved, the filter string, the maximum page size, and a list of the fields to be returned. This function returns the results as a single dataframe (can be nested). It uses the next_page_token key in each page of results to retrieve the following page.
+
+```{r}
+get_next_results <- function(collection, filter_text, max_page_size, fields) {
+  initial_data <- get_first_page_results(collection, filter_text, max_page_size, fields)
+  results_df <- initial_data$resources
+  
+  if (!is.null(initial_data$next_page_token)) {
+    next_page_token <- initial_data$next_page_token
+    
+    while (TRUE) {
+      url <- paste0('https://api.microbiomedata.org/nmdcschema/', collection, '?&filter=', filter_text, '&max_page_size=', max_page_size, '&page_token=', next_page_token, '&projection=', fields)
+      response <- jsonlite::fromJSON(URLencode(url, repeated = TRUE))
+
+      results_df <- results_df %>% bind_rows(response$resources)
+      next_page_token <- response$next_page_token
+      
+      if (is.null(next_page_token)) {
+        break
+      }
+    }
+  }
+  
+  return(results_df)
+}
+```
+
+# get all NOM data
+
+```{r}
+# Get data objects using get_next_results function
+nom_dobj_df <- get_next_results(
+    collection = 'data_object_set', 
+    filter_text = '{"data_object_type": {"$regex": "FT ICR-MS Analysis Results"}}', 
+    max_page_size = 100, 
+    fields = 'id,name,url,was_generated_by'
+    )
+```
+
+## Define an API request function that uses a list of ids to filter on
+
+This function constructs a different type of API request that takes a list of ids or similar (e.g. `biosample` ids as retrieved above). The `id_field` input is a string of the name of the id field name (e.g. `id` or `has_output`), the name of the new collection to be queried, the name of the field to match the previous ids on in the new collection, and a list of the fields to be returned.
+
+```{r}
+get_results_by_id <- function(collection, match_id_field, id_list, fields, max_id = 50) {
+    # collection: the name of the collection to query
+    # match_id_field: the field in the new collection to match to the id_list
+    # id_list: a list of ids to filter on
+    # fields: a list of fields to return
+    # max_id: the maximum number of ids to include in a single query
+    
+    # If id_list is longer than max_id, split it into chunks of max_id
+    if (length(id_list) > max_id) {
+        id_list <- split(id_list, ceiling(seq_along(id_list)/max_id))
+    } else {
+        id_list <- list(id_list)
+    }
+    
+    output <- list()
+    for (i in 1:length(id_list)) {
+        # Cast as a character vector and add double quotes around each ID
+        mongo_id_string <- as.character(id_list[[i]]) %>%
+            paste0('"', ., '"') %>%
+            paste(collapse = ', ')
+        
+        # Create the filter string
+        filter = paste0('{"', match_id_field, '": {"$in": [', mongo_id_string, ']}}')
+        
+        # Get the data
+        output[[i]] = get_next_results(
+            collection = collection,
+            filter = filter,
+            max_page_size = max_id*3, #assumes that there are no more than 3 records per query
+            fields = fields
+        )
+    }
+    output_df <- bind_rows(output)
+}
+```
+
+# 2. get all nom analysis results by id 
+
+```{r}
+nom_analysis_df <- get_results_by_id(
+    collection = 'nom_analysis_activity_set',
+    match_id_field = 'id',
+    id_list = nom_dobj_df$was_generated_by,
+    fields = 'id,has_input,has_output',
+    max_id = 20
+)
+
+```
+
+# get all dataobjects of raw NOM data by id
+```{r}
+
+nom_raw_df <- get_results_by_id(
+    collection = 'data_object_set',
+    match_id_field = 'id',
+    id_list = nom_analysis_df$has_input,
+    fields = 'id,was_generated_by',
+    max_id = 20
+)
+
+```
+
+# get all omicsprocessing records by id
+```{r}
+
+nom_omprc_df <- get_results_by_id(
+    collection = 'omics_processing_set',
+    match_id_field = 'id',
+    id_list = nom_raw_df$was_generated_by,
+    fields = 'id,has_input,has_output',
+    max_id = 20
+)
+
+```
+
+# get all biosample records by id
+```{r}
+
+nom_biosample_df <- get_results_by_id(
+    collection = 'biosample_set',
+    match_id_field = 'id',
+    id_list = nom_omprc_df$has_input,
+    fields = 'id,name,part_of,analysis_type,geo_loc_name,env_broad_scale,env_local_scale,env_medium',
+    max_id = 20
+)
+
+```
