@@ -93,13 +93,26 @@ _or_
 
 ### R
 
-This project uses `renv` for package management.  After cloning the github repository, open the R project and run `renv::restore()` to make sure your packages match. To learn more about how renv works, [see this resource](https://rstudio.github.io/renv/articles/renv.html).
+This project uses `renv` for package management. We maintain a libraries.R mini script that calls the necessary packages for the project for local development because renv does not track library calls withing .ipynb files (only.R or .Rmd files). 
+
+#### To install the R dependencies:
+
+1. Clone the github repository
+2. Open the R project
+3. Run `renv::restore()` to make sure your packages match. To learn more about how renv works, [see this resource](https://rstudio.github.io/renv/articles/renv.html).
+
+#### To add new R dependencie:
+
+1. Install the library with `renv::install("package_name")`. 
+2. Add the package to the libraries.R file so that `renv` can track it (e.g. `library("package_name")`.
+3. Run `renv::snapshot()` to update the lockfile.
+4. Commit changes and push to github.
 
 ### Python
 
 This project uses pip paired with venv to manage dependencies. Note that requirements_dev.txt should be used and updated for local development dependencies, and requirements.txt should be used for production/binder dependencies (updated manually and with discretion).
 
-#### To install the dependencies:
+#### To install the python dependencies:
 
 1. Clone the github repository
 2. create a virtual environment:
@@ -111,7 +124,7 @@ This project uses pip paired with venv to manage dependencies. Note that require
     **Note** to update your package installations:
         `pip install -U -r requirements_dev.txt`
 
-#### To add new packages:
+#### To add new python dependencies:
 
 1. Activate the virtual environment:
     `source venv/bin/activate`

@@ -1,0 +1,9 @@
+# This file contains the libraries that are used in the R juptyer notebooks to facilitate reproducibility using the renv package.
+
+library(jsonlite)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(forcats)
+library(lubridate)
+library(GGally)
