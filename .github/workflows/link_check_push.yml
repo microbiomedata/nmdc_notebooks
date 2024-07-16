@@ -1,5 +1,6 @@
-name: Check links
-run-name: ${{ github.actor }} is testing links
+# This workflow will check all the links in the markdown files in the repository whenever a push event occurs.
+
+name: Check links on push
 on: [ push ]
 jobs:
   linkChecker:
