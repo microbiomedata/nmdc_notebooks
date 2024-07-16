@@ -1,0 +1,13 @@
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [ push ]
+jobs:
+  linkChecker:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Link Checker
+          # Reference: https://github.com/lycheeverse/lychee-action
+          id: lychee
+          uses: lycheeverse/lychee-action@v1
