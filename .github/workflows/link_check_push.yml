@@ -12,3 +12,5 @@ jobs:
           # Reference: https://github.com/lycheeverse/lychee-action
           id: lychee
           uses: lycheeverse/lychee-action@v1
+          with:
+            falil: true
