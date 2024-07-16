@@ -23,7 +23,7 @@ to contribute.
 The NMDC team strives to create a
 welcoming environment for editors, users and other contributors.
 
-Please carefully read NMDC's [Code of Conduct](https://github.com/microbiomedata/nmdc-schema/blob/main/CODE_OF_CONDUCT!!.md).
+Please carefully read NMDC's [Code of Conduct](https://github.com/microbiomedata/nmdc-schema/blob/main/CODE_OF_CONDUCT.md).
 
 <a id="contributions"></a>
 
