@@ -13,4 +13,4 @@ jobs:
           id: lychee
           uses: lycheeverse/lychee-action@v1
           with:
-            falil: true
+            fail: true
