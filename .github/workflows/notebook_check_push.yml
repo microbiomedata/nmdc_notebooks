@@ -24,4 +24,5 @@ jobs:
 
     - id: execute-notebook
       name: Execute notebook
-      run: jupyter execute bioscales_biogeochemical_metadata/python/bioscales.ipynb
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace bioscales_biogeochemical_metadata/python/bioscales.ipynb
