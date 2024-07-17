@@ -47,3 +47,13 @@ jobs:
       name: Execute bioscales notebook
       run: |
         jupyter nbconvert --execute --to notebook --inplace bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb
+
+    - id: execute-neon
+      name: Execute NEON metadata notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace NEON_soil_metadata/R/NEON_data_exploration.ipynb
+
+    - id: execute-taxonomic
+      name: Execute taxonomic metadata notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb
