@@ -23,8 +23,18 @@ jobs:
     - id: r-dependencies
       name: Install R dependencies
       uses: r-lib/actions/setup-renv@v2
+
+    - id: python-setup
+      name: Set up Python
+      uses: actions/setup-python@v2
       with:
-        renv-config-path: renv.lock
+        python-version: '3.11'
+
+    - id: install-juptyer
+      name: Install Juptyer
+      run: |
+        python -m pip install --upgrade pip
+        pip install jupyter
 
     - id: execute-bioscales
       name: Execute bioscales notebook
