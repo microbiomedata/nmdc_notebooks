@@ -1,0 +1,40 @@
+name: Execute python notebooks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  # run once a week
+  schedule:
+    - cron: "0 0 * * 0"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - id: checkout
+      uses: actions/checkout@v3
+
+    - id: python-setup
+      name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+
+    - id: python-dependencies
+      name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements_dev.txt
+        pip install jupyter
+
+    - id: execute-bioscales
+      name: Execute bioscales notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace bioscales_biogeochemical_metadata/python/bioscales.ipynb
+
+    - id: execute-neon
+      name: Execute neon notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb
