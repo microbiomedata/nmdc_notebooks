@@ -3,24 +3,25 @@ name: Execute notebook
 on: [push]
 
 jobs:
-  run:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v3
-    - uses: yaananth/run-notebook@v2
-      env:
-        RUNNER: ${{ toJson(runner) }}
-        GITHUB: ${{ toJson(github) }}
+    - id: checkout
+      uses: actions/checkout@v2
+
+    - id: setup-python
+      name: Set up Python
+      uses: actions/setup-python@v2
       with:
-        notebook: "bioscales_biogeochemical_metadata/python/bioscales.ipynb"
-        isReport: False
-        poll: True
-    - uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: output
-        path: ${{ RUNNER.temp }}/nb-runner
-      env:
-        RUNNER: ${{ toJson(runner) }}
+        python-version: '3.8'
+
+    - id: python-deps
+      name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - id: execute-notebook
+      name: Execute notebook
+      run: jupyter execute bioscales_biogeochemical_metadata/python/bioscales.ipynb
