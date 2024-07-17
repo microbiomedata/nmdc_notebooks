@@ -35,7 +35,7 @@ jobs:
     #  name: Install R dependencies
     #  uses: r-lib/actions/setup-renv@v2
 
-    - id: r-setup
+    - id: r-dependencies
       name: Install r dependencies
       run: |
         R -e 'install.packages("renv")'
