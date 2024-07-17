@@ -36,6 +36,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install jupyter
 
+    - id: r-jupyter-kernel
+      name: Install R kernel for Jupyter
+      run: |
+        R -e 'IRkernel::installspec()'
+
     - id: execute-bioscales
       name: Execute bioscales notebook
       run: |
