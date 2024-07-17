@@ -1,7 +1,6 @@
 name: Execute python notebooks
 
 on:
-  push:
   pull_request:
   workflow_dispatch:
   # run once a week
@@ -38,3 +37,8 @@ jobs:
       name: Execute neon notebook
       run: |
         jupyter nbconvert --execute --to notebook --inplace NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb
+
+    - id: execute-taxonomic
+      name: Execute taxonomic notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb
