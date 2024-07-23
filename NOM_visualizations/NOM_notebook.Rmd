@@ -66,7 +66,8 @@ nom_dobj_df <- get_next_results(
     collection = 'data_object_set', 
     filter_text = '{"data_object_type": {"$regex": "FT ICR-MS Analysis Results"}}', 
     max_page_size = 100, 
-    fields = 'id,name,url,was_generated_by'
+    #fields = 'id,name,url,was_generated_by'
+    fields = ""
     )
 ```
 
@@ -157,8 +158,46 @@ nom_biosample_df <- get_results_by_id(
     collection = 'biosample_set',
     match_id_field = 'id',
     id_list = nom_omprc_df$has_input,
-    fields = 'id,name,part_of,analysis_type,geo_loc_name,env_broad_scale,env_local_scale,env_medium',
+    #fields = 'id,name,part_of,analysis_type,geo_loc_name,env_broad_scale,env_local_scale,env_medium',
+    fields = "",
     max_id = 20
 )
 
 ```
+
+
+# Choose biosamples to play with
+```{r sample-types}
+
+biosamples_with_types <- nom_biosample_df %>%
+  unnest(where(is.data.frame), names_sep = ".", keep_empty = TRUE) %>%
+  unnest(where(is.data.frame), names_sep = ".", keep_empty = TRUE) %>%
+  mutate(across(where(is.list), as.character)) %>%
+
+  mutate(sample_type_manual = case_when(
+    env_medium.term.id %in% c("UBERON:0035118", "ENVO:00002003") ~ "host",
+    str_detect(samp_name, "hizosphere") ~ "plant",
+    str_detect(env_medium.term.id, "PO:") ~ "plant",
+    env_medium.term.id %in% c("ENVO:00001998", "ENVO:00005774", "ENVO:00002258", "ENVO:00005778", "ENVO:00005802", 
+                              "ENVO:02000059", "ENVO:00005741", "ENVO:01001841", "ENVO:00003082", "ENVO:00005800", "ENVO:01000018") ~ "soil",
+    env_medium.term.id %in% c("ENVO:00002007", "ENVO:01000017", "ENVO:03605004", "ENVO:03605005") ~ "sediment",
+    env_medium.term.id %in% c("ENVO:00002042", "ENVO:00002011", "ENVO:00002194", "ENVO:01001869", "ENVO:04000007") ~ "water",
+    env_medium.term.id %in% c("ENVO:01000349", "ENVO:01001001", "ENVO:03605005") ~ "plant",
+    str_detect(env_medium.term.name, "soil") ~ "soil",
+    str_detect(env_medium.has_raw_value, "soil") ~ "soil",
+    str_detect(env_medium.term.name, "water") ~ "water",
+    part_of == "nmdc:sty-11-pzmd0x14" ~ "sediment"
+  ))
+
+
+```
+
+```{r}
+
+
+
+
+
+
+```
+
