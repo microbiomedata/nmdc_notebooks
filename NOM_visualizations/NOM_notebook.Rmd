@@ -11,12 +11,13 @@ library(tidyverse)
 library(jsonlite)
 ```
 
+# Define functions to interact with API
 
 ## Define a general API call funtion to nmdc-runtime
 
 This function provides a general-purpose way to make an API request to NMDC's runtime API. Note that this function will only return the first page of results. The function's input includes the name of the collection to access (e.g. biosample_set), the filter to be performed, the maximum page size, and a list of the fields to be retrieved. It returns the metadata as a dataframe.
 
-```{r first-page-call}
+```{r def-results-first}
 get_first_page_results <- function(collection, filter, max_page_size, fields) {
   og_url <- paste0(
       'https://api.microbiomedata.org/nmdcschema/', 
@@ -33,7 +34,7 @@ get_first_page_results <- function(collection, filter, max_page_size, fields) {
 
 The get_next_results function uses the get_first_page_results function, defined above, to retrieve the rest of the results from a call with multiple pages. It takes the same inputs as the get_first_page_results function above: the name of the collection to be retrieved, the filter string, the maximum page size, and a list of the fields to be returned. This function returns the results as a single dataframe (can be nested). It uses the next_page_token key in each page of results to retrieve the following page.
 
-```{r}
+```{r def-results-next}
 get_next_results <- function(collection, filter_text, max_page_size, fields) {
   initial_data <- get_first_page_results(collection, filter_text, max_page_size, fields)
   results_df <- initial_data$resources
@@ -58,24 +59,13 @@ get_next_results <- function(collection, filter_text, max_page_size, fields) {
 }
 ```
 
-# get all NOM data
 
-```{r}
-# Get data objects using get_next_results function
-nom_dobj_df <- get_next_results(
-    collection = 'data_object_set', 
-    filter_text = '{"data_object_type": {"$regex": "FT ICR-MS Analysis Results"}}', 
-    max_page_size = 100, 
-    #fields = 'id,name,url,was_generated_by'
-    fields = ""
-    )
-```
 
 ## Define an API request function that uses a list of ids to filter on
 
 This function constructs a different type of API request that takes a list of ids or similar (e.g. `biosample` ids as retrieved above). The `id_field` input is a string of the name of the id field name (e.g. `id` or `has_output`), the name of the new collection to be queried, the name of the field to match the previous ids on in the new collection, and a list of the fields to be returned.
 
-```{r}
+```{r def-results-id}
 get_results_by_id <- function(collection, match_id_field, id_list, fields, max_id = 50) {
     # collection: the name of the collection to query
     # match_id_field: the field in the new collection to match to the id_list
@@ -112,92 +102,187 @@ get_results_by_id <- function(collection, match_id_field, id_list, fields, max_i
 }
 ```
 
-# 2. get all nom analysis results by id 
+# Query 
+
+## get all NOM data
+
+```{r}
+# Get data objects using get_next_results function
+nom_dobj_df <- get_next_results(
+    collection = "data_object_set", 
+    filter_text = '{"data_object_type": {"$regex": "FT ICR-MS Analysis Results"}}', 
+    max_page_size = 100, 
+    fields = "id,name,url,was_generated_by,md5_checksum"
+    )
+```
+
+
+## get all nom analysis results by id 
 
 ```{r}
 nom_analysis_df <- get_results_by_id(
-    collection = 'nom_analysis_activity_set',
-    match_id_field = 'id',
+    collection = "nom_analysis_activity_set",
+    match_id_field = "id",
     id_list = nom_dobj_df$was_generated_by,
-    fields = 'id,has_input,has_output',
+    fields = "id,has_input,has_output",
     max_id = 20
-)
+) %>%
+  mutate(has_input = unlist(has_input),
+         has_output = unlist(has_output))
 
 ```
 
-# get all dataobjects of raw NOM data by id
+## get all dataobjects of raw NOM data by id
 ```{r}
 
 nom_raw_df <- get_results_by_id(
-    collection = 'data_object_set',
-    match_id_field = 'id',
+    collection = "data_object_set",
+    match_id_field = "id",
     id_list = nom_analysis_df$has_input,
-    fields = 'id,was_generated_by',
+    fields = "id,was_generated_by,name,md5_checksum",
     max_id = 20
 )
 
+# uh oh, there are dobj with no was_generated_by, summarize
+# nom_raw_df %>%
+#   filter(is.na(was_generated_by)) %>%
+#   mutate(name_prefix = str_match(name, "^(output: [A-Za-z]+)_")[,2]) %>%
+#   count(name_prefix)
+
 ```
 
-# get all omicsprocessing records by id
+## get all omicsprocessing records by id
 ```{r}
 
 nom_omprc_df <- get_results_by_id(
-    collection = 'omics_processing_set',
-    match_id_field = 'id',
+    collection = "omics_processing_set",
+    match_id_field = "id",
     id_list = nom_raw_df$was_generated_by,
-    fields = 'id,has_input,has_output',
+    fields = "id,has_input,has_output",
     max_id = 20
-)
+) %>%
+  mutate(has_input = unlist(has_input),
+         has_output = unlist(has_output))
 
 ```
 
-# get all biosample records by id
+## get all biosample records by id
 ```{r}
 
 nom_biosample_df <- get_results_by_id(
-    collection = 'biosample_set',
-    match_id_field = 'id',
+    collection = "biosample_set",
+    match_id_field = "id",
     id_list = nom_omprc_df$has_input,
-    #fields = 'id,name,part_of,analysis_type,geo_loc_name,env_broad_scale,env_local_scale,env_medium',
-    fields = "",
+    fields = "id,name,part_of,analysis_type,geo_loc_name,env_medium",
+    #fields = "",
     max_id = 20
 )
 
 ```
 
+## combine records into one data frame
 
-# Choose biosamples to play with
-```{r sample-types}
+```{r}
 
-biosamples_with_types <- nom_biosample_df %>%
+nom_objects_joined <- nom_biosample_df %>%
+  rename_with(~ paste0("bsm.", .x)) %>%
+  full_join(rename_with(nom_omprc_df, ~ paste0("omprc.", .x)), 
+            by = join_by(bsm.id == omprc.has_input),
+            keep = TRUE) %>%
+  full_join(rename_with(nom_raw_df, ~ paste0("raw.", .x)), 
+            by = join_by(omprc.has_output == raw.was_generated_by),
+            keep = TRUE) %>%
+  full_join(rename_with(nom_analysis_df, ~ paste0("analysis.", .x)), 
+            by = join_by(raw.id == analysis.has_input),
+            keep = TRUE) %>%
+  full_join(rename_with(nom_dobj_df, ~ paste0("dobj.", .x)), 
+            by = join_by(analysis.id == dobj.was_generated_by),
+            keep = TRUE) %>%
+  
+  # clean up: remove duplicate rows from joins
+  distinct() %>%
+  # flatten list-columns
   unnest(where(is.data.frame), names_sep = ".", keep_empty = TRUE) %>%
   unnest(where(is.data.frame), names_sep = ".", keep_empty = TRUE) %>%
-  mutate(across(where(is.list), as.character)) %>%
-
-  mutate(sample_type_manual = case_when(
-    env_medium.term.id %in% c("UBERON:0035118", "ENVO:00002003") ~ "host",
-    str_detect(samp_name, "hizosphere") ~ "plant",
-    str_detect(env_medium.term.id, "PO:") ~ "plant",
-    env_medium.term.id %in% c("ENVO:00001998", "ENVO:00005774", "ENVO:00002258", "ENVO:00005778", "ENVO:00005802", 
-                              "ENVO:02000059", "ENVO:00005741", "ENVO:01001841", "ENVO:00003082", "ENVO:00005800", "ENVO:01000018") ~ "soil",
-    env_medium.term.id %in% c("ENVO:00002007", "ENVO:01000017", "ENVO:03605004", "ENVO:03605005") ~ "sediment",
-    env_medium.term.id %in% c("ENVO:00002042", "ENVO:00002011", "ENVO:00002194", "ENVO:01001869", "ENVO:04000007") ~ "water",
-    env_medium.term.id %in% c("ENVO:01000349", "ENVO:01001001", "ENVO:03605005") ~ "plant",
-    str_detect(env_medium.term.name, "soil") ~ "soil",
-    str_detect(env_medium.has_raw_value, "soil") ~ "soil",
-    str_detect(env_medium.term.name, "water") ~ "water",
-    part_of == "nmdc:sty-11-pzmd0x14" ~ "sediment"
-  ))
-
+  mutate(across(where(is.list), as.character))
 
 ```
 
 ```{r}
 
+# check for duplicates
+nom_objects_joined %>%
+  select(ends_with("id"), dobj.url, dobj.md5_checksum) %>%
+  filter(!is.na(dobj.url)) %>%
+  group_by(dobj.md5_checksum) %>%
+  filter(n() > 1) %>%
+  ungroup()
 
+# at this point I would filter it down to the "real" biosample, but we don't have that becaues was_generated_by isn't populated
 
+# for now, just remove two of em
 
+nom_objects_joined %>%
+  filter(!duplicated(dobj.url)) -> nom_objects_joined
 
 
 ```
 
+
+# Label sample types
+```{r sample-types}
+
+nom_objects_joined_labeled <- nom_objects_joined %>%
+
+
+  mutate(bsm.sample_type_manual = case_when(
+    bsm.env_medium.term.id %in% c("UBERON:0035118", "ENVO:00002003") ~ "host",
+    str_detect(bsm.name, "hizosphere") ~ "plant",
+    str_detect(bsm.env_medium.term.id, "PO:") ~ "plant",
+    bsm.env_medium.term.id %in% c("ENVO:00001998", "ENVO:00005774", "ENVO:00002258", "ENVO:00005778", "ENVO:00005802", 
+                                  "ENVO:02000059", "ENVO:00005741", "ENVO:01001841", "ENVO:00003082", "ENVO:00005800", "ENVO:01000018") ~ "soil",
+    bsm.env_medium.term.id %in% c("ENVO:00002007", "ENVO:01000017", "ENVO:03605004", "ENVO:03605005") ~ "sediment",
+    bsm.env_medium.term.id %in% c("ENVO:00002042", "ENVO:00002011", "ENVO:00002194", "ENVO:01001869", "ENVO:04000007") ~ "water",
+    bsm.env_medium.term.id %in% c("ENVO:01000349", "ENVO:01001001", "ENVO:03605005") ~ "plant",
+    str_detect(bsm.env_medium.term.name, "soil") ~ "soil",
+    str_detect(bsm.env_medium.has_raw_value, "soil") ~ "soil",
+    str_detect(bsm.env_medium.term.name, "water") ~ "water",
+    bsm.part_of == "nmdc:sty-11-pzmd0x14" ~ "sediment"
+  ))
+
+```
+
+# Pull processed data
+
+```{r}
+# Pull processed data files using URLs from processed data dobj
+processed_data_csvs <- data.frame(data_object_url = nom_objects_joined_labeled$dobj.url) %>%
+  filter(!is.na(data_object_url)) %>%
+  mutate(csv_nested = lapply(data_object_url, read.csv))
+```
+
+## Quality metrics for processed data
+```{r qc}
+# Calculate some statistics for the processed data, plot to assess quality
+processed_data_qc <- processed_data_csvs %>%
+  mutate(median_confidence  = vapply(csv_nested, function(x) median(x$Confidence.Score, na.rm = TRUE), 
+                                     FUN.VALUE = 1.0, USE.NAMES = FALSE),
+         
+         unassigned_count   = vapply(csv_nested, function(x) sum(is.null(x$Molecular.Formula)), 
+                                     FUN.VALUE = 1, USE.NAMES = FALSE),
+         
+         assigned_count     = vapply(csv_nested, function(x) sum(!is.null(x$Molecular.Formula)), 
+                                     FUN.VALUE = 1, USE.NAMES = FALSE),
+         
+         assigned_perc      = assigned_count / (unassigned_count + assigned_count),
+         
+         molecular_formulas = lapply(csv_nested, function(x) unique(x$Molecular.Formula))) %>%
+  
+  select(-csv_nested)
+
+```
+
+```{r pairwise-shared-formulae}
+
+
+```
