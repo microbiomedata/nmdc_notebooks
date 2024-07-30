@@ -122,8 +122,8 @@ nom_dobj_df <- get_next_results(
 ```{r}
 nom_analysis_df <- get_results_by_id(
     collection = "nom_analysis_activity_set",
-    match_id_field = "id",
-    id_list = nom_dobj_df$was_generated_by,
+    match_id_field = "has_output",
+    id_list = nom_dobj_df$id,
     fields = "id,has_input,has_output",
     max_id = 20
 ) %>%
@@ -156,8 +156,8 @@ nom_raw_df <- get_results_by_id(
 
 nom_omprc_df <- get_results_by_id(
     collection = "omics_processing_set",
-    match_id_field = "id",
-    id_list = nom_raw_df$was_generated_by,
+    match_id_field = "has_output",
+    id_list = nom_raw_df$id,
     fields = "id,has_input,has_output",
     max_id = 20
 ) %>%
@@ -190,43 +190,29 @@ nom_objects_joined <- nom_biosample_df %>%
             by = join_by(bsm.id == omprc.has_input),
             keep = TRUE) %>%
   full_join(rename_with(nom_raw_df, ~ paste0("raw.", .x)), 
-            by = join_by(omprc.has_output == raw.was_generated_by),
+            by = join_by(omprc.has_output == raw.id),
             keep = TRUE) %>%
   full_join(rename_with(nom_analysis_df, ~ paste0("analysis.", .x)), 
             by = join_by(raw.id == analysis.has_input),
             keep = TRUE) %>%
   full_join(rename_with(nom_dobj_df, ~ paste0("dobj.", .x)), 
-            by = join_by(analysis.id == dobj.was_generated_by),
+            by = join_by(analysis.has_output== dobj.id),
             keep = TRUE) %>%
   
-  # clean up: remove duplicate rows from joins
+  # clean up: remove duplicate rows produced by joins
   distinct() %>%
+  
   # flatten list-columns
   unnest(where(is.data.frame), names_sep = ".", keep_empty = TRUE) %>%
   unnest(where(is.data.frame), names_sep = ".", keep_empty = TRUE) %>%
-  mutate(across(where(is.list), as.character))
-
-```
-
-```{r}
-
-# check for duplicates
-nom_objects_joined %>%
-  select(ends_with("id"), dobj.url, dobj.md5_checksum) %>%
-  filter(!is.na(dobj.url)) %>%
-  group_by(dobj.md5_checksum) %>%
-  filter(n() > 1) %>%
-  ungroup()
-
-# at this point I would filter it down to the "real" biosample, but we don't have that becaues was_generated_by isn't populated
-
-# for now, just remove two of em
-
-nom_objects_joined %>%
-  filter(!duplicated(dobj.url)) -> nom_objects_joined
+  mutate(across(where(is.list), as.character)) %>%
+  
+  # remove duplicate processed data objects
+  filter(!duplicated(dobj.md5_checksum))
 
 
 ```
+
 
 
 # Label sample types
@@ -268,21 +254,71 @@ processed_data_qc <- processed_data_csvs %>%
   mutate(median_confidence  = vapply(csv_nested, function(x) median(x$Confidence.Score, na.rm = TRUE), 
                                      FUN.VALUE = 1.0, USE.NAMES = FALSE),
          
-         unassigned_count   = vapply(csv_nested, function(x) sum(is.null(x$Molecular.Formula)), 
+         unassigned_count   = vapply(csv_nested, function(x) sum((x$Molecular.Formula == "")), 
                                      FUN.VALUE = 1, USE.NAMES = FALSE),
          
-         assigned_count     = vapply(csv_nested, function(x) sum(!is.null(x$Molecular.Formula)), 
+         assigned_count     = vapply(csv_nested, function(x) sum((x$Molecular.Formula != "")), 
                                      FUN.VALUE = 1, USE.NAMES = FALSE),
          
          assigned_perc      = assigned_count / (unassigned_count + assigned_count),
          
-         molecular_formulas = lapply(csv_nested, function(x) unique(x$Molecular.Formula))) %>%
+         molecular_formulae = lapply(csv_nested, function(x) unique(x$Molecular.Formula))) %>%
   
   select(-csv_nested)
+
+
+
+ggplot(processed_data_qc) +
+  geom_histogram(aes(x = median_confidence), bins = 20) +
+  ggtitle("Median Confidence Scores for Processed Data Files")
+
+ggplot(processed_data_qc) +
+  geom_histogram(aes(x = assigned_perc)) +
+  ggtitle("Percent Assigned Peaks for Processed Data Files")
 
 ```
 
 ```{r pairwise-shared-formulae}
+
+
+
+
+
+
+
+```
+
+
+```{r formula-heatmap}
+
+# filter out low quality samples to reduce computational time
+
+processed_data_qc %>%
+  filter(assigned_perc > 0.3) -> quality_samples
+
+all_formulae <- quality_samples$molecular_formulae %>%
+  unlist() %>%
+  unique()
+
+
+# initialize presence absence matrix
+# rows are samples
+# columns are molecular formulae
+holder <- matrix(, nrow = nrow(quality_samples), ncol = length(all_formulae))
+
+for (i in 1:nrow(quality_samples)) {
+  holder[i,] <- ifelse(all_formulae %in% quality_samples$molecular_formulae[[i]], 
+                       1, 0)
+}
+
+quality_samples$data_object_url %>%
+  left_join(select(nom_objects_joined_labeled, dobj.url, bsm.id, bsm.sample_type_manual))
+
+
+# heatmap(holder) there is way too much data for this to work, try something else
+
+
+
 
 
 ```
