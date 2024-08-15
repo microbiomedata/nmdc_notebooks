@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, error = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
 library(jsonlite)
+library(heatmaply)
 ```
 
 # Define functions to interact with API
@@ -242,9 +243,14 @@ nom_objects_joined_labeled <- nom_objects_joined %>%
 
 ```{r}
 # Pull processed data files using URLs from processed data dobj
-processed_data_csvs <- data.frame(data_object_url = nom_objects_joined_labeled$dobj.url) %>%
-  filter(!is.na(data_object_url)) %>%
-  mutate(csv_nested = lapply(data_object_url, read.csv))
+# processed_data_csvs <- data.frame(data_object_url = nom_objects_joined_labeled$dobj.url) %>%
+#   filter(!is.na(data_object_url)) %>%
+#   mutate(csv_nested = lapply(data_object_url, read.csv))
+# 
+# saveRDS(processed_data_csvs, "processed_data_csvs.RDS")
+
+processed_data_csvs <- readRDS("processed_data_csvs.RDS")
+
 ```
 
 ## Quality metrics for processed data
@@ -293,32 +299,94 @@ ggplot(processed_data_qc) +
 
 # filter out low quality samples to reduce computational time
 
-processed_data_qc %>%
-  filter(assigned_perc > 0.3) -> quality_samples
+samples_for_heatmap <- processed_data_qc %>%
+  filter(assigned_perc > 0.3) %>%
+  left_join(select(nom_objects_joined_labeled, dobj.url, bsm.id, bsm.sample_type_manual, bsm.part_of), 
+            by = join_by(data_object_url == dobj.url)) %>%
+  group_by(bsm.sample_type_manual) %>%
+  slice_sample(n = 33)
 
-all_formulae <- quality_samples$molecular_formulae %>%
+
+
+
+
+
+all_formulae <- samples_for_heatmap$molecular_formulae %>%
   unlist() %>%
   unique()
 
+all_formulae_filtered <- samples_for_heatmap$molecular_formulae %>%
+  unlist() %>%
+  table() %>%
+  as.data.frame() %>%
+  setNames(c("Formula", "Freq")) %>%
+  filter(Formula != "") %>%
+  #filter(Freq >= nrow(samples_for_heatmap)/2) %>%
+  filter(Freq > 5) %>%
+  mutate(Formula = as.character(Formula)) %>%
+  pull(Formula)
+  
 
 # initialize presence absence matrix
 # rows are samples
 # columns are molecular formulae
-holder <- matrix(, nrow = nrow(quality_samples), ncol = length(all_formulae))
+holder <- matrix(, nrow = nrow(samples_for_heatmap), ncol = length(all_formulae_filtered))
 
-for (i in 1:nrow(quality_samples)) {
-  holder[i,] <- ifelse(all_formulae %in% quality_samples$molecular_formulae[[i]], 
+for (i in 1:nrow(samples_for_heatmap)) {
+  holder[i,] <- ifelse(all_formulae_filtered %in% samples_for_heatmap$molecular_formulae[[i]], 
                        1, 0)
 }
 
-quality_samples$data_object_url %>%
-  left_join(select(nom_objects_joined_labeled, dobj.url, bsm.id, bsm.sample_type_manual))
+rownames(holder) <- samples_for_heatmap$bsm.id
+colnames(holder) <- all_formulae_filtered
 
+
+sample_type_color_vec <- case_when(
+  samples_for_heatmap$bsm.sample_type_manual == "soil" ~ "saddlebrown",
+  samples_for_heatmap$bsm.sample_type_manual == "sediment" ~ "slategray",
+  samples_for_heatmap$bsm.sample_type_manual == "water" ~ "blue")
+
+study_color_vec <- case_when(
+  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-aygzgv51" ~ "red",
+  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-5tgfr349" ~ "orange",
+  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-28tm5d36" ~ "yellow",
+  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-db67n062" ~ "green",
+  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-dcqce727" ~ "blue",
+  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-8xdqsn54" ~ "purple",
+  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-33fbta56" ~ "pink"
+  )
+
+
+heatmap(holder, Colv = NA, RowSideColors = sample_type_color_vec, labRow = FALSE, labCol = FALSE, scale = "none")
 
 # heatmap(holder) there is way too much data for this to work, try something else
 
 
+heatmaply(holder, Colv = NA, RowSideColors = cbind(study_color_vec, sample_type_color_vec), showticklabels = FALSE, hide_colorbar = TRUE)
 
+
+
+
+```
+
+
+```{r van-krevelen}
+
+# extract oc and hc ratios for the same samples as used in the heatmap
+
+samples_for_heatmap %>%
+  select(data_object_url, bsm.id, bsm.sample_type_manual, bsm.part_of) %>%
+  left_join(processed_data_csvs) %>%
+  mutate(HC = lapply(csv_nested, function(x) x$H.C),
+         OC = lapply(csv_nested, function(x) x$O.C)) %>%
+  select(-csv_nested) %>%
+  unnest() %>%
+
+  ggplot(aes(x = OC, y = HC, color = bsm.sample_type_manual)) +
+    geom_point(alpha = 0.1, size = 0.5) +
+    facet_wrap(~bsm.sample_type_manual) +
+    theme(legend.position = "none") +
+    coord_fixed()
 
 
 ```
