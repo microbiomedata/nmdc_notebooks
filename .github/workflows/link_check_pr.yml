@@ -1,0 +1,18 @@
+# This workflow will check all the links in the markdown files in the repository on each PR or by manual trigger.
+
+name: Check links on pull request
+on:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  linkChecker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Link Checker
+        # Reference: https://github.com/lycheeverse/lychee-action
+        id: lychee
+        uses: lycheeverse/lychee-action@v1
+        with:
+          fail: true
