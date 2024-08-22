@@ -12,6 +12,12 @@ library(jsonlite)
 library(heatmaply)
 ```
 
+
+How does the natural organic matter data in the NMDC database compare across sample types?
+
+This notebook demonstrates how to use the existing NMDC-runtime API endpoints (as of August 2024) to explore the natural organic matter data present in the NMDC database. It traverses the database schema backwards, first pulling all available natural organic matter results, and then identifying the corresponding source samples. The processed data is then evaluated for quality and compared by sample type. Retrieving the CSV results files can be time consuming.
+
+
 # Define functions to interact with API
 
 ## Define a general API call funtion to nmdc-runtime
@@ -174,7 +180,7 @@ nom_biosample_df <- get_results_by_id(
     collection = "biosample_set",
     match_id_field = "id",
     id_list = nom_omprc_df$has_input,
-    fields = "id,name,part_of,analysis_type,geo_loc_name,env_medium",
+    fields = "id,name,part_of,analysis_type,geo_loc_name,env_medium,lat_lon",
     #fields = "",
     max_id = 20
 )
@@ -284,15 +290,6 @@ ggplot(processed_data_qc) +
 
 ```
 
-```{r pairwise-shared-formulae}
-
-
-
-
-
-
-
-```
 
 
 ```{r formula-heatmap}
@@ -301,7 +298,7 @@ ggplot(processed_data_qc) +
 
 samples_for_heatmap <- processed_data_qc %>%
   filter(assigned_perc > 0.3) %>%
-  left_join(select(nom_objects_joined_labeled, dobj.url, bsm.id, bsm.sample_type_manual, bsm.part_of), 
+  left_join(select(nom_objects_joined_labeled, dobj.url, bsm.id, bsm.sample_type_manual, bsm.part_of, bsm.lat_lon.latitude, bsm.lat_lon.longitude), 
             by = join_by(data_object_url == dobj.url)) %>%
   group_by(bsm.sample_type_manual) %>%
   slice_sample(n = 33)
@@ -357,12 +354,21 @@ study_color_vec <- case_when(
   )
 
 
-heatmap(holder, Colv = NA, RowSideColors = sample_type_color_vec, labRow = FALSE, labCol = FALSE, scale = "none")
+create_colors_from_numeric <- function(num_vec, pal) {
+  # pal = grDevices Palette (others may work idk)
+  pal[findInterval(num_vec, seq(min(num_vec), max(num_vec), length.out = length(pal) + 1), all.inside=TRUE)]
+}
 
-# heatmap(holder) there is way too much data for this to work, try something else
+latitude_color_vec <- map2color(samples_for_heatmap$bsm.lat_lon.latitude, hcl.colors(200, palette = "Oranges"))
 
 
-heatmaply(holder, Colv = NA, RowSideColors = cbind(study_color_vec, sample_type_color_vec), showticklabels = FALSE, hide_colorbar = TRUE)
+heatmap(holder, Colv = NA, RowSideColors = latitude_color_vec, labRow = FALSE, labCol = FALSE, scale = "none")
+
+heatmaply(holder, Colv = NA, RowSideColors = cbind(study_color_vec, sample_type_color_vec, latitude_color_vec), showticklabels = FALSE, hide_colorbar = TRUE)
+
+
+  
+  
 
 
 
