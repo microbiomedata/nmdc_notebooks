@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE, error = FALSE, warning = FALSE, message = FAL
 library(tidyverse)
 library(jsonlite)
 library(heatmaply)
+library(ggExtra)
 ```
 
 
@@ -261,8 +262,10 @@ processed_data_csvs <- readRDS("processed_data_csvs.RDS")
 
 ## Quality metrics for processed data
 ```{r qc}
-# Calculate some statistics for the processed data, plot to assess quality
+
+# Extract and calculate some statistics for the processed data
 processed_data_qc <- processed_data_csvs %>%
+  
   mutate(median_confidence  = vapply(csv_nested, function(x) median(x$Confidence.Score, na.rm = TRUE), 
                                      FUN.VALUE = 1.0, USE.NAMES = FALSE),
          
@@ -274,12 +277,11 @@ processed_data_qc <- processed_data_csvs %>%
          
          assigned_perc      = assigned_count / (unassigned_count + assigned_count),
          
-         molecular_formulae = lapply(csv_nested, function(x) unique(x$Molecular.Formula))) %>%
-  
-  select(-csv_nested)
+         #molecular_formulae = lapply(csv_nested, function(x) unique(x$Molecular.Formula)),
+         
+         confidence_scores  = lapply(csv_nested, function(x) x$Confidence.Score)) 
 
-
-
+# Plots to visually assess quality cutoffs
 ggplot(processed_data_qc) +
   geom_histogram(aes(x = median_confidence), bins = 20) +
   ggtitle("Median Confidence Scores for Processed Data Files")
@@ -288,37 +290,56 @@ ggplot(processed_data_qc) +
   geom_histogram(aes(x = assigned_perc)) +
   ggtitle("Percent Assigned Peaks for Processed Data Files")
 
+data.frame(All_Confidence_Scores = unlist(processed_data_qc$confidence_scores)) %>%
+  ggplot() +
+    geom_histogram(aes(x = All_Confidence_Scores), bins = 30) +
+    ggtitle("Confidence Scores for All Peak/Formula Assignments")
+
+```
+
+```{r quality-filtering}
+
+# filter out samples with low percent assigned
+processed_data_qc <- processed_data_qc %>%
+  filter(assigned_perc > 0.3) %>%
+  
+  # within data, filter out rows with low confidence score
+  mutate(csv_nested = lapply(csv_nested, function(x) filter(x, Confidence.Score > 0.6)))
+
 ```
 
 
 
 ```{r formula-heatmap}
 
-# filter out low quality samples to reduce computational time
 
 samples_for_heatmap <- processed_data_qc %>%
-  filter(assigned_perc > 0.3) %>%
-  left_join(select(nom_objects_joined_labeled, dobj.url, bsm.id, bsm.sample_type_manual, bsm.part_of, bsm.lat_lon.latitude, bsm.lat_lon.longitude), 
+  
+  # extract molecular formulae
+  mutate(molecular_formulae = lapply(csv_nested, function(x) unique(x$Molecular.Formula))) %>%
+  
+  # remove nested csv column because it's so slow
+  select(-csv_nested) %>%
+  
+  # add biosample info
+  left_join(select(nom_objects_joined_labeled, dobj.url, 
+                   bsm.id, bsm.sample_type_manual, bsm.part_of, 
+                   bsm.lat_lon.latitude, bsm.lat_lon.longitude), 
             by = join_by(data_object_url == dobj.url)) %>%
+  
+  # sample 33 of each sample type
   group_by(bsm.sample_type_manual) %>%
-  slice_sample(n = 33)
+  slice_sample(n = 33) %>%
+  ungroup()
 
-
-
-
-
-
-all_formulae <- samples_for_heatmap$molecular_formulae %>%
-  unlist() %>%
-  unique()
-
-all_formulae_filtered <- samples_for_heatmap$molecular_formulae %>%
+# Filter out molecular formulae that appear in less than 5 samples
+# so the heatmap isn't impossible
+filtered_formulae <- samples_for_heatmap$molecular_formulae %>%
   unlist() %>%
   table() %>%
   as.data.frame() %>%
   setNames(c("Formula", "Freq")) %>%
   filter(Formula != "") %>%
-  #filter(Freq >= nrow(samples_for_heatmap)/2) %>%
   filter(Freq > 5) %>%
   mutate(Formula = as.character(Formula)) %>%
   pull(Formula)
@@ -327,16 +348,17 @@ all_formulae_filtered <- samples_for_heatmap$molecular_formulae %>%
 # initialize presence absence matrix
 # rows are samples
 # columns are molecular formulae
-holder <- matrix(, nrow = nrow(samples_for_heatmap), ncol = length(all_formulae_filtered))
+holder <- matrix(, nrow = nrow(samples_for_heatmap), ncol = length(filtered_formulae))
 
 for (i in 1:nrow(samples_for_heatmap)) {
-  holder[i,] <- ifelse(all_formulae_filtered %in% samples_for_heatmap$molecular_formulae[[i]], 
+  holder[i,] <- ifelse(filtered_formulae %in% samples_for_heatmap$molecular_formulae[[i]], 
                        1, 0)
 }
 
 rownames(holder) <- samples_for_heatmap$bsm.id
-colnames(holder) <- all_formulae_filtered
+colnames(holder) <- filtered_formulae
 
+# set up color vectors for side grouping columns
 
 sample_type_color_vec <- case_when(
   samples_for_heatmap$bsm.sample_type_manual == "soil" ~ "saddlebrown",
@@ -364,7 +386,7 @@ latitude_color_vec <- map2color(samples_for_heatmap$bsm.lat_lon.latitude, hcl.co
 
 heatmap(holder, Colv = NA, RowSideColors = latitude_color_vec, labRow = FALSE, labCol = FALSE, scale = "none")
 
-heatmaply(holder, Colv = NA, RowSideColors = cbind(study_color_vec, sample_type_color_vec, latitude_color_vec), showticklabels = FALSE, hide_colorbar = TRUE)
+heatmaply(holder, Colv = NA, RowSideColors = cbind(sample_type_color_vec, study_color_vec, latitude_color_vec), showticklabels = FALSE, hide_colorbar = TRUE)
 
 
   
@@ -392,7 +414,68 @@ samples_for_heatmap %>%
     geom_point(alpha = 0.1, size = 0.5) +
     facet_wrap(~bsm.sample_type_manual) +
     theme(legend.position = "none") +
-    coord_fixed()
+    coord_fixed() +
+    scale_color_manual("legend", values = c("soil" = "saddlebrown",
+                                            "sediment" = "slategray",
+                                            "water" = "blue"))
 
+
+```
+
+
+```{r van-krevelen-common-formulae}
+
+samples_for_heatmap %>%
+  select(data_object_url, bsm.sample_type_manual) %>%
+  left_join(processed_data_csvs) %>%
+  mutate(csv_nested = lapply(csv_nested, select, Molecular.Formula, H.C, O.C)) %>%
+  unnest(csv_nested) %>%
+  # remove blank rows left over from csv (unassigned rows)
+  filter(!is.na(H.C)) %>%
+  # remove biosample and data object info - we just want formulae and sample types really
+  select(-data_object_url) %>%
+  mutate(exists = TRUE) %>%
+  filter(!duplicated(.)) %>%
+  pivot_wider(names_from = bsm.sample_type_manual, values_from = exists) %>%
+  mutate(across(where(is.logical), ~ !is.na(.x))) %>%
+  # label all shared formulae
+  mutate(in_soil_only = soil & !sediment & !water,
+         in_water_only = !soil & !sediment & water,
+         in_sediment_only = !soil & sediment & !water,
+         # in_soil_and_sediment = soil & sediment & !water,
+         # in_soil_and_water = soil & water & !sediment,
+         # in_water_and_sediment = water & sediment & !soil,
+         in_all_sample_types = sediment & soil & water) %>%
+  select(-soil, sediment, water) %>%
+  pivot_longer(cols = starts_with("in_"), 
+               names_to = "sample_type", values_to  = "presence") %>%
+  filter(presence) %>%
+  
+  # prettier labels
+  mutate(sample_type = case_when(
+    sample_type == "in_soil_only" ~ "Unique to soil samples",
+    sample_type == "in_water_only" ~ "Unique to water samples",
+    sample_type == "in_sediment_only" ~ "Unique to sediment samples",
+    sample_type == "in_all_sample_types" ~ "Present in all sample types"
+  )) %>%
+  
+  ggplot(aes(x = O.C, y = H.C, color = sample_type)) +
+    geom_point(alpha = 0.5, size = 1, shape = 1) +
+    theme(legend.position = "bottom",
+          plot.title = element_text(margin = margin(t = 1, unit = "cm"), size = 12)) +
+    labs(title = "Van Krevelen: unique and shared molecular formulae by sample type",
+         x = "O/C Ratio", y = "H/C Ratio", color = "Sample Type") +
+    #coord_fixed() +
+    guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
+    scale_color_manual("legend", 
+                       values = c("Unique to soil samples" = "saddlebrown", 
+                                 "Unique to water samples" = "blue", 
+                                 "Unique to sediment samples" = "red", 
+                                 # "in_soil_and_sediment" = "sienna", 
+                                 # "in_soil_and_water" = "purple", 
+                                 # "in_water_and_sediment" = "green", 
+                                 "Present in all sample types" = "black")) -> shared_van_krevelen
+  
+  ggMarginal(shared_van_krevelen, groupColor = TRUE, groupFill = TRUE) -> shared_van_krevelen
 
 ```
