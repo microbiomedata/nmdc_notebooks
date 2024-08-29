@@ -4,7 +4,7 @@
 import requests
 import pandas as pd
 
-## Define a general API call funtion to nmdc-runtime
+## Define a general API call function to nmdc-runtime
     # This function provides a general-purpose way to make an API request to NMDC's runtime API. Note that this 
     # function will only return the first page of results. The function's input includes the name of the collection to access (e.g. `biosample_set`), 
     # the filter to be performed, the maximum page size, and a list of the fields to be retrieved. It returns the metadata as a json object.
@@ -54,8 +54,7 @@ def get_next_results(collection: str, filter: str, max_page_size: int, fields: s
     return result_list
 
 # Define a data frame convert function
-    # This function converts a list (for example, the output of the 
-    # `get_first_page_results` or the `get_next_results` function) into 
+    # This function converts a list (for example, the output of the `get_first_page_results` or the `get_next_results` function) into 
     # a dataframe using Python's Pandas library. It returns a data frame.
 
 def convert_df(results_list: list):
@@ -65,10 +64,8 @@ def convert_df(results_list: list):
     return df
 
 ## Define a function to split a list into chunks 
-    # Since we will need to use a list of ids to query a new collection 
-    # in the API, we need to limit the number of ids we put in a query. 
-    # This function splits a list into chunks of 100. Note that the `chunk_size` 
-    # has a default of 100, but can be adjusted.
+    # Since we will need to use a list of ids to query a new collection in the API, we need to limit the number of ids we put in a query. 
+    # This function splits a list into chunks of 100. Note that the `chunk_size` has a default of 100, but can be adjusted.
 
 def split_list(input_list, chunk_size=100):
     result = []
@@ -80,14 +77,10 @@ def split_list(input_list, chunk_size=100):
 
 
 ## Define a function to use double quotation marks
-    # Since the mongo-like filtering criteria for the API 
-    # requests require double quotation marks (") instead of 
-    # single quotation marks ('), a function is defined to 
-    # replace single quotes with double quotes to properly 
-    # structure a mongo filter paramter. The function takes 
-    # a list (usually of ids) and returns a string with the 
-    # ids listed with double quotation marks. E.g the input 
-    # is `['A','B','C']` and the output would be `'"A","B",C"'`.
+    # Since the mongo-like filtering criteria for the API requests require double quotation marks (") instead of 
+    # single quotation marks ('), a function is defined to replace single quotes with double quotes to properly 
+    # structure a mongo filter paramter. The function takes a list (usually of ids) and returns a string with the 
+    # ids listed with double quotation marks. E.g the input is `['A','B','C']` and the output would be `'"A","B",C"'`.
 
 def string_mongo_list(a_list: list):
     
@@ -97,10 +90,8 @@ def string_mongo_list(a_list: list):
 
 
 ## Define a function to get a list of ids from initial results
-    # In order to use the identifiers retrieved from an initial API 
-    # request in another API request, this function is defined to 
-    # take the initial request results and use the `id_name` key 
-    # from the results to create a list of all the ids. The input 
+    # In order to use the identifiers retrieved from an initial API request in another API request, this function is defined to 
+    # take the initial request results and use the `id_name` key from the results to create a list of all the ids. The input 
     # is the initial result list and the name of the id field.
 
 def get_id_list(result_list: list, id_name: str):
@@ -116,14 +107,10 @@ def get_id_list(result_list: list, id_name: str):
 
 
 ## Define an API request function that uses a list of ids to filter on
-    # This function contstructs a different type of API request that takes 
-    # the `newest_results` (e.g. `biosamples`) and uses the `get_id_results` 
-    # function to construct a list of all the ids from that request. It then 
-    # uses the `split_list` function to chunk the list of ids into sets of 100 
-    # to query the API in chunks of 100. The `id_field` input is a string of 
-    # the name of the `newest_results` id field name (e.g. `biosample_id`), 
-    # the name of the new collection to be queried, the name of the field to 
-    # match the previous ids on in the new collection, and a list of the fields to be returned.
+    # This function contstructs a different type of API request that takes the `newest_results` (e.g. `biosamples`) and uses the `get_id_results` 
+    # function to construct a list of all the ids from that request. It then uses the `split_list` function to chunk the list of ids into sets of 100 
+    # to query the API in chunks of 100. The `id_field` input is a string of the name of the `newest_results` id field name (e.g. `biosample_id`), 
+    # the name of the new collection to be queried, the name of the field to match the previous ids on in the new collection, and a list of the fields to be returned.
 
 def get_id_results(newest_results: list, id_field: str, query_collection: str, match_id_field: str, query_fields: str):
 
@@ -147,16 +134,10 @@ def get_id_results(newest_results: list, id_field: str, query_collection: str, m
 
 
 ## Define a merging function to join results
-    # This function merges new results with the previous 
-    # results that were used for the new API request. It 
-    # uses the two keys from each result to match on. `df1` 
-    # is the data frame whose matching `key1` value is a STRING
-    # `df2` is the other data frame whose 
-    # matching `key2` has either a string OR list as a value. 
-    # df1_explode_list and df2_explode_list are optional lists of 
-    # columns in either dataframe that need to be exploded because they are lists (drop_duplicates cant take list input in any column)
-    # Note that each if statement includes dropping duplicates after merging as 
-    # the dataframes are being exploded which creates many duplicate rows after merging takes place.
+    # This function merges new results with the previous results that were used for the new API request. It uses the two keys from each result to match on. `df1` 
+    # is the data frame whose matching `key1` value is a STRING. `df2` is the other data frame whose matching `key2` has either a string OR list as a value. 
+    # df1_explode_list and df2_explode_list are optional lists of columns in either dataframe that need to be exploded because they are lists (drop_duplicates cant take list input in any column)
+    # Note that each if statement includes dropping duplicates after merging as the dataframes are being exploded which creates many duplicate rows after merging takes place.
 
 def merge_df(df1, df2, key1: str, key2: str,df1_explode_list=None,df2_explode_list=None):
     if df1_explode_list is not None:
@@ -172,3 +153,5 @@ def merge_df(df1, df2, key1: str, key2: str,df1_explode_list=None,df2_explode_li
     # Drop any duplicated rows
     merged_df.drop_duplicates(keep="first", inplace=True)
     return(merged_df)
+
+
