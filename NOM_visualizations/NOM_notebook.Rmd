@@ -16,14 +16,16 @@ library(ggExtra)
 
 How does the natural organic matter data in the NMDC database compare across sample types?
 
-This notebook demonstrates how to use the existing NMDC-runtime API endpoints (as of August 2024) to explore the natural organic matter data present in the NMDC database. It traverses the database schema backwards, first pulling all available natural organic matter results, and then identifying the corresponding source samples. The processed data is then evaluated for quality and compared by sample type. Retrieving the CSV results files can be time consuming.
+This notebook demonstrates how to use the existing NMDC-runtime API endpoints (as of August 2024) to explore the natural organic matter (NOM) data present in the NMDC database. It traverses the database schema backwards, first pulling all available natural organic matter results, and then identifying the corresponding source samples. The processed data is then evaluated for quality and compared by sample type. Note that retrieving the CSV results files can be time consuming.
 
 
 # Define functions to interact with API
 
+First, we will define R functions to interact with some of the available NMDC API endpoints. Further documentation of available API endpoints is available here: https://api.microbiomedata.org/docs#/
+
 ## Define a general API call funtion to nmdc-runtime
 
-This function provides a general-purpose way to make an API request to NMDC's runtime API. Note that this function will only return the first page of results. The function's input includes the name of the collection to access (e.g. biosample_set), the filter to be performed, the maximum page size, and a list of the fields to be retrieved. It returns the metadata as a dataframe.
+This function provides a general-purpose way to make an API request to NMDC's runtime API. Note that this function will only return the first page of results. The function's input includes the name of the collection to access (e.g. `biosample_set`), the filter to be performed, the maximum page size, and a list of the fields to be retrieved. It returns the metadata as a dataframe.
 
 ```{r def-results-first}
 get_first_page_results <- function(collection, filter, max_page_size, fields) {
@@ -68,8 +70,7 @@ get_next_results <- function(collection, filter_text, max_page_size, fields) {
 ```
 
 
-
-## Define an API request function that uses a list of ids to filter on
+## Define an API request function to get object information for a given ID
 
 This function constructs a different type of API request that takes a list of ids or similar (e.g. `biosample` ids as retrieved above). The `id_field` input is a string of the name of the id field name (e.g. `id` or `has_output`), the name of the new collection to be queried, the name of the field to match the previous ids on in the new collection, and a list of the fields to be returned.
 
@@ -110,12 +111,34 @@ get_results_by_id <- function(collection, match_id_field, id_list, fields, max_i
 }
 ```
 
+## Define an API request function to identify the database collection for an ID
+
+The functions above rely on knowing the MongoDB "collection" to search for relevant objects. But what if you don't know what the collection is called? This function can be used to obtain the the names of the collection that an object is part of.
+
+```{r def-database-id}
+get_collection_by_id <- function(id) {
+  
+  # Create API endpoint URL
+  url <- paste0("https://api.microbiomedata.org/nmdcschema/ids/", id, "/collection-name")
+
+  # Retrieve the JSON result from the API endpoint URL
+  response <- jsonlite::fromJSON(URLencode(url, repeated = TRUE))
+  
+  # Extract the collection name from the response
+  return(response$collection_name)
+}
+```
+
+
 # Query 
 
-## get all NOM data
+Now we will use the functions defined above to retrieve data from the NMDC database. In each step, we will 
+
+## Get all data objects with NOM results
+
+We will start by using the `get_next_results` function to retrieve all available processed data records containing NOM results. We are querying the `data_object_set` collection for objects that have the type `FT ICR-MS Analysis Results`. 
 
 ```{r}
-# Get data objects using get_next_results function
 nom_dobj_df <- get_next_results(
     collection = "data_object_set", 
     filter_text = '{"data_object_type": {"$regex": "FT ICR-MS Analysis Results"}}', 
@@ -125,7 +148,9 @@ nom_dobj_df <- get_next_results(
 ```
 
 
-## get all nom analysis results by id 
+## Get all NOM analysis results
+
+Now that we have a dataframe of data object information, we can use the data object IDs to identify the analysis processes that produced our results. In this case, we are looking in the `nom_analysis_activity_set` for any records whose output is listed as one of our data object IDs.
 
 ```{r}
 nom_analysis_df <- get_results_by_id(
@@ -137,12 +162,13 @@ nom_analysis_df <- get_results_by_id(
 ) %>%
   mutate(has_input = unlist(has_input),
          has_output = unlist(has_output))
-
 ```
 
-## get all dataobjects of raw NOM data by id
-```{r}
+## Get all data objects containing raw NOM data
 
+Continuing to work backwards towards the original biosample, we now use the analysis object IDs to identify the raw data objects that were analyzed. This step is also looking in the collection `data_object_set` that was used above. The difference is that this time, rather than filtering by type, we are looking for data objects that match our list of data object IDs that were input to the NOM analysis processes.
+
+```{r}
 nom_raw_df <- get_results_by_id(
     collection = "data_object_set",
     match_id_field = "id",
@@ -150,16 +176,12 @@ nom_raw_df <- get_results_by_id(
     fields = "id,was_generated_by,name,md5_checksum",
     max_id = 20
 )
-
-# uh oh, there are dobj with no was_generated_by, summarize
-# nom_raw_df %>%
-#   filter(is.na(was_generated_by)) %>%
-#   mutate(name_prefix = str_match(name, "^(output: [A-Za-z]+)_")[,2]) %>%
-#   count(name_prefix)
-
 ```
 
-## get all omicsprocessing records by id
+## Get all sample processing records that produced NOM data
+
+Using the list of raw data object IDs obtained above, we now search the `omics_processing_set` collection for records of sample processing that produced raw NOM data. Here we are looking for sample processing records whose output field matches the list of raw data object IDs.
+
 ```{r}
 
 nom_omprc_df <- get_results_by_id(
@@ -174,9 +196,15 @@ nom_omprc_df <- get_results_by_id(
 
 ```
 
-## get all biosample records by id
-```{r}
+## Get all records for biosamples that were processed for NOM analysis
 
+Finally, we are able to use the inputs to the sample processing records obtained above to identify the original biosamples used. This will allow us to connect the sampling metadata to the processed NOM results. Here, we can add fields to the API query to retrieve more information about the original biosample. 
+
+In this case, we are interested in the environments from which the samples were taken, so the `fields` argument includes the trio of environmental terms required for each NMDC biosample: `env_broad_scale`, `env_local_scale`, and `env_medium`. 
+
+Passing an empty string to the `fields` argument of the API functions defined above returns all fields for the class being queried, which can be useful but slow. More information about the metadata fields for the `Biosample` class is available here: https://microbiomedata.github.io/nmdc-schema/Biosample/
+
+```{r}
 nom_biosample_df <- get_results_by_id(
     collection = "biosample_set",
     match_id_field = "id",
@@ -185,82 +213,162 @@ nom_biosample_df <- get_results_by_id(
     #fields = "",
     max_id = 20
 )
-
 ```
 
-## combine records into one data frame
+## Join all results dataframes
+
+Now that we have covered each step that connects a biosample to its processed data output, we can join the dataframes by their common ID columns to produce one dataframe.
 
 ```{r}
 
+# Starting from the biosample dataframe...
 nom_objects_joined <- nom_biosample_df %>%
+  
+  # Rename biosample columns with the prefix "bsm" for clarity
   rename_with(~ paste0("bsm.", .x)) %>%
+  
+  # Rename sample processing columns with the prefix "omprc"
+  # Join records where the biosample ID is the input to the sample processing
   full_join(rename_with(nom_omprc_df, ~ paste0("omprc.", .x)), 
             by = join_by(bsm.id == omprc.has_input),
             keep = TRUE) %>%
+  
+  # Rename raw data object columns with the prefix "raw"
+  # Join records where the raw data ID is the output of the sample processing
   full_join(rename_with(nom_raw_df, ~ paste0("raw.", .x)), 
             by = join_by(omprc.has_output == raw.id),
             keep = TRUE) %>%
+  
+  # Rename analysis columns with the prefix "analysis"
+  # Join records where the raw data ID is the input of the analysis process
   full_join(rename_with(nom_analysis_df, ~ paste0("analysis.", .x)), 
             by = join_by(raw.id == analysis.has_input),
             keep = TRUE) %>%
+  
+  # Rename processed data object columns with the prefix "dobj"
+  # Join records where the processed data ID is the output of the analysis process
   full_join(rename_with(nom_dobj_df, ~ paste0("dobj.", .x)), 
             by = join_by(analysis.has_output== dobj.id),
             keep = TRUE) %>%
   
-  # clean up: remove duplicate rows produced by joins
+  # Clean up: remove duplicate rows produced by joins
   distinct() %>%
   
-  # flatten list-columns
+  # Flatten list-columns
+  # List-columns appear when a field included in the query is not flat (e.g. https://microbiomedata.github.io/nmdc-schema/env_medium/)
   unnest(where(is.data.frame), names_sep = ".", keep_empty = TRUE) %>%
   unnest(where(is.data.frame), names_sep = ".", keep_empty = TRUE) %>%
   mutate(across(where(is.list), as.character)) %>%
   
-  # remove duplicate processed data objects
+  # Remove duplicate processed data objects
   filter(!duplicated(dobj.md5_checksum))
-
 
 ```
 
 
 
 # Label sample types
+
+In this notebook we want to explore how natural organic matter varies across sample types. We can label the sample types using the environmental metadata terms included in the biosample query earlier.
+
+Environmental metadata terms in the NMDC database are taken from controlled vocabularies, predominantly the Environment Ontology (ENVO). ENVO terms have a term name as well as an ID number (e.g. `peat soil [ENVO:00005774]`). Additional information about ENVO terms and their relationships can be found here: https://www.ebi.ac.uk/ols4/ontologies/envo
+
+Here we use the `env_medium` field to identify whether our NOM samples came from soil, sediment, or water. `env_medium` actually contains a multilevel structure to represent the environmental term. `env_medium.has_raw_value` holds a string combining the term name and ID, `env_medium.term.id` contains the term ID number, and `env_medium.term.name` contains the term name, as shown below: 
+
+```{r}
+nom_objects_joined$bsm.env_medium.has_raw_value[1]
+
+```
+
+```{r}
+nom_objects_joined$bsm.env_medium.term.id[1]
+
+```
+
+```{r}
+nom_objects_joined$bsm.env_medium.term.name[1]
+
+```
+Note that all of these fields should be filled out for all samples, however, due to differences in sample metadata submission by users, there may be gaps. Therefore we check all three fields here to ensure that all samples are labeled.
+
 ```{r sample-types}
 
 nom_objects_joined_labeled <- nom_objects_joined %>%
 
-
   mutate(bsm.sample_type_manual = case_when(
-    bsm.env_medium.term.id %in% c("UBERON:0035118", "ENVO:00002003") ~ "host",
-    str_detect(bsm.name, "hizosphere") ~ "plant",
-    str_detect(bsm.env_medium.term.id, "PO:") ~ "plant",
     bsm.env_medium.term.id %in% c("ENVO:00001998", "ENVO:00005774", "ENVO:00002258", "ENVO:00005778", "ENVO:00005802", 
                                   "ENVO:02000059", "ENVO:00005741", "ENVO:01001841", "ENVO:00003082", "ENVO:00005800", "ENVO:01000018") ~ "soil",
     bsm.env_medium.term.id %in% c("ENVO:00002007", "ENVO:01000017", "ENVO:03605004", "ENVO:03605005") ~ "sediment",
     bsm.env_medium.term.id %in% c("ENVO:00002042", "ENVO:00002011", "ENVO:00002194", "ENVO:01001869", "ENVO:04000007") ~ "water",
-    bsm.env_medium.term.id %in% c("ENVO:01000349", "ENVO:01001001", "ENVO:03605005") ~ "plant",
     str_detect(bsm.env_medium.term.name, "soil") ~ "soil",
     str_detect(bsm.env_medium.has_raw_value, "soil") ~ "soil",
-    str_detect(bsm.env_medium.term.name, "water") ~ "water",
-    bsm.part_of == "nmdc:sty-11-pzmd0x14" ~ "sediment"
-  ))
+    str_detect(bsm.env_medium.term.name, "water") ~ "water"
+    ))
 
 ```
 
 # Pull processed data
 
-```{r}
-# Pull processed data files using URLs from processed data dobj
+The processed data objects pulled from the API above contain references to the results files, not the results themselves. We can use the `url` field of the data object class to retrieve the stored data.
+
+The NMDC natural organic matter workflow produces a results data table saved as a CSV. We will read the CSV file into R from each data object URL. 
+
+Note that this step is the most time-consuming; it may take up to 40 minutes.
+
+```{r pull-csvs}
+
 # processed_data_csvs <- data.frame(data_object_url = nom_objects_joined_labeled$dobj.url) %>%
 #   filter(!is.na(data_object_url)) %>%
 #   mutate(csv_nested = lapply(data_object_url, read.csv))
-# 
+
 # saveRDS(processed_data_csvs, "processed_data_csvs.RDS")
 
 processed_data_csvs <- readRDS("processed_data_csvs.RDS")
 
 ```
 
+
+you should probably describe what the results data table contains here
+
+```{r}
+
+colnames(processed_data_csvs$csv_nested[[1]])
+
+```
+
+
+
+## Select best matches
+
+Rarely, a peak may match more than one molecular formula with high confidence. In these cases there would be more than one row for the peak, with duplicate indices and m/z values but different molecular formulae. In this case we will select the row with the highest confidence score to ensure that peaks are not duplicated within a results file.
+
+```{r multiple-assignments}
+
+processed_data_csvs <- processed_data_csvs %>%
+  mutate(csv_nested = lapply(csv_nested, 
+    function(x) {
+      x %>%
+        group_by(Index) %>%
+        # Get row(s) with maximum confidence score for each index
+        slice_max(Confidence.Score) %>%
+        # Use the first if multiple rows have max confidence
+        slice(1) %>%
+        ungroup()
+      }
+    )
+  )
+
+```
+
+
 ## Quality metrics for processed data
+
+We can calculate some quality metrics for each sample using the results table.
+
+Percent Assigned Peaks: 
+
+Confidence Score: The NMDC NOM workflow is based off of the CoreMS package, which outputs a confidence score for each molecular formula assignment. This allows us to potentially filter out less reliable assignments and move forward with higher confidence molecular formula identifications.
+
 ```{r qc}
 
 # Extract and calculate some statistics for the processed data
@@ -280,39 +388,48 @@ processed_data_qc <- processed_data_csvs %>%
          #molecular_formulae = lapply(csv_nested, function(x) unique(x$Molecular.Formula)),
          
          confidence_scores  = lapply(csv_nested, function(x) x$Confidence.Score)) 
+```
 
-# Plots to visually assess quality cutoffs
+
+```{r, eval = FALSE}
 ggplot(processed_data_qc) +
   geom_histogram(aes(x = median_confidence), bins = 20) +
   ggtitle("Median Confidence Scores for Processed Data Files")
+```
 
+```{r}
 ggplot(processed_data_qc) +
   geom_histogram(aes(x = assigned_perc)) +
   ggtitle("Percent Assigned Peaks for Processed Data Files")
+```
 
+```{r}
 data.frame(All_Confidence_Scores = unlist(processed_data_qc$confidence_scores)) %>%
   ggplot() +
     geom_histogram(aes(x = All_Confidence_Scores), bins = 30) +
     ggtitle("Confidence Scores for All Peak/Formula Assignments")
-
 ```
+
+We can use the quality metrics to filter our data before moving forward with analysis.
+
+First, we will remove samples with less than 30% of their peaks assigned. Then we apply a filter to each remaining data file to remove molecular formula assignments with confidence scores lower than 0.75.
 
 ```{r quality-filtering}
 
-# filter out samples with low percent assigned
+# Filter out samples with low percent assigned
 processed_data_qc <- processed_data_qc %>%
   filter(assigned_perc > 0.3) %>%
   
-  # within data, filter out rows with low confidence score
-  mutate(csv_nested = lapply(csv_nested, function(x) filter(x, Confidence.Score > 0.6)))
+  # Within data, filter out rows with low confidence score
+  mutate(csv_nested = lapply(csv_nested, function(x) filter(x, Confidence.Score > 0.75)))
 
 ```
 
+# Visualizing natural organic matter by sample type
 
+## Molecular formula heatmap
 
-```{r formula-heatmap}
-
-
+```{r select-samples}
 samples_for_heatmap <- processed_data_qc %>%
   
   # extract molecular formulae
@@ -331,7 +448,9 @@ samples_for_heatmap <- processed_data_qc %>%
   group_by(bsm.sample_type_manual) %>%
   slice_sample(n = 33) %>%
   ungroup()
+```
 
+```{r filter-formulae}
 # Filter out molecular formulae that appear in less than 5 samples
 # so the heatmap isn't impossible
 filtered_formulae <- samples_for_heatmap$molecular_formulae %>%
@@ -340,10 +459,14 @@ filtered_formulae <- samples_for_heatmap$molecular_formulae %>%
   as.data.frame() %>%
   setNames(c("Formula", "Freq")) %>%
   filter(Formula != "") %>%
-  filter(Freq > 5) %>%
+  #filter(Freq > 3) %>%
   mutate(Formula = as.character(Formula)) %>%
   pull(Formula)
-  
+
+```
+
+
+```{r setup-heatmap}
 
 # initialize presence absence matrix
 # rows are samples
@@ -357,7 +480,9 @@ for (i in 1:nrow(samples_for_heatmap)) {
 
 rownames(holder) <- samples_for_heatmap$bsm.id
 colnames(holder) <- filtered_formulae
+```
 
+```{r setup-colors}
 # set up color vectors for side grouping columns
 
 sample_type_color_vec <- case_when(
@@ -381,29 +506,27 @@ create_colors_from_numeric <- function(num_vec, pal) {
   pal[findInterval(num_vec, seq(min(num_vec), max(num_vec), length.out = length(pal) + 1), all.inside=TRUE)]
 }
 
-latitude_color_vec <- map2color(samples_for_heatmap$bsm.lat_lon.latitude, hcl.colors(200, palette = "Oranges"))
-
-
-heatmap(holder, Colv = NA, RowSideColors = latitude_color_vec, labRow = FALSE, labCol = FALSE, scale = "none")
-
-heatmaply(holder, Colv = NA, RowSideColors = cbind(sample_type_color_vec, study_color_vec, latitude_color_vec), showticklabels = FALSE, hide_colorbar = TRUE)
-
-
-  
-  
-
-
-
-
+latitude_color_vec <- create_colors_from_numeric(samples_for_heatmap$bsm.lat_lon.latitude, hcl.colors(200, palette = "Oranges"))
 ```
 
 
+```{r heatmap}
+
+heatmap(holder, Colv = NA, RowSideColors = sample_type_color_vec, labRow = FALSE, labCol = FALSE, scale = "none")
+
+heatmaply(holder, Colv = NA, RowSideColors = sample_type_color_vec, showticklabels = FALSE, hide_colorbar = TRUE, show_dendrogram = FALSE)
+
+```
+
+## Van Krevelen plots
+
+Van Krevelen plots are a common way to visualize samples of organic material. Each point on the scatterplot represents a molecular formula. The x-axis represents the hydrogen/carbon ratio of the molecule, and the y-axis represents the oxygen/carbon ratio. In this example, the data has been grouped by sample type rather than plotting all 99 samples individually.
+
 ```{r van-krevelen}
 
-# extract oc and hc ratios for the same samples as used in the heatmap
-
+# Extract O/C and H/C ratios for the same samples as used in the heatmap
 samples_for_heatmap %>%
-  select(data_object_url, bsm.id, bsm.sample_type_manual, bsm.part_of) %>%
+  select(data_object_url, bsm.id, bsm.sample_type_manual) %>%
   left_join(processed_data_csvs) %>%
   mutate(HC = lapply(csv_nested, function(x) x$H.C),
          OC = lapply(csv_nested, function(x) x$O.C)) %>%
@@ -418,9 +541,9 @@ samples_for_heatmap %>%
     scale_color_manual("legend", values = c("soil" = "saddlebrown",
                                             "sediment" = "slategray",
                                             "water" = "blue"))
-
-
 ```
+
+
 
 
 ```{r van-krevelen-common-formulae}
@@ -470,12 +593,16 @@ samples_for_heatmap %>%
     scale_color_manual("legend", 
                        values = c("Unique to soil samples" = "saddlebrown", 
                                  "Unique to water samples" = "blue", 
-                                 "Unique to sediment samples" = "red", 
+                                 "Unique to sediment samples" = "slategray", 
                                  # "in_soil_and_sediment" = "sienna", 
                                  # "in_soil_and_water" = "purple", 
                                  # "in_water_and_sediment" = "green", 
-                                 "Present in all sample types" = "black")) -> shared_van_krevelen
+                                 "Present in all sample types" = "red")) -> shared_van_krevelen
   
-  ggMarginal(shared_van_krevelen, groupColor = TRUE, groupFill = TRUE) -> shared_van_krevelen
+ggMarginal(shared_van_krevelen, groupColor = TRUE, groupFill = TRUE)
 
 ```
+
+# Using the ftmsRanalysis package
+
+;alskdfj
