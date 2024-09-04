@@ -277,17 +277,14 @@ Here we use the `env_medium` field to identify whether our NOM samples came from
 
 ```{r}
 nom_objects_joined$bsm.env_medium.has_raw_value[1]
-
 ```
 
 ```{r}
 nom_objects_joined$bsm.env_medium.term.id[1]
-
 ```
 
 ```{r}
 nom_objects_joined$bsm.env_medium.term.name[1]
-
 ```
 Note that all of these fields should be filled out for all samples, however, due to differences in sample metadata submission by users, there may be gaps. Therefore we check all three fields here to ensure that all samples are labeled.
 
@@ -342,9 +339,12 @@ colnames(processed_data_csvs$csv_nested[[1]])
 
 Rarely, a peak may match more than one molecular formula with high confidence. In these cases there would be more than one row for the peak, with duplicate indices and m/z values but different molecular formulae. In this case we will select the row with the highest confidence score to ensure that peaks are not duplicated within a results file.
 
+Note that this step may take awhile to run.
+
 ```{r multiple-assignments}
 
 processed_data_csvs <- processed_data_csvs %>%
+  # For each results dataframe
   mutate(csv_nested = lapply(csv_nested, 
     function(x) {
       x %>%
@@ -357,6 +357,30 @@ processed_data_csvs <- processed_data_csvs %>%
       }
     )
   )
+
+
+# full_join(processed_data_csvs, a, by = join_by(data_object_url)) -> b
+# 
+# b %>% 
+#   mutate(csv_nested.y = lapply(csv_nested.y, as.data.frame)) %>%
+#   mutate(identical = map2(csv_nested.x, csv_nested.y, identical)) %>%
+#   mutate(identical = as.logical(identical)) %>%
+#   select(-c(csv_nested.x, csv_nested.y)) -> d
+# 
+# 
+# str(as.data.frame(a$csv_nested[[2]]))
+# str(processed_data_csvs$csv_nested[[2]])
+# 
+# 
+# arrange(as.data.frame(a$csv_nested[[2]]), Index) -> d
+# arrange(processed_data_csvs$csv_nested[[2]], Index)
+# 
+# anti_join(
+#   arrange(processed_data_csvs$csv_nested[[2]], Index),
+#   arrange(as.data.frame(a$csv_nested[[2]]), Index)
+# )
+# 
+# filter(d, m.z == 570.2929)
 
 ```
 
@@ -459,7 +483,7 @@ filtered_formulae <- samples_for_heatmap$molecular_formulae %>%
   as.data.frame() %>%
   setNames(c("Formula", "Freq")) %>%
   filter(Formula != "") %>%
-  #filter(Freq > 3) %>%
+  filter(Freq > 5) %>%
   mutate(Formula = as.character(Formula)) %>%
   pull(Formula)
 
@@ -512,9 +536,14 @@ latitude_color_vec <- create_colors_from_numeric(samples_for_heatmap$bsm.lat_lon
 
 ```{r heatmap}
 
-heatmap(holder, Colv = NA, RowSideColors = sample_type_color_vec, labRow = FALSE, labCol = FALSE, scale = "none")
+heatmap(holder, Colv = NA, RowSideColors = sample_type_color_vec, 
+        labRow = FALSE, labCol = FALSE, scale = "none",
+        main = "Samples clustered by similarity in molecular formulae",
+        xlab = "Molecular formulae",
+        ylab = "Samples", 
+        keep.dendro = FALSE)
 
-heatmaply(holder, Colv = NA, RowSideColors = sample_type_color_vec, showticklabels = FALSE, hide_colorbar = TRUE, show_dendrogram = FALSE)
+#heatmaply(holder, Colv = NA, RowSideColors = sample_type_color_vec, showticklabels = FALSE, hide_colorbar = TRUE, show_dendrogram = FALSE)
 
 ```
 
@@ -605,4 +634,44 @@ ggMarginal(shared_van_krevelen, groupColor = TRUE, groupFill = TRUE)
 
 # Using the ftmsRanalysis package
 
-;alskdfj
+```{r, eval = FALSE}
+library(ftmsRanalysis)
+
+# dataframes of all CSV results with filename column
+results_combined_df <- read_CoreMS_data(processed_data_csvs$data_object_url)
+
+coreMSdata <- as.CoreMSData(results_combined_df, 
+                            error_cname = "m/z Error (ppm)",
+                            iso_cols = c("13C", "18O", "34S", "17O", "15N", "33S"))
+
+plot(coreMSdata)
+
+
+cmsDat_filt_obj <- conf_filter(coreMSdata)
+
+plot(cmsDat_filt_obj)
+# 
+# plotly::subplot(mass_error_plot(coreMSdata),
+#         mass_error_plot(coreMSdata, min_conf = 0.25),
+#         mass_error_plot(coreMSdata, min_conf = 0.50),
+#         mass_error_plot(coreMSdata, min_conf = 0.75),
+#         nrows = 2, shareX = TRUE,
+#         titleX = TRUE, titleY = TRUE,
+#         margin = 0.05)
+
+
+cmsDat_filtered <- applyFilt(filter_object =  cmsDat_filt_obj,
+                           msObj = cmsDat,
+                           min_conf = 0.5)
+
+cmsDat_unique_mf <-  cmsDat %>% 
+  applyFilt(filter_object = cmsDat_filt_obj,
+                      msObj = .,
+                      min_conf = 0.16) %>% 
+  unique_mf_assignment(method = "confidence")
+
+ftmsObj <- coreMSDataToFtmsData(cmsDat_unique_mf)
+
+
+
+```
