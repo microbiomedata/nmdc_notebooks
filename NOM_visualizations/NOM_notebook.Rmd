@@ -148,6 +148,15 @@ nom_dobj_df <- get_next_results(
 ```
 
 
+## Example of get collection function 
+
+```{r}
+
+
+
+```
+
+
 ## Get all NOM analysis results
 
 Now that we have a dataframe of data object information, we can use the data object IDs to identify the analysis processes that produced our results. In this case, we are looking in the `nom_analysis_activity_set` for any records whose output is listed as one of our data object IDs.
@@ -212,7 +221,10 @@ nom_biosample_df <- get_results_by_id(
     fields = "id,name,part_of,analysis_type,geo_loc_name,env_medium,lat_lon",
     #fields = "",
     max_id = 20
-)
+) %>%
+  # Remove duplicate rows (some biosamples produce more than one processed sample)
+  distinct()
+
 ```
 
 ## Join all results dataframes
@@ -286,6 +298,7 @@ nom_objects_joined$bsm.env_medium.term.id[1]
 ```{r}
 nom_objects_joined$bsm.env_medium.term.name[1]
 ```
+
 Note that all of these fields should be filled out for all samples, however, due to differences in sample metadata submission by users, there may be gaps. Therefore we check all three fields here to ensure that all samples are labeled.
 
 ```{r sample-types}
@@ -293,10 +306,15 @@ Note that all of these fields should be filled out for all samples, however, due
 nom_objects_joined_labeled <- nom_objects_joined %>%
 
   mutate(bsm.sample_type_manual = case_when(
-    bsm.env_medium.term.id %in% c("ENVO:00001998", "ENVO:00005774", "ENVO:00002258", "ENVO:00005778", "ENVO:00005802", 
-                                  "ENVO:02000059", "ENVO:00005741", "ENVO:01001841", "ENVO:00003082", "ENVO:00005800", "ENVO:01000018") ~ "soil",
-    bsm.env_medium.term.id %in% c("ENVO:00002007", "ENVO:01000017", "ENVO:03605004", "ENVO:03605005") ~ "sediment",
-    bsm.env_medium.term.id %in% c("ENVO:00002042", "ENVO:00002011", "ENVO:00002194", "ENVO:01001869", "ENVO:04000007") ~ "water",
+    bsm.env_medium.term.id %in% c("ENVO:00001998", "ENVO:00002259", "ENVO:00002261", 
+                                  "ENVO:00005750", "ENVO:00005760", "ENVO:00005761", 
+                                  "ENVO:00005773", "ENVO:00005774", "ENVO:00005802", 
+                                  "ENVO:01001616") ~ "soil",
+    
+    bsm.env_medium.term.id %in% c("ENVO:00002007") ~ "sediment",
+    bsm.env_medium.term.id %in% c("ENVO:01000017") ~ "sand",
+    bsm.env_medium.term.id %in% c("ENVO:00002042") ~ "water",
+    
     str_detect(bsm.env_medium.term.name, "soil") ~ "soil",
     str_detect(bsm.env_medium.has_raw_value, "soil") ~ "soil",
     str_detect(bsm.env_medium.term.name, "water") ~ "water"
@@ -325,7 +343,7 @@ processed_data_csvs <- readRDS("processed_data_csvs.RDS")
 ```
 
 
-you should probably describe what the results data table contains here
+The results table contains a lot of information. In this notebook, we are going to use the confidence score, molecular formula assignment, hydrogen/carbon ratio, and oxygen/carbon ratio columns.
 
 ```{r}
 
@@ -348,12 +366,9 @@ processed_data_csvs <- processed_data_csvs %>%
   mutate(csv_nested = lapply(csv_nested, 
     function(x) {
       x %>%
-        group_by(Index) %>%
-        # Get row(s) with maximum confidence score for each index
-        slice_max(Confidence.Score) %>%
-        # Use the first if multiple rows have max confidence
-        slice(1) %>%
-        ungroup()
+        # Keep the row with the highest confidence score for every m/z value
+        arrange(-Confidence.Score) %>%
+        distinct(m.z, .keep_all = TRUE)
       }
     )
   )
@@ -361,7 +376,7 @@ processed_data_csvs <- processed_data_csvs %>%
 
 # full_join(processed_data_csvs, a, by = join_by(data_object_url)) -> b
 # 
-# b %>% 
+# b %>%
 #   mutate(csv_nested.y = lapply(csv_nested.y, as.data.frame)) %>%
 #   mutate(identical = map2(csv_nested.x, csv_nested.y, identical)) %>%
 #   mutate(identical = as.logical(identical)) %>%
@@ -372,7 +387,7 @@ processed_data_csvs <- processed_data_csvs %>%
 # str(processed_data_csvs$csv_nested[[2]])
 # 
 # 
-# arrange(as.data.frame(a$csv_nested[[2]]), Index) -> d
+# arrange(as.data.frame(a$csv_nested[[2]]), Index)
 # arrange(processed_data_csvs$csv_nested[[2]], Index)
 # 
 # anti_join(
@@ -387,21 +402,18 @@ processed_data_csvs <- processed_data_csvs %>%
 
 ## Quality metrics for processed data
 
-We can calculate some quality metrics for each sample using the results table.
+We can extract the columns we need from the results table and calculate some quality metrics.
 
-Percent Assigned Peaks: 
+Percent Assigned Peaks: The percentage of peaks that were given a molecular formula assignment.
 
 Confidence Score: The NMDC NOM workflow is based off of the CoreMS package, which outputs a confidence score for each molecular formula assignment. This allows us to potentially filter out less reliable assignments and move forward with higher confidence molecular formula identifications.
 
 ```{r qc}
 
-# Extract and calculate some statistics for the processed data
+# Extract relevant columns and calculate some statistics for the processed data
 processed_data_qc <- processed_data_csvs %>%
   
-  mutate(median_confidence  = vapply(csv_nested, function(x) median(x$Confidence.Score, na.rm = TRUE), 
-                                     FUN.VALUE = 1.0, USE.NAMES = FALSE),
-         
-         unassigned_count   = vapply(csv_nested, function(x) sum((x$Molecular.Formula == "")), 
+  mutate(unassigned_count   = vapply(csv_nested, function(x) sum((x$Molecular.Formula == "")), 
                                      FUN.VALUE = 1, USE.NAMES = FALSE),
          
          assigned_count     = vapply(csv_nested, function(x) sum((x$Molecular.Formula != "")), 
@@ -409,9 +421,8 @@ processed_data_qc <- processed_data_csvs %>%
          
          assigned_perc      = assigned_count / (unassigned_count + assigned_count),
          
-         #molecular_formulae = lapply(csv_nested, function(x) unique(x$Molecular.Formula)),
-         
-         confidence_scores  = lapply(csv_nested, function(x) x$Confidence.Score)) 
+         confidence_scores  = lapply(csv_nested, function(x) x$Confidence.Score))
+
 ```
 
 
@@ -445,7 +456,18 @@ processed_data_qc <- processed_data_qc %>%
   filter(assigned_perc > 0.3) %>%
   
   # Within data, filter out rows with low confidence score
-  mutate(csv_nested = lapply(csv_nested, function(x) filter(x, Confidence.Score > 0.75)))
+  mutate(csv_nested = lapply(csv_nested, function(x) filter(x, Confidence.Score > 0.75))) %>%
+
+  # Now that filtering is done, extract the rest of the data we want
+  mutate(molecular_formulae = lapply(csv_nested, function(x) x$Molecular.Formula),
+         HC                 = lapply(csv_nested, function(x) x$H.C),
+         OC                 = lapply(csv_nested, function(x) x$O.C),
+         # re-extract filtered confidence scores
+         confidence_scores  = lapply(csv_nested, function(x) x$Confidence.Score)
+  ) %>%
+  
+  # Remove nested dataset column for speed and memory
+  select(-csv_nested)
 
 ```
 
@@ -453,48 +475,76 @@ processed_data_qc <- processed_data_qc %>%
 
 ## Molecular formula heatmap
 
+One way to compare samples is to investigate what molecular formulae they have in common. We will visualize this by creating a heatmap with a subset of samples of each type, so that our computers do not melt trying to plot 2500 rows of data.
+
 ```{r select-samples}
+
+set.seed(10)
+
 samples_for_heatmap <- processed_data_qc %>%
   
-  # extract molecular formulae
-  mutate(molecular_formulae = lapply(csv_nested, function(x) unique(x$Molecular.Formula))) %>%
-  
-  # remove nested csv column because it's so slow
-  select(-csv_nested) %>%
-  
-  # add biosample info
-  left_join(select(nom_objects_joined_labeled, dobj.url, 
-                   bsm.id, bsm.sample_type_manual, bsm.part_of, 
-                   bsm.lat_lon.latitude, bsm.lat_lon.longitude), 
+  # Add biosample information
+  left_join(select(nom_objects_joined_labeled, 
+                   dobj.id, dobj.url, bsm.sample_type_manual), #, bsm.part_of, 
+                   #bsm.lat_lon.latitude, bsm.lat_lon.longitude), 
             by = join_by(data_object_url == dobj.url)) %>%
   
-  # sample 33 of each sample type
+  # Sample 33 of each sample type
   group_by(bsm.sample_type_manual) %>%
   slice_sample(n = 33) %>%
   ungroup()
+
+
+# samples_for_heatmap %>%
+#   select(data_object_url, molecular_formulae) %>%
+#   unnest(molecular_formulae) %>%
+#   distinct() %>% nrow()
+
+
+# processed_data_qc %>%
+#   
+#   # Extract molecular formulae
+#   mutate(molecular_formulae = lapply(csv_nested, function(x) unique(x$Molecular.Formula))) %>%
+#   
+#   select(data_object_url, molecular_formulae) %>%
+#   unnest(molecular_formulae) %>% 
+#   group_by(molecular_formulae) %>%
+#   mutate(occurrences = n()) %>%
+#   ungroup() %>%
+#   filter(occurrences >= 5) %>%
+#   select(data_object_url, molecular_formulae) %>%
+#   distinct() %>% nrow()
+  
+# BEFORE random sampling, we have the same number of (data object) x (molecular formula) pairs. 799379
+
 ```
 
+We also filter down to molecular formulae that appear in at least 5 samples, both to make the plots less computationally demanding and to remove formulae that are less useful for comparing samples.
+
 ```{r filter-formulae}
-# Filter out molecular formulae that appear in less than 5 samples
-# so the heatmap isn't impossible
 filtered_formulae <- samples_for_heatmap$molecular_formulae %>%
+  # Get unique list of formulae from each results table
+  lapply(unique) %>%
   unlist() %>%
+  # Count occurrences of each formula
   table() %>%
   as.data.frame() %>%
   setNames(c("Formula", "Freq")) %>%
+  # Remove stray empty strings and filter by frequency
   filter(Formula != "") %>%
-  filter(Freq > 5) %>%
+  filter(Freq >= 5) %>%
   mutate(Formula = as.character(Formula)) %>%
+  # Pull character vector of formulae appearing at least 5x in the random subsample
   pull(Formula)
-
 ```
 
+One way to visualize similarities between samples is to investigate their shared formulae. We will construct a presence-absence heatmap showing which formulae are present in which results.
 
 ```{r setup-heatmap}
+# Initialize presence absence matrix
+# Rows are processed data (results data tables)
+# Columns are molecular formulae
 
-# initialize presence absence matrix
-# rows are samples
-# columns are molecular formulae
 holder <- matrix(, nrow = nrow(samples_for_heatmap), ncol = length(filtered_formulae))
 
 for (i in 1:nrow(samples_for_heatmap)) {
@@ -502,36 +552,41 @@ for (i in 1:nrow(samples_for_heatmap)) {
                        1, 0)
 }
 
-rownames(holder) <- samples_for_heatmap$bsm.id
+rownames(holder) <- samples_for_heatmap$dobj.id
 colnames(holder) <- filtered_formulae
 ```
 
-```{r setup-colors}
-# set up color vectors for side grouping columns
+We will also construct a colored sidebar indicating which sample type each results row comes from. This will help visualize whether or not sample types cluster together.
 
+```{r setup-colors}
+# Set up color vector for side grouping column
 sample_type_color_vec <- case_when(
   samples_for_heatmap$bsm.sample_type_manual == "soil" ~ "saddlebrown",
   samples_for_heatmap$bsm.sample_type_manual == "sediment" ~ "slategray",
-  samples_for_heatmap$bsm.sample_type_manual == "water" ~ "blue")
+  samples_for_heatmap$bsm.sample_type_manual == "water" ~ "blue",
+  samples_for_heatmap$bsm.sample_type_manual == "sand" ~ "goldenrod")
 
-study_color_vec <- case_when(
-  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-aygzgv51" ~ "red",
-  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-5tgfr349" ~ "orange",
-  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-28tm5d36" ~ "yellow",
-  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-db67n062" ~ "green",
-  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-dcqce727" ~ "blue",
-  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-8xdqsn54" ~ "purple",
-  samples_for_heatmap$bsm.part_of == "nmdc:sty-11-33fbta56" ~ "pink"
-  )
+names(sample_type_color_vec) <- samples_for_heatmap$data_object_url
 
-
-create_colors_from_numeric <- function(num_vec, pal) {
-  # pal = grDevices Palette (others may work idk)
-  pal[findInterval(num_vec, seq(min(num_vec), max(num_vec), length.out = length(pal) + 1), all.inside=TRUE)]
-}
-
-latitude_color_vec <- create_colors_from_numeric(samples_for_heatmap$bsm.lat_lon.latitude, hcl.colors(200, palette = "Oranges"))
+# study_color_vec <- case_when(
+#   samples_for_heatmap$bsm.part_of == "nmdc:sty-11-aygzgv51" ~ "red",
+#   samples_for_heatmap$bsm.part_of == "nmdc:sty-11-5tgfr349" ~ "orange",
+#   samples_for_heatmap$bsm.part_of == "nmdc:sty-11-28tm5d36" ~ "yellow",
+#   samples_for_heatmap$bsm.part_of == "nmdc:sty-11-db67n062" ~ "green",
+#   samples_for_heatmap$bsm.part_of == "nmdc:sty-11-dcqce727" ~ "blue",
+#   samples_for_heatmap$bsm.part_of == "nmdc:sty-11-8xdqsn54" ~ "purple",
+#   samples_for_heatmap$bsm.part_of == "nmdc:sty-11-33fbta56" ~ "pink"
+#   )
+# 
+# 
+# create_colors_from_numeric <- function(num_vec, pal) {
+#   # pal = grDevices Palette (others may work idk)
+#   pal[findInterval(num_vec, seq(min(num_vec), max(num_vec), length.out = length(pal) + 1), all.inside=TRUE)]
+# }
+# 
+# latitude_color_vec <- create_colors_from_numeric(samples_for_heatmap$bsm.lat_lon.latitude, hcl.colors(200, palette = "Oranges"))
 ```
+
 
 
 ```{r heatmap}
@@ -545,6 +600,11 @@ heatmap(holder, Colv = NA, RowSideColors = sample_type_color_vec,
 
 #heatmaply(holder, Colv = NA, RowSideColors = sample_type_color_vec, showticklabels = FALSE, hide_colorbar = TRUE, show_dendrogram = FALSE)
 
+
+#pheatmap(holder, cluster_cols = FALSE, legend = FALSE,
+         #annotation_row = sample_type_color_vec)
+
+
 ```
 
 ## Van Krevelen plots
@@ -555,21 +615,25 @@ Van Krevelen plots are a common way to visualize samples of organic material. Ea
 
 # Extract O/C and H/C ratios for the same samples as used in the heatmap
 samples_for_heatmap %>%
-  select(data_object_url, bsm.id, bsm.sample_type_manual) %>%
+  select(data_object_url, bsm.sample_type_manual) %>%
   left_join(processed_data_csvs) %>%
   mutate(HC = lapply(csv_nested, function(x) x$H.C),
-         OC = lapply(csv_nested, function(x) x$O.C)) %>%
-  select(-csv_nested) %>%
-  unnest() %>%
+         OC = lapply(csv_nested, function(x) x$O.C), 
+         formula = lapply(csv_nested, function(x) x$Molecular.Formula)) %>%
+  select(-c(csv_nested, data_object_url)) %>%
+  unnest() %>% 
+  filter(formula %in% filtered_formulae) %>% 
+  distinct() %>%
 
   ggplot(aes(x = OC, y = HC, color = bsm.sample_type_manual)) +
-    geom_point(alpha = 0.1, size = 0.5) +
-    facet_wrap(~bsm.sample_type_manual) +
+    geom_point(alpha = 0.5, size = 1) +
+    facet_wrap(~bsm.sample_type_manual, nrow = 1) +
     theme(legend.position = "none") +
     coord_fixed() +
     scale_color_manual("legend", values = c("soil" = "saddlebrown",
                                             "sediment" = "slategray",
-                                            "water" = "blue"))
+                                            "water" = "blue",
+                                            "sand" = "goldenrod"))
 ```
 
 
@@ -629,49 +693,5 @@ samples_for_heatmap %>%
                                  "Present in all sample types" = "red")) -> shared_van_krevelen
   
 ggMarginal(shared_van_krevelen, groupColor = TRUE, groupFill = TRUE)
-
-```
-
-# Using the ftmsRanalysis package
-
-```{r, eval = FALSE}
-library(ftmsRanalysis)
-
-# dataframes of all CSV results with filename column
-results_combined_df <- read_CoreMS_data(processed_data_csvs$data_object_url)
-
-coreMSdata <- as.CoreMSData(results_combined_df, 
-                            error_cname = "m/z Error (ppm)",
-                            iso_cols = c("13C", "18O", "34S", "17O", "15N", "33S"))
-
-plot(coreMSdata)
-
-
-cmsDat_filt_obj <- conf_filter(coreMSdata)
-
-plot(cmsDat_filt_obj)
-# 
-# plotly::subplot(mass_error_plot(coreMSdata),
-#         mass_error_plot(coreMSdata, min_conf = 0.25),
-#         mass_error_plot(coreMSdata, min_conf = 0.50),
-#         mass_error_plot(coreMSdata, min_conf = 0.75),
-#         nrows = 2, shareX = TRUE,
-#         titleX = TRUE, titleY = TRUE,
-#         margin = 0.05)
-
-
-cmsDat_filtered <- applyFilt(filter_object =  cmsDat_filt_obj,
-                           msObj = cmsDat,
-                           min_conf = 0.5)
-
-cmsDat_unique_mf <-  cmsDat %>% 
-  applyFilt(filter_object = cmsDat_filt_obj,
-                      msObj = .,
-                      min_conf = 0.16) %>% 
-  unique_mf_assignment(method = "confidence")
-
-ftmsObj <- coreMSDataToFtmsData(cmsDat_unique_mf)
-
-
 
 ```
