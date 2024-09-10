@@ -216,7 +216,7 @@ nom_biosample_df <- get_results_by_id(
     collection = "biosample_set",
     match_id_field = "id",
     id_list = nom_omprc_df$has_input,
-    fields = "id,name,part_of,analysis_type,geo_loc_name,env_medium,lat_lon",
+    fields = "id,name,part_of,env_broad_scale,env_local_scale,env_medium",
     #fields = "",
     max_id = 20
 ) %>%
