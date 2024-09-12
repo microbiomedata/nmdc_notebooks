@@ -6,11 +6,13 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, error = FALSE, warning = FALSE, message = FALSE)
-library(tidyverse)
-library(jsonlite)
-library(heatmaply)
-library(ggExtra)
+#knitr::opts_chunk$set(echo = TRUE, error = FALSE, warning = FALSE, message = FALSE)
+library(dplyr, warn.conflicts = FALSE)
+library(tidyr, warn.conflicts = FALSE)
+library(stringr, warn.conflicts = FALSE)
+library(ggplot2, warn.conflicts = FALSE)
+library(jsonlite, warn.conflicts = FALSE)
+library(ggExtra, warn.conflicts = FALSE)
 ```
 
 
