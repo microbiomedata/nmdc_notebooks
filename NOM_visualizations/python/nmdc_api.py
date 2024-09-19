@@ -106,11 +106,12 @@ def get_id_list(result_list: list, id_name: str):
     return id_list
 
 
-## Define an API request function that uses a list of ids to filter on
-    # This function contstructs a different type of API request that takes the `newest_results` (e.g. `biosamples`) and uses the `get_id_results` 
-    # function to construct a list of all the ids from that request. It then uses the `split_list` function to chunk the list of ids into sets of 100 
-    # to query the API in chunks of 100. The `id_field` input is a string of the name of the `newest_results` id field name (e.g. `biosample_id`), 
-    # the name of the new collection to be queried, the name of the field to match the previous ids on in the new collection, and a list of the fields to be returned.
+## Define an API request function that uses a list of ids to filter a new collection
+    # This function takes the `newest_results` request (e.g. `biosamples`) and 
+    # constructs a list of ids using `get_id_results`.
+    # It then uses the `split_list` function to chunk the list of ids into sets of 100 to query the API. 
+    # `id_field` is a field in `newest_results` containing the list of ids to search for in the query_collection (e.g. `biosample_id`).
+    # `match_id_field` is the field in query_collection that will be searched. query_fields is a list of the fields to be returned.
 
 def get_id_results(newest_results: list, id_field: str, query_collection: str, match_id_field: str, query_fields: str):
 
@@ -134,10 +135,11 @@ def get_id_results(newest_results: list, id_field: str, query_collection: str, m
 
 
 ## Define a merging function to join results
-    # This function merges new results with the previous results that were used for the new API request. It uses the two keys from each result to match on. `df1` 
+    # This function merges new results with the previous results that were used for the new API request. It uses two keys from each result to match on. `df1` 
     # is the data frame whose matching `key1` value is a STRING. `df2` is the other data frame whose matching `key2` has either a string OR list as a value. 
-    # df1_explode_list and df2_explode_list are optional lists of columns in either dataframe that need to be exploded because they are lists (drop_duplicates cant take list input in any column)
-    # Note that each if statement includes dropping duplicates after merging as the dataframes are being exploded which creates many duplicate rows after merging takes place.
+    # df1_explode_list and df2_explode_list are optional lists of columns in either dataframe that need to be exploded because they are lists (this is because 
+    # drop_duplicates cant take list input in any column). Note that each if statement includes dropping duplicates after merging as the dataframes are being 
+    # exploded which creates many duplicate rows after merging takes place.
 
 def merge_df(df1, df2, key1: str, key2: str,df1_explode_list=None,df2_explode_list=None):
     if df1_explode_list is not None:
