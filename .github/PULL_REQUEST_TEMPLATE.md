@@ -1,6 +1,6 @@
 ### All Submissions:
 
-* [ ] Have you followed the guidelines in our [Contributing document](.github/CONTRIBUTING.md)?
+* [ ] Have you followed the guidelines in our [Contributing document](https://github.com/microbiomedata/nmdc_notebooks/blob/main/.github/CONTRIBUTING.md)?
 * [ ] Have you checked to ensure there aren't other open [Pull Requests](https://github.com/microbiomedata/nmdc_notebooks/pulls) for the same update/change?
 * [ ] Does your PR link to an issue?
 * [ ] Have you described the changes this PR will make?
