@@ -5,5 +5,4 @@ altair==5.1.2
 plotly==5.18.0
 dill==0.3.7
 statsmodels
-fastcluster==1.2.6
 seaborn==0.13.2
