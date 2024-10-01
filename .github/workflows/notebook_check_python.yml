@@ -42,3 +42,8 @@ jobs:
       name: Execute taxonomic notebook
       run: |
         jupyter nbconvert --execute --to notebook --inplace taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb
+
+    - id: execute-NOM
+      name: Execute NOM notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace NOM_visualizations/python/nom_data.ipynb
