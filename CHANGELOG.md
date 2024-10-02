@@ -11,10 +11,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - NOM Visualizations
 - CI/CD pipelines
 
-### Changed
- 
-### Fixed
-
 ## [v1.0.0] - 2024-07-08
  
 This is the first release of NMDC Notebooks. This release includes all 
