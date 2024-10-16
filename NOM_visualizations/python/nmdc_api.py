@@ -10,8 +10,7 @@ import pandas as pd
     # the filter to be performed, the maximum page size, and a list of the fields to be retrieved. It returns the metadata as a json object.
 
 def get_first_page_results(collection: str, filter: str, max_page_size: int, fields: str):
-    #TODO: update branch to main after berkely rollout
-    og_url = f'https://api-berkeley.microbiomedata.org/nmdcschema/{collection}?&filter={filter}&max_page_size={max_page_size}&projection={fields}'
+    og_url = f'https://api.microbiomedata.org/nmdcschema/{collection}?&filter={filter}&max_page_size={max_page_size}&projection={fields}'
     resp = requests.get(og_url)
     data = resp.json()
     
@@ -41,8 +40,7 @@ def get_next_results(collection: str, filter: str, max_page_size: int, fields: s
         next_page_token = initial_data["next_page_token"]
 
         while True:
-            #TODO: update branch to main after berkely rollout
-            url = f'https://api-berkeley.microbiomedata.org/nmdcschema/{collection}?&filter={filter}&max_page_size={max_page_size}&page_token={next_page_token}&projection={fields}'
+            url = f'https://api.microbiomedata.org/nmdcschema/{collection}?&filter={filter}&max_page_size={max_page_size}&page_token={next_page_token}&projection={fields}'
             response = requests.get(url)
             data_next = response.json()
             
