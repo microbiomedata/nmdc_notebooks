@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-##[v2.0.0] - 2024-10-17
+## [v2.0.0] - 2024-10-17
 
 ### Changed
 - Updated API calls in all notebooks so they are compliant with Berkeley schema changes
