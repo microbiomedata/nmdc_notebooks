@@ -1,3 +1,10 @@
+# This function provides a general-purpose way to make an API request to 
+# NMDC's runtime API. Note that this function will only return the first page 
+# of results. The function's input includes the name of the collection 
+# to access (e.g. biosample_set), the filter to be performed, the maximum page 
+# size, and a list of the fields to be retrieved. 
+# It returns the metadata as a dataframe.
+
 get_first_page_results <- function(collection, filter, max_page_size, fields) {
   og_url <- paste0(
       'https://api.microbiomedata.org/nmdcschema/', 
@@ -8,6 +15,15 @@ get_first_page_results <- function(collection, filter, max_page_size, fields) {
   
   return(response)
 }
+
+
+# The get_next_results function uses the get_first_page_results function, 
+# defined above, to retrieve the rest of the results from a call with multiple 
+# pages. It takes the same inputs as the get_first_page_results function above:
+# the name of the collection to be retrieved, the filter string, the maximum 
+# page size, and a list of the fields to be returned. This function returns the
+# results as a single dataframe (can be nested). It uses the next_page_token 
+# key in each page of results to retrieve the following page.
 
 get_next_results <- function(collection, filter_text, max_page_size, fields) {
   initial_data <- get_first_page_results(collection, filter_text, max_page_size, fields)
@@ -31,6 +47,14 @@ get_next_results <- function(collection, filter_text, max_page_size, fields) {
   
   return(results_df)
 }
+
+
+# This function constructs a different type of API request that takes a list of
+# IDs and uses them to retrieve related data. In short, it searches in 
+# `collection` for records that have elements of `id_list` in their 
+# `match_id_field`, then returns all `fields` for the matching records.
+# Fields such as `has_input` or `has_output` are likely to be useful values 
+# for `match_id_field`, though other fields are also usable.
 
 get_results_by_id <- function(collection, match_id_field, id_list, fields, max_id = 50) {
     # collection: the name of the collection to query
@@ -66,6 +90,12 @@ get_results_by_id <- function(collection, match_id_field, id_list, fields, max_i
     }
     output_df <- bind_rows(output)
 }
+
+
+# The functions above rely on knowing the MongoDB "collection" to search for 
+# relevant objects. But what if you don't know what the collection is called? 
+# This function takes an NMDC ID and returns the collection that the object is 
+# part of.
 
 get_collection_by_id <- function(id) {
   
