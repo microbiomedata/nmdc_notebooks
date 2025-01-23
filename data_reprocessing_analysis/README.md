@@ -1,11 +1,25 @@
-# Data reprocessing recommendations
+# Data Reprocessing Recommendations
 
-This folder includes one notebook in Python, that explore various ways of analyzing and visualizing for the data reprocessing study using the [IMG/JGI](https://img.jgi.doe.gov/cgi-bin/m/main.cgi) and NMDC workflow outputs. We will use data from several studies, SPRUCE, STEGEN reverbed sediment, CRESTED BUTTE, POPULUS and WET TROPICAL SOIL, that were recently reprocessed after re-iding compared to previous versions of the data. 
+This folder contains a Python notebook that explores various methods of analyzing and visualizing data from reprocessing studies. The notebook utilizes outputs from the [IMG/JGI](https://img.jgi.doe.gov/cgi-bin/m/main.cgi) and [NMDC workflows](https://data.microbiomedata.org). Data from the following studies are included in this analysis:
 
-outcomes achieved?
-1. Recommendations on data reprocessing when a new workflow component is added.
-2. Recommendations on data reprocessing when there is a major tool change in a workflow 
-3. Recommendations on data reprocessing when there are updates to existing tools or databases 
+- **SPRUCE**
+- **STEVEN Reverbed Sediment**
+- **CRESTED BUTTE**
+- **POPULUS**
+- **WET TROPICAL SOIL**
+
+These datasets have recently been reprocessed and re-id, allowing for comparisons to previous versions of the data.
+
+## Aims to Achieved
+
+The analysis aims to provide the following key recommendations for data reprocessing:
+
+1. **When a New Workflow Component is Added**  
+
+2. **When a Major Tool Change Occurs in a Workflow**  
+
+3. **When Existing Tools or Databases Are Updated**  
+
 
 ## Python
 - [Static rendered Jupyter notebook](https://nbviewer.org/github/microbiomedata/nmdc_notebooks/blob/main/data_reprocessing_analysis/python/data_reprocessing_analysis_visual_exploration.ipynb). _Viewing only, not editable_
