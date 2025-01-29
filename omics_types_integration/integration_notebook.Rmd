@@ -1,0 +1,490 @@
+---
+title: "Untitled"
+output: html_document
+date: "2024-11-26"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(jsonlite)
+library(KEGGREST)
+library(httr)
+library(circlize)
+```
+
+## Retrieve data from the NMDC database using API endpoints
+
+### Choose data to retrieve
+
+The NMDC data portal (https://data.microbiomedata.org/) allow us to filter data and samples according to many criteria. In this case, we use the Data Type filters (upset plot) to identify samples that have both metagenomics and metabolomics data. This returns 33 samples from the study "Riverbed sediment microbial communities from the Columbia River, Washington, USA" (https://data.microbiomedata.org/details/study/nmdc:sty-11-aygzgv51).
+
+### Retrieve data for Columbia River sediment study
+
+```{r}
+
+# Retrieve all data objects associated with this study
+dobj <- jsonlite::fromJSON('https://api.microbiomedata.org/data_objects/study/nmdc%3Asty-11-aygzgv51') %>% 
+  unnest() %>%
+
+  # Filter to biosamples with both metabolomics KO annotations AND metagenomics EC annotations
+  group_by(biosample_id) %>%
+  filter("Annotation Enzyme Commission" %in% data_object_type &
+           "GC-MS Metabolomics Results" %in% data_object_type &
+           "Annotation KEGG Orthology" %in% data_object_type & 
+           "Protein Report" %in% data_object_type) %>%
+  ungroup() %>%
+  
+  # Remove uninformative columns for simpler dataframe
+  select(-c(alternative_identifiers, in_manifest, was_generated_by))
+
+```
+
+### dev - choose an example biosample to outline notebook - iterate through samples later
+
+```{r}
+
+# Choose an example biosample to play around with
+example <- dobj %>% filter(biosample_id == "nmdc:bsm-13-peafgc08")
+
+example_gene_ec <- read_tsv("nmdc_wfmgan-11-ddkkwt71.1_ec.tsv", col_names = FALSE, show_col_types = FALSE) # example %>% filter(data_object_type == "Annotation Enzyme Commission") %>% pull(url) %>% read_tsv(col_names = FALSE, show_col_types = FALSE)
+example_gene_ko <- read_tsv("nmdc_wfmgan-11-ddkkwt71.1_ko.tsv", col_names = FALSE, show_col_types = FALSE)# example %>% filter(data_object_type == "Annotation KEGG Orthology") %>% pull(url) %>% read_tsv(col_names = FALSE, show_col_types = FALSE)
+example_metab <-  example %>% filter(data_object_type == "GC-MS Metabolomics Results") %>% pull(url) %>% read_csv(show_col_types = FALSE)
+example_protein <- example %>% filter(data_object_type == "Protein Report") %>% pull(url) %>% read_tsv(show_col_types = FALSE)
+
+metag_ko_unique <- sort(unique(example_gene_ko$X3))
+metag_ec_unique <- sort(unique(example_gene_ec$X3)) %>% str_subset(pattern = "-", negate = TRUE) # remove ids with dashes
+metab_ko_unique <- sort(unique(example_metab$`Kegg Compound ID`))
+prot_ec_unique <- sort(unique(example_protein$EC_Number)) %>% strsplit(",") %>% unlist()
+
+names(example_gene_ec) <- c("gene_id", "img_ko_flag", "EC", "percent_identity",
+                            "query_start", "query_end", "subj_start", "subj_end",
+                            "evalue", "bit_score", "align_length")
+
+names(example_gene_ko) <- c("gene_id", "img_ko_flag", "ko_term", "percent_identity",
+                            "query_start", "query_end", "subj_start", "subj_end",
+                            "evalue", "bit_score", "align_length")
+
+```
+
+```{r, eval = FALSE}
+
+# Count how many metabolites have corresponding genes according to EC numbers in KEGG
+# Randomly sample a few metabolites
+set.seed(413)
+metabolites <- sample(metab_ko_unique, 10)
+print(metabolites)
+
+# manually search each metabolite KEGG compound ID as an example until I get the license figured out
+ec_from_kegg <- list(
+  c("1.4.3.19", "3.1.1.1"),
+  c("2.6.1.103"),
+  c("1.1.1.47", "1.1.1.118", "1.1.1.119", "1.1.1.121", "1.1.1.359", "1.1.1.360", 
+    "1.1.3.4", "1.1.3.5", "1.1.5.2", "1.1.5.9", "1.1.99.28", "1.1.99.35", 
+    "2.3.1.132", "3.1.1.17"), 
+  c("1.1.1.62", "1.14.14.1", "2.4.1.17"),
+  c("2.5.1.76", "2.6.1.1", "4.1.1.15", "4.1.1.29", "4.1.1.122", 
+    "4.4.1.10", "4.4.1.25"),
+  c("1.1.1.59", "1.1.1.298", "1.1.1.-", "3.1.2.4", "6.2.1.36", "6.2.1.-"),
+  c(),
+  c(),
+  c("3.2.1.219", "5.4.99.11"),
+  c("3.5.1.31")
+  ) %>%
+  lapply(function(x) { paste0("EC:", x) })
+
+# How many of these have corresponding annotated gene in metagenome results
+data_frame(Metabolite_KEGG_CO = metabolites,
+           Metabolite_KEGG_EC = ec_from_kegg) %>%
+  mutate(In_Metag = vapply(.$Metabolite_KEGG_EC, function(x) { any(x %in% metag_ec_unique) },
+                           FUN.VALUE = TRUE))
+```
+
+### Explore KEGG
+
+```{r}
+
+# Get records for unique metabolite list
+# keggGet can only return 10 at a time
+
+# metabolite_records <- split(metab_ko_unique, ceiling(seq_along(metab_ko_unique)/10)) %>%
+#   lapply(FUN = keggGet) %>%
+#   unlist(recursive = FALSE) %>%
+#   setNames(metab_ko_unique)
+
+# Get EC ids for each metabolite
+ec_from_metabolites <- keggLink("enzyme", metab_ko_unique)
+
+ec_from_metabolites <- data.frame(compound_id = names(ec_from_metabolites),
+                                  ec_id = ec_from_metabolites) %>%
+  nest(.by = compound_id, .key = "ec_id")
+
+# Get modules for each metabolite
+modules_from_metabolites <- keggLink("module", metab_ko_unique)
+
+modules_from_metabolites <- data.frame(compound_id = names(modules_from_metabolites),
+                                       module_id = modules_from_metabolites) %>%
+  nest(.by = compound_id, .key = "module_id")
+
+
+metabolite_annotations <- data.frame(compound_id = paste0("cpd:", metab_ko_unique)) %>%
+  left_join(ec_from_metabolites) %>%
+  left_join(modules_from_metabolites) %>%
+  mutate(compound_trimmed = substring(compound_id, 5)) %>%
+  
+  mutate(In_Metag_Annotations = vapply(.$ec_id, function(x) { any(x$ec_id %in% tolower(metag_ec_unique)) },
+                           FUN.VALUE = TRUE)) %>%
+  mutate(In_Prot_Annotations = vapply(.$ec_id, function(x) { any(x$ec_id %in% tolower(prot_ec_unique)) },
+                           FUN.VALUE = TRUE))
+
+
+# combine protein annotations
+prot_annotations <- example_protein %>%
+  select(KO, EC_Number) %>%
+  mutate(EC_Number = trimws(strsplit(EC_Number, ","))) %>%
+  filter(if_any(everything(), ~ !is.na(.))) %>%
+  distinct()
+
+
+
+# combine gene annotations
+metag_annotations <- full_join(example_gene_ec, 
+                               example_gene_ko,
+                               by = join_by("gene_id")) %>%
+  distinct(ko_term, EC) %>%
+  filter(!is.na(EC)) %>%
+  nest(.by = ko_term, .key = "EC") %>%
+  
+  mutate(In_Metab_Annotations = vapply(.$EC, function(x) { any(tolower(x) %in% unique(unlist(metabolite_annotations$ec_id))) },
+                           FUN.VALUE = TRUE)) %>%
+  mutate(In_Prot_Annotations = ko_term %in% prot_annotations$KO) #%>%
+  
+  # filter for vis
+  #filter(In_Metab_Annotations | In_Prot_Annotations)
+
+
+
+
+# finish prot annotations
+prot_annotations <- prot_annotations %>% 
+  mutate(In_Metab_Annotations = vapply(.$EC_Number, function(x) { any(tolower(x) %in% unique(unlist(metabolite_annotations$ec_id))) },
+                           FUN.VALUE = TRUE)) %>%
+  mutate(In_Gene_Annotations = KO %in% metag_annotations$ko_term)
+  
+
+```
+
+
+```{r, eval = FALSE} 
+
+# Get records for unique KO list
+
+# modules_from_genes <- split(tolower(metag_ko_unique), ceiling(seq_along(tolower(metag_ko_unique))/50)) %>%
+#   lapply(FUN = function(x) { keggLink("module", x) }) %>%
+#   unlist()
+
+
+# enzymes_from_genes <- split(tolower(metag_ko_unique), ceiling(seq_along(tolower(metag_ko_unique))/50)) %>%
+#   lapply(FUN = function(x) { keggLink("enzyme", x) }) %>%
+#   unlist()
+
+
+
+
+compounds_from_proteins <- split(tolower(prot_ec_unique), ceiling(seq_along(tolower(prot_ec_unique))/50)) %>%
+  lapply(FUN = function(x) { keggLink("compound", x) }) %>%
+  unlist()
+
+
+
+
+
+
+
+modules_from_enzymes <- data.frame(ec_id = names(modules_from_enzymes),
+                                   module_id = modules_from_enzymes) %>%
+  mutate(ec_id = str_extract(ec_id, "ec:.+")) %>%
+  nest(.by = ec_id, .key = "module_id")
+  
+enzyme_records <- data.frame(ec_id = tolower(metag_ec_unique)) %>%
+  left_join(modules_from_enzymes)
+```
+
+
+```{r}
+
+# generate counts for the plot
+# scale
+
+largest_sector_xlim <- max(length(metag_annotations$ko_term),
+                           length(prot_annotations$KO),
+                           length(metabolite_annotations$compound_id))
+
+# gene sector
+
+gene_sector_xlim <- (length(metag_annotations$ko_term))
+
+gene_sector_prot_count <- (sum(metag_annotations$In_Prot_Annotations)) * (largest_sector_xlim / gene_sector_xlim)
+gene_sector_both_count <- (nrow(filter(metag_annotations, In_Metab_Annotations & In_Prot_Annotations))) * (largest_sector_xlim / gene_sector_xlim)
+gene_sector_metab_count <-(sum(metag_annotations$In_Metab_Annotations)) * (largest_sector_xlim / gene_sector_xlim)
+
+# prot sector
+
+prot_sector_xlim <- length(prot_annotations$KO)
+
+prot_sector_metab_count <- sum(prot_annotations$In_Metab_Annotations) * (largest_sector_xlim / prot_sector_xlim)
+prot_sector_both_count <- nrow(filter(prot_annotations, In_Metab_Annotations & In_Gene_Annotations)) * (largest_sector_xlim / prot_sector_xlim)
+prot_sector_gene_count <-sum(prot_annotations$In_Gene_Annotations) * (largest_sector_xlim / prot_sector_xlim)
+
+
+# metab sector
+
+metab_sector_xlim <- length(metabolite_annotations$compound_id)
+
+metab_sector_gene_count <- sum(metabolite_annotations$In_Metag_Annotations) * (metab_sector_xlim / prot_sector_xlim)
+metab_sector_both_count <- nrow(filter(metabolite_annotations, In_Metag_Annotations & In_Prot_Annotations)) * (metab_sector_xlim / prot_sector_xlim)
+metab_sector_prot_count <-sum(metabolite_annotations$In_Prot_Annotations) * (metab_sector_xlim / prot_sector_xlim)
+
+
+gene_sector_xlim <- largest_sector_xlim
+prot_sector_xlim <- largest_sector_xlim
+metab_sector_xlim <- largest_sector_xlim
+
+
+```
+
+
+
+```{r}
+
+# circos plots
+
+plot_sector_names <- c("genes", "proteins", "metabolites")
+ 
+# Create data
+data = data.frame(
+    sectors = c(rep("genes", gene_sector_xlim),
+               rep("proteins", prot_sector_xlim),
+               rep("metabolites", metab_sector_xlim)),
+    x = c(seq(1:gene_sector_xlim),
+          seq(1:prot_sector_xlim),
+          seq(1:metab_sector_xlim)),
+    y = c(seq(1:gene_sector_xlim),
+          seq(1:prot_sector_xlim),
+          seq(1:metab_sector_xlim))) %>%
+  mutate(sectors = factor(sectors, levels = plot_sector_names))
+ 
+# Initialize the plot.
+circos.initialize(factors = data$sectors, x = data$x)
+
+circos.labels(plot_sector_names, 
+              x = c(gene_sector_xlim/2, prot_sector_xlim/2, metab_sector_xlim/2), 
+              labels = c(paste0("genes (", nrow(metag_annotations), ")"),
+                         paste0("proteins (", nrow(prot_annotations), ")"), 
+                         paste0("metabolites (", nrow(metabolite_annotations), ")")),
+              side = "outside")
+
+ 
+# Build the regions of track #1
+circos.trackPlotRegion(factors = data$sectors, y=data$y, bg.col = c("tomato", "gold", "skyblue2") , bg.border = NA)
+ 
+# Add a link between a zone and another
+circos.link("genes", c(0, gene_sector_prot_count), 
+            "proteins", c(prot_sector_metab_count - prot_sector_both_count, 
+                          prot_sector_metab_count - prot_sector_both_count + prot_sector_gene_count), 
+            col = "#ff870099")
+
+
+circos.link("proteins", c(0, prot_sector_metab_count), 
+            "metabolites", c(metab_sector_gene_count - metab_sector_both_count,
+                             metab_sector_gene_count - metab_sector_both_count + metab_sector_prot_count), 
+            col = "#63ff0099")
+
+
+
+circos.link("metabolites", c(0, metab_sector_gene_count), 
+            "genes", c(gene_sector_prot_count - gene_sector_both_count,
+                       gene_sector_prot_count - gene_sector_both_count + gene_sector_metab_count), 
+            col = "#8b24cd99")
+
+```
+
+
+
+
+
+```{r}
+
+# Pick a module that is present in both metabolite and EC list. 
+
+all_modules_from_metabolites <- metabolite_records$module_id %>%
+  unlist() %>%
+  unique()
+
+all_modules_from_enzymes <- enzyme_records$module_id %>%
+  unlist() %>%
+  unique()
+
+a <- c(all_modules_from_enzymes, all_modules_from_metabolites)[duplicated(c(all_modules_from_enzymes, all_modules_from_metabolites))] %>% sort()
+
+
+# How much of that module is covered by biomolecules we have found?
+module_enzymes <- keggLink("enzyme", "md:M00124")
+module_compounds <- keggLink("compound", "md:M00124")
+
+sum(paste0("cpd:", metab_ko_unique) %in% module_compounds)
+length(module_compounds)
+
+sum(tolower(metag_ec_unique) %in% module_enzymes)
+length(module_enzymes)
+```
+
+
+
+
+
+
+
+
+
+
+## Color pathway diagrams
+
+```{r}
+
+"https://www.genome.jp/pathway/map00270+1.8.1.10+1.8.4.3+C00051"
+
+"https://www.genome.jp/module/M00338+K01758"
+
+# color by what % of samples had this gene/protein/metabolite
+# maybe just exclude 01 pathways (overviews) and go back to doing pathways
+
+# "glycine, serine, and threonine metabolism"
+# this highlights several EC numbers in green
+browseURL(mark.pathway.by.objects("path:eco00260", c("eco:b0002", "eco:b0003")))
+
+# "cysteine and methionine metabolism"
+# "path:ecxxxxx" highlights almost all the EC numbers in purple ish???
+# "path:ecoxxxxx" highlights some EC numbers in green
+# "path:mapxxxx" highlights nothing
+browseURL(mark.pathway.by.objects("path:map00270", "ec:1.8.1.10"))
+
+
+# appears identical to the first one but different url
+color.pathway.by.objects("path:eco00260", c("eco:b0002", "eco:b0003"), c("#ff0000", "#00ff00"), c("#ffff00","yellow"))
+
+# "cysteine and methionine metabolism"
+# no highlights
+browseURL(color.pathway.by.objects("map00270", "C00051", "#00FF00", "#0000FF"))
+
+
+
+```
+
+```{r}
+# mark.pathway.by.objects <- function(pathway.id, object.id.list)
+
+
+pathway.id <- "map00270"
+object.id.list <- c("1.8.1.10", "1.8.4.3", "C00051")
+
+pathway.id <- sub("^path:", "", pathway.id)
+object.id.list <- paste(object.id.list, collapse="+")
+pathway.id <- sprintf("%s+%s", pathway.id, object.id.list)
+
+url <- sprintf("https://www.kegg.jp/pathway/%s", pathway.id)
+
+res <- GET(url)
+stop_for_status(res, "GET KEGG pathway URL")
+content <- content(res, type="text", encoding = "UTF-8")
+lines <- strsplit(content, "\n", fixed=TRUE)[[1]]
+urlLine <- grep("<img src=\"/kegg", lines, value=TRUE)
+path <- strsplit(urlLine, '"', fixed=TRUE)[[1]][2]
+browseURL(sprintf("https://www.kegg.jp%s", path))
+
+```
+
+```{r}
+
+# color.pathway.by.objects <- function(pathway.id, object.id.list, fg.color.list, bg.color.list)
+
+pathway.id <- "map00270"
+object.id.list <- "C00022"
+fg.color.list <- "#00FF00"
+bg.color.list <- "#0000FF"
+
+pathway.id <- sub("^path:", "", pathway.id)
+if (!(length(object.id.list)==length(fg.color.list) &&
+      length(fg.color.list) == length(bg.color.list))) {
+    stop(paste("object.id.list, fg.color.list, and bg.color.list must",
+        "all be the same length."))
+}
+
+# format identifier/color list as expected by server
+payload <- paste(
+    c("#ids", object.id.list),
+    c("cols", paste(bg.color.list, fg.color.list, sep=',')),
+    sep="\t",
+    collapse="\n"
+)
+
+# fetch KEGG page from server, via a 302 redirect handled by httr
+# transparently
+# res <- POST(
+#     url = "https://www.kegg.jp/kegg-bin/show_pathway",
+#     body = list(
+#         map = pathway.id,
+#         multi_query = payload,
+#         mode = 'color'
+#     ),
+#     encode="multipart"
+# )
+res <- GET("https://www.genome.jp/kegg-bin/show_pathway?map00270/c00022%09%2300ff00,0000ff")
+res <- content(res, "text")
+
+# extract image URL from page
+img_matches <- regexpr(
+    "(?<=<img src=\")[^\"]+",
+    res,
+    perl=T
+)
+img_url <- regmatches(res, img_matches)
+if (length(img_url) < 1) {
+    stop(
+        "'color.pathway.by.objects()' ",
+        "failed to extract KEGG image path from response."
+    )
+}
+if (length(img_url) > 1) {
+    stop(
+        "'color.pathway.by.objects()' ",
+        "unexpectedly matched multiple KEGG image paths in response."
+    )
+}
+browseURL(sprintf("https://www.kegg.jp%s", img_url))
+
+
+
+
+
+```
+
+
+```{r}
+library(rvest)
+library(chromote)
+
+asdf <- read_html_live("https://www.genome.jp/kegg-bin/show_pathway?map00270/c00022%09%2300ff00,0000ff")$html_elements(css = "img")
+
+asdf <- read_html_live("https://www.genome.jp/")$html_elements(css = "img")
+
+
+
+url <- "https://www.forbes.com/top-colleges/"
+sess <- read_html_live(url)
+sess |> 
+  html_elements(".TopColleges2023_tableRowGroup__65RHn") |> 
+  html_elements(".TopColleges2023_tableRow__BYOSU")
+
+```
+
