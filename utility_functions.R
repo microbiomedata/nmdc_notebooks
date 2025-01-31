@@ -108,3 +108,22 @@ get_collection_by_id <- function(id) {
   # Extract the collection name from the response
   return(response$collection_name)
 }
+
+
+# This function returns all data objects associated with all biosamples associated 
+# with the provided study ID. Study IDs can be found in the URL of a study page in 
+# the NMDC data portal. For example, for the study shown at 
+# https://data.microbiomedata.org/details/study/nmdc:sty-11-8xdqsn54
+# study_id = "nmdc:sty-11-8xdqsn54"
+# study_id must include the "nmdc:" prefix.
+
+get_data_objects_for_study <- function(study_id) {
+  # Create API endpoint URL
+  url <- paste0("https://api.microbiomedata.org/data_objects/study/", study_id)
+  
+  # Retrieve the JSON result from the API endpoint URL
+  response <- jsonlite::fromJSON(URLencode(url, repeated = TRUE))
+  
+  # Response is a nested dataframe, return flattened
+  return(unnest(response))
+}
