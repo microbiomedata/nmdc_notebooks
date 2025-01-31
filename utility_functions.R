@@ -63,9 +63,9 @@ get_results_by_id <- function(collection, match_id_field, id_list, fields, max_p
     # fields: field names to return - a single string of field names separated by commas, no spaces
     # max_page_size: the maximum number of records to return in a single query
     
-    # If id_list is longer than max_id, split it into chunks of max_id
-    if (length(id_list) > max_id) {
-        id_list <- split(id_list, ceiling(seq_along(id_list)/max_id))
+    # If id_list is longer than max page size, split it into chunks of max_page_size
+    if (length(id_list) > max_page_size) {
+        id_list <- split(id_list, ceiling(seq_along(id_list)/max_page_size))
     } else {
         id_list <- list(id_list)
     }
