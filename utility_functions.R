@@ -17,7 +17,7 @@ get_first_page_results <- function(collection, filter, max_page_size, fields) {
 }
 
 
-# The get_next_results function uses the get_first_page_results function, 
+# The get_all_results function uses the get_first_page_results function, 
 # defined above, to retrieve the rest of the results from a call with multiple 
 # pages. It takes the same inputs as the get_first_page_results function above:
 # the name of the collection to be retrieved, the filter string, the maximum 
@@ -25,7 +25,7 @@ get_first_page_results <- function(collection, filter, max_page_size, fields) {
 # results as a single dataframe (can be nested). It uses the next_page_token 
 # key in each page of results to retrieve the following page.
 
-get_next_results <- function(collection, filter_text, max_page_size, fields) {
+get_all_results <- function(collection, filter_text, max_page_size, fields) {
   initial_data <- get_first_page_results(collection, filter_text, max_page_size, fields)
   results_df <- initial_data$resources
   
@@ -56,12 +56,12 @@ get_next_results <- function(collection, filter_text, max_page_size, fields) {
 # Fields such as `has_input` or `has_output` are likely to be useful values 
 # for `match_id_field`, though other fields are also usable.
 
-get_results_by_id <- function(collection, match_id_field, id_list, fields, max_id = 50) {
+get_results_by_id <- function(collection, match_id_field, id_list, fields, max_page_size = 50) {
     # collection: the name of the collection to query
     # match_id_field: the field in the new collection to match to the id_list
-    # id_list: a list of ids to filter on
-    # fields: a list of fields to return
-    # max_id: the maximum number of ids to include in a single query
+    # id_list: a vector of ids to filter on
+    # fields: field names to return - a single string of field names separated by commas, no spaces
+    # max_page_size: the maximum number of records to return in a single query
     
     # If id_list is longer than max_id, split it into chunks of max_id
     if (length(id_list) > max_id) {
@@ -81,10 +81,10 @@ get_results_by_id <- function(collection, match_id_field, id_list, fields, max_i
         filter = paste0('{"', match_id_field, '": {"$in": [', mongo_id_string, ']}}')
         
         # Get the data
-        output[[i]] = get_next_results(
+        output[[i]] = get_all_results(
             collection = collection,
             filter = filter,
-            max_page_size = max_id*3, #assumes that there are no more than 3 records per query
+            max_page_size = max_page_size, 
             fields = fields
         )
     }
