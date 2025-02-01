@@ -6,3 +6,5 @@ plotly==5.18.0
 dill==0.3.7
 statsmodels
 seaborn==0.13.2
+## NMDC python package
+nmdc_notebook_tools
