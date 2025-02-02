@@ -4,9 +4,15 @@ output: html_document
 date: "2024-11-26"
 ---
 
+This notebook is an example of how different omics data types may be linked via commonly used annotation vocabularies and investigated together. In this notebook we explore biomolecules and KEGG pathways identified in a set of samples that have processed metagenomic, metaproteomics, and metabolomics data available in the NMDC Data Portal.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
+library(dplyr, warn.conflicts = FALSE)
+library(tidyr, warn.conflicts = FALSE)
+library(stringr, warn.conflicts = FALSE)
+library(readr, warn.conflicts = FALSE)
+library(ggplot2, warn.conflicts = FALSE)
 library(jsonlite)
 library(KEGGREST)
 library(httr)
@@ -17,21 +23,39 @@ library(circlize)
 
 ### Choose data to retrieve
 
-The NMDC data portal (https://data.microbiomedata.org/) allow us to filter data and samples according to many criteria. In this case, we use the Data Type filters (upset plot) to identify samples that have both metagenomics and metabolomics data. This returns 33 samples from the study "Riverbed sediment microbial communities from the Columbia River, Washington, USA" (https://data.microbiomedata.org/details/study/nmdc:sty-11-aygzgv51).
+The NMDC data portal (https://data.microbiomedata.org/) allow us to filter data and samples according to many criteria. In this case, we use the Data Type filters (upset plot) to identify samples that have metagenomics, metaproteomics, and metabolomics data. This returns 33 samples from the study "Riverbed sediment microbial communities from the Columbia River, Washington, USA" (https://data.microbiomedata.org/details/study/nmdc:sty-11-aygzgv51).
 
 ### Retrieve data for Columbia River sediment study
 
-```{r}
+The study page linked above has the NMDC study identifier in the URL: `nmdc:sty-11-aygzgv51`. We will use the function `get_data_objects_for_study` (defined in `utility_functions.R`) to retrieve all records that represent data. This includes raw data files (e.g. FASTQ or mass spectra files) as well as processed data results output by the NMDC workflows.
+
+```{r pull-data}
 
 # Retrieve all data objects associated with this study
 dobj <- jsonlite::fromJSON('https://api.microbiomedata.org/data_objects/study/nmdc%3Asty-11-aygzgv51') %>% 
   unnest() %>%
+```
 
-  # Filter to biosamples with both metabolomics KO annotations AND metagenomics EC annotations
+In this case, we want to look at the processed data results for our three omics types of interest. Specifically, we want the files containing KEGG Orthology and Enzyme Commission annotations. 
+
+One way of further identifying a NMDC `DataObject` record is by looking at its slot `data_object_type` (https://microbiomedata.github.io/nmdc-schema/data_object_type/), which contains a value from `FileTypeEnum` (https://microbiomedata.github.io/nmdc-schema/FileTypeEnum/). Based on the descriptions of `FileTypeEnum` permissible values we want to filter for results files with the following `data_object_type` values:
+
+| Value | Description |
+|:-----:|:-----------:|
+|Annotation Enzyme Commission|Tab delimited file for EC annotation|
+|Annotation KEGG Orthology|Tab delimited file for KO annotation|
+|GC-MS Metabolomics Results|GC-MS-based metabolite assignment results table|
+|Protein Report|Filtered protein report file|
+
+```{r filter-data-objects}
+
+dobj <- dobj %>%
+  # Filter to biosamples with metagenome EC annotations, metagenome KO 
+  # annotations, metaproteomics results, and metabolomics results
   group_by(biosample_id) %>%
   filter("Annotation Enzyme Commission" %in% data_object_type &
-           "GC-MS Metabolomics Results" %in% data_object_type &
            "Annotation KEGG Orthology" %in% data_object_type & 
+           "GC-MS Metabolomics Results" %in% data_object_type &
            "Protein Report" %in% data_object_type) %>%
   ungroup() %>%
   
