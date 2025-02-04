@@ -144,7 +144,6 @@ def optimize_specFilt(initial_specprob_filter:float,forward_peptides:pd.DataFram
     :return: a minimize() output containing the optimize spectral probability value
     """
 
-
     # Miminize PepFDR
     initial_guess = [
         initial_specprob_filter,
