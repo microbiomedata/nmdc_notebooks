@@ -6,6 +6,8 @@ date: "2024-11-26"
 
 This notebook is an example of how different omics data types may be linked via commonly used annotation vocabularies and investigated together. In this notebook we explore biomolecules and KEGG pathways identified in a set of samples that have processed metagenomic, metaproteomics, and metabolomics data available in the NMDC Data Portal.
 
+NOTE: This notebook uses the KEGGREST R package to interface with the KEGG API. Use of the KEGG API and KEGGREST is restricted to academic users. Non-academic users must obtain a commercial license. (See https://www.kegg.jp/kegg/legal.html) The National Microbiome Data Collaborative use of KEGG is covered by license (license information).
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr, warn.conflicts = FALSE)
@@ -25,15 +27,15 @@ library(circlize)
 
 The NMDC data portal (https://data.microbiomedata.org/) allow us to filter data and samples according to many criteria. In this case, we use the Data Type filters (upset plot) to identify samples that have metagenomics, metaproteomics, and metabolomics data. This returns 33 samples from the study "Riverbed sediment microbial communities from the Columbia River, Washington, USA" (https://data.microbiomedata.org/details/study/nmdc:sty-11-aygzgv51).
 
-### Retrieve data for Columbia River sediment study
+### Retrieve and filter data for Columbia River sediment study
 
 The study page linked above has the NMDC study identifier in the URL: `nmdc:sty-11-aygzgv51`. We will use the function `get_data_objects_for_study` (defined in `utility_functions.R`) to retrieve all records that represent data. This includes raw data files (e.g. FASTQ or mass spectra files) as well as processed data results output by the NMDC workflows.
 
-```{r pull-data}
+```{r pull-data-object-records}
 
 # Retrieve all data objects associated with this study
 dobj <- jsonlite::fromJSON('https://api.microbiomedata.org/data_objects/study/nmdc%3Asty-11-aygzgv51') %>% 
-  unnest() %>%
+  unnest()
 ```
 
 In this case, we want to look at the processed data results for our three omics types of interest. Specifically, we want the files containing KEGG Orthology and Enzyme Commission annotations. 
@@ -63,74 +65,167 @@ dobj <- dobj %>%
   select(-c(alternative_identifiers, in_manifest, was_generated_by))
 
 ```
+head()
+### Download selected results files
+ 
+Now we can use the `url` slot from the filtered `DataObject` records to read in all of the files containing the annotations of interest.
 
-### dev - choose an example biosample to outline notebook - iterate through samples later
+```{r download-results}
 
-```{r}
+results_by_biosample <- dobj %>%
+  
+  # Filter to desired results file types and create one URL column per type
+  filter(data_object_type %in% c("Annotation Enzyme Commission", "Annotation KEGG Orthology",
+                                 "GC-MS Metabolomics Results", "Protein Report")) %>%
+  select(biosample_id, data_object_type, url) %>%
+  pivot_wider(names_from = data_object_type, values_from = url) %>%
+  
+  # Read in the TSV/CSV results files
+  # Add in column names from the IMG genome download README
+  mutate(metag_ec_results = lapply(
+    .$`Annotation Enzyme Commission`, 
+    function(x) { 
+      d <- read_tsv(x, col_names = FALSE, show_col_types = FALSE)
+      names(d) <- c("gene_id", "img_ko_flag", "EC", "percent_identity",
+                    "query_start", "query_end", "subj_start", "subj_end",
+                    "evalue", "bit_score", "align_length")
+      d
+      })) %>%
+  
+  mutate(metag_ko_results = lapply(
+    .$`Annotation KEGG Orthology`, 
+    function(x) { 
+      d <- read_tsv(x, col_names = FALSE, show_col_types = FALSE)
+      names(d) <- c("gene_id", "img_ko_flag", "ko_term", "percent_identity",
+                    "query_start", "query_end", "subj_start", "subj_end",
+                    "evalue", "bit_score", "align_length")
+      d
+      })) %>%
 
-# Choose an example biosample to play around with
-example <- dobj %>% filter(biosample_id == "nmdc:bsm-13-peafgc08")
+  mutate(metap_results = lapply(.$`Protein Report`, read_tsv, col_names = TRUE, show_col_types = FALSE)) %>%
+  mutate(metab_results = lapply(.$`GC-MS Metabolomics Results`, read_csv, col_names = TRUE, show_col_types = FALSE))
 
-example_gene_ec <- read_tsv("nmdc_wfmgan-11-ddkkwt71.1_ec.tsv", col_names = FALSE, show_col_types = FALSE) # example %>% filter(data_object_type == "Annotation Enzyme Commission") %>% pull(url) %>% read_tsv(col_names = FALSE, show_col_types = FALSE)
-example_gene_ko <- read_tsv("nmdc_wfmgan-11-ddkkwt71.1_ko.tsv", col_names = FALSE, show_col_types = FALSE)# example %>% filter(data_object_type == "Annotation KEGG Orthology") %>% pull(url) %>% read_tsv(col_names = FALSE, show_col_types = FALSE)
-example_metab <-  example %>% filter(data_object_type == "GC-MS Metabolomics Results") %>% pull(url) %>% read_csv(show_col_types = FALSE)
-example_protein <- example %>% filter(data_object_type == "Protein Report") %>% pull(url) %>% read_tsv(show_col_types = FALSE)
 
-metag_ko_unique <- sort(unique(example_gene_ko$X3))
-metag_ec_unique <- sort(unique(example_gene_ec$X3)) %>% str_subset(pattern = "-", negate = TRUE) # remove ids with dashes
-metab_ko_unique <- sort(unique(example_metab$`Kegg Compound ID`))
-prot_ec_unique <- sort(unique(example_protein$EC_Number)) %>% strsplit(",") %>% unlist()
-
-names(example_gene_ec) <- c("gene_id", "img_ko_flag", "EC", "percent_identity",
-                            "query_start", "query_end", "subj_start", "subj_end",
-                            "evalue", "bit_score", "align_length")
-
-names(example_gene_ko) <- c("gene_id", "img_ko_flag", "ko_term", "percent_identity",
-                            "query_start", "query_end", "subj_start", "subj_end",
-                            "evalue", "bit_score", "align_length")
 ```
 
-
-### Get IDs from other KEGG databases
+Each of the downloaded data files contains lots of information including the KO, EC, or KEGG Compound identifiers.
 
 ```{r}
 
-# Get records for unique metabolite list
-# keggGet can only return 10 at a time
+head(results_by_biosample$metag_ko_results[[1]])
 
-# Get EC ids for each metabolite
-ec_from_metabolites <- keggLink("enzyme", metab_ko_unique)
+```
 
-ec_from_metabolites <- data.frame(compound_id = names(ec_from_metabolites),
-                                  ec_id = ec_from_metabolites) %>%
-  nest(.by = compound_id, .key = "ec_id")
+From each results table we can extract the unique list of genes/proteins/metabolites identified in that sample.
 
-# Get modules for each metabolite
-modules_from_metabolites <- keggLink("module", metab_ko_unique)
+```{r unique-identifications}
 
-modules_from_metabolites <- data.frame(compound_id = names(modules_from_metabolites),
-                                       module_id = modules_from_metabolites) %>%
-  nest(.by = compound_id, .key = "module_id")
+# Metagenome annotations - Enzyme Commission
+metag_ec_unique_df <- results_by_biosample %>%
+  distinct(biosample_id, .keep_all = TRUE) %>%
 
-
-# Get pathways for each metabolite
-pathways_from_metabolites <- keggLink("pathway", metab_ko_unique)
-
-pathways_from_metabolites <- data.frame(compound_id = names(pathways_from_metabolites),
-                                        pathway_id = pathways_from_metabolites) %>%
-  nest(.by = compound_id, .key = "pathway_id")
+  # Save a unique vector of annotations by type for each sample for searching later
+  mutate(metag_ec_unique = lapply(.$metag_ec_results, 
+                                  FUN = function(x) { sort(unique(x$EC)) })) %>%
+  select(biosample_id, metag_ec_results, metag_ec_unique)
 
 
-metabolite_annotations <- data.frame(compound_id = paste0("cpd:", metab_ko_unique)) %>%
-  left_join(ec_from_metabolites) %>%
-  left_join(modules_from_metabolites) %>%
-  left_join(pathways_from_metabolites) %>%
-  mutate(compound_trimmed = substring(compound_id, 5)) %>%
-  
-  mutate(In_Metag_Annotations = vapply(.$ec_id, function(x) { any(x$ec_id %in% tolower(metag_ec_unique)) },
-                           FUN.VALUE = TRUE)) %>%
-  mutate(In_Prot_Annotations = vapply(.$ec_id, function(x) { any(x$ec_id %in% tolower(prot_ec_unique)) },
-                           FUN.VALUE = TRUE))
+
+# Metagenome annotations - KEGG Orthology
+metag_ko_unique_df <- results_by_biosample %>%
+  distinct(biosample_id, .keep_all = TRUE) %>%
+
+  # Save a unique vector of annotations by type for each sample for searching later
+  mutate(metag_ko_unique = lapply(.$metag_ko_results, 
+                                  FUN = function(x) { sort(unique(x$ko_term)) })) %>%
+  select(biosample_id, metag_ko_results, metag_ko_unique)
+
+
+
+# Metaproteome annotations - Enzyme Commission
+metap_ec_unique_df <- results_by_biosample %>%
+  distinct(biosample_id, .keep_all = TRUE) %>%
+
+  # Save a unique vector of annotations by type for each sample for searching later
+  mutate(metap_ec_unique = lapply(
+    .$metap_results, 
+    FUN = function(x) { sort(unique(x$EC_Number)) %>% strsplit(",") %>% unlist() })) %>%
+  select(biosample_id, metap_results, metap_ec_unique)
+
+
+
+# Metabolome annotations - KEGG Compound
+metab_ko_unique_df <- results_by_biosample %>%
+  distinct(biosample_id, .keep_all = TRUE) %>%
+
+  # Save a unique vector of annotations by type for each sample for searching later
+  mutate(metab_ko_unique = lapply(.$metab_results, 
+                                  FUN = function(x) { sort(unique(x$`Kegg Compound ID`)) })) %>%
+  select(biosample_id, metab_results, metab_ko_unique)
+
+
+# rm(results_by_biosample)
+
+```
+
+## Get IDs from other KEGG databases
+
+Now we will use the KEGGREST package (available on Bioconductor) to make calls to the KEGG API. Using the annotations provided in the workflow results, we can look up the corresponding annotations in other KEGG databases to start drawing connections between biomolecule identifications.
+
+### Gather metabolite information
+
+First we will find all of the Enzyme Commission numbers available for each identified compound. These EC numbers represent enzymes involved in recorded reactions that produce the compound of interest.
+
+```{r get-other-metabolite-info}
+
+# For each sample, assemble a dataframe of metabolite information
+
+# Pre-allocate an empty list for metabolite dataframes
+metabolite_annotations_list <- vector(mode = "list", length = length(metab_ko_unique_df$biosample_id))
+
+for (biosample in 1:length(metab_ko_unique_df$biosample_id)) {
+
+  unique_metabolites <- metab_ko_unique_df$metab_ko_unique[[biosample]]
+
+  # Get EC ids for each metabolite
+  ec_from_metabolites <- keggLink("enzyme", unique_metabolites)
+
+  ec_from_metabolites <- data.frame(compound_id = names(ec_from_metabolites),
+                                    ec_id = ec_from_metabolites) %>%
+    nest(.by = compound_id, .key = "ec_id")
+
+  # Get modules for each metabolite
+  modules_from_metabolites <- keggLink("module", unique_metabolites)
+
+  modules_from_metabolites <- data.frame(compound_id = names(modules_from_metabolites),
+                                        module_id = modules_from_metabolites) %>%
+    nest(.by = compound_id, .key = "module_id")
+
+
+  # Get pathways for each metabolite
+  pathways_from_metabolites <- keggLink("pathway", unique_metabolites)
+
+  pathways_from_metabolites <- data.frame(compound_id = names(pathways_from_metabolites),
+                                          pathway_id = pathways_from_metabolites) %>%
+    nest(.by = compound_id, .key = "pathway_id")
+
+  # Join compound, EC, module, pathway IDs into one dataframe
+  metabolite_annotations <- data.frame(compound_id = paste0("cpd:", metab_ko_unique)) %>%
+    left_join(ec_from_metabolites) %>%
+    left_join(modules_from_metabolites) %>%
+    left_join(pathways_from_metabolites) %>%
+    mutate(compound_trimmed = substring(compound_id, 5)) %>%
+    
+    # Search for the EC IDs in the unique identification lists 
+    # for the other biomolecules in this sample
+    mutate(In_Metag_Annotations = vapply(.$ec_id, function(x) { any(x$ec_id %in% tolower(metag_ec_unique_df$metag_ec_unique[[biosample]])) },
+                            FUN.VALUE = TRUE)) %>%
+    mutate(In_Prot_Annotations = vapply(.$ec_id, function(x) { any(x$ec_id %in% tolower(metap_ec_unique_df$metap_ec_unique[[biosample]])) },
+                            FUN.VALUE = TRUE))
+
+  # Save dataframe to list
+  metabolite_annotations_list[[biosample]] <- metabolite_annotations
+}
 ```
 
 
