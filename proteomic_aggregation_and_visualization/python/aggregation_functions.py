@@ -1,6 +1,7 @@
 #!venv/bin python
 
 #packages used in these functions
+import importlib.util
 import requests
 import pandas as pd
 from io import StringIO
@@ -11,10 +12,23 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
+def import_relative_module(module_name:str,path:str):
+
+    """
+    Import a module given a relative path and module name (specifically for when a .py is located in another folder)
+    """
+
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    
+    return module
+
+
 def findproteinname(s):
 
     """
-    Define a function to detect protein type (forward, reverse, contaminant) from a protein name (s)
+    Define a function that detects the protein type (forward, reverse, contaminant) based on a protein name (s)
     """
 
     p1 = re.compile(r"^Contaminant_")
@@ -32,9 +46,7 @@ def findproteinname(s):
 def sequence_nopostpre(s):
 
     """
-    Peptide Sequence with Mods is the sequence without prefix and postfix but with oxidation
-    :param s:
-    :return:
+    Function that takes a peptide sequence (s) and returns the same sequence but without any prefix and postfix
     """
     p = re.compile(r"\.(?P<cleanseq>[A-Z\*@#]+)\.")
     m = p.search(s)
@@ -95,7 +107,7 @@ def tsv_extract(identifier_col:str,url_col:str,extract_cols:list,pd_df:pd.DataFr
 def specFiltValue(Params, reversed_peptides:pd.DataFrame, forward_peptides:pd.DataFrame):
 
     """
-    Function to compute the FDR and return a value for optimization.
+    Function that implements a spectral probability filter (Params:specprob) and returns a value that weighs the number of forward peptides retained with the proximity of the data set to a 0.05 FDR (filter_value)
     
     :param Params: List or tuple containing the specprob (the log10 value for ease of computation)
     :param reversed_peptides: DataFrame of reversed peptides (not optimized)
@@ -136,7 +148,7 @@ def specFiltValue(Params, reversed_peptides:pd.DataFrame, forward_peptides:pd.Da
 def optimize_specFilt(initial_specprob_filter:float,forward_peptides:pd.DataFrame,reversed_peptides:pd.DataFrame):
 
     """
-    Function to return a spectral probablity value that optimizes FDR via the specFiltValue function.
+    Function returns a spectral probability filter that optimizes the number of forward peptides retained given a false discovery rate of 0.05 (via the specFiltValue function)
 
     :param initial_specprob_filter: float of a spectral probability filter value to start with
     :param reversed_peptides: DataFrame of reversed peptides (not optimized)

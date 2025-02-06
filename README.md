@@ -7,7 +7,7 @@ Notebooks that are ready for use and exploration.
 - [Bio-Scales Biogeochemical MetaData](https://github.com/microbiomedata/nmdc_notebooks/tree/main/bioscales_biogeochemical_metadata)
 - [NEON Soil Microbial Community Composition](https://github.com/microbiomedata/nmdc_notebooks/tree/main/taxonomic_dist_by_soil_layer)
 - [Natural Organic Matter Composition by Sample Type](https://github.com/microbiomedata/nmdc_notebooks/tree/main/NOM_visualizations)
-- [Proteomic Data Aggregation and Visualization]()
+- [Proteomic Data Aggregation and Visualization](https://github.com/microbiomedata/nmdc_notebooks/tree/main/proteomic_aggregation_and_visualization)
 
 ## Overview 
 
