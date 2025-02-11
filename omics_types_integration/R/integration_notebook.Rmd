@@ -14,6 +14,7 @@ library(dplyr, warn.conflicts = FALSE)
 library(tidyr, warn.conflicts = FALSE)
 library(stringr, warn.conflicts = FALSE)
 library(readr, warn.conflicts = FALSE)
+library(purrr)
 library(ggplot2, warn.conflicts = FALSE)
 library(jsonlite)
 library(KEGGREST)
@@ -210,11 +211,11 @@ for (biosample in 1:length(metab_ko_unique_df$biosample_id)) {
     nest(.by = compound_id, .key = "pathway_id")
 
   # Join compound, EC, module, pathway IDs into one dataframe
-  metabolite_annotations <- data.frame(compound_id = paste0("cpd:", metab_ko_unique)) %>%
+  metabolite_annotations <- data.frame(compound_id = paste0("cpd:", unique_metabolites)) %>%
     left_join(ec_from_metabolites) %>%
     left_join(modules_from_metabolites) %>%
     left_join(pathways_from_metabolites) %>%
-    mutate(compound_trimmed = substring(compound_id, 5)) %>%
+    mutate(compound_trimmed = unique_metabolites) %>%
     
     # Search for the EC IDs in the unique identification lists 
     # for the other biomolecules in this sample
@@ -229,137 +230,165 @@ for (biosample in 1:length(metab_ko_unique_df$biosample_id)) {
 ```
 
 
+
+
+
+
 ```{r}
 
-# Gather protein annotations from workflow output
-prot_annotations <- example_protein %>%
-  select(KO, EC_Number) %>%
-  rename(ko_id = KO) %>%
-  mutate(EC_Number = trimws(strsplit(EC_Number, ","))) %>%
-  filter(if_any(everything(), ~ !is.na(.))) %>%
-  distinct() %>%
-  mutate(ko_trimmed = substring(ko_id, 4))
+# For each sample, assemble a dataframe of protein information
 
-# Get modules for each protein
-modules_from_proteins <- keggLink("module", prot_annotations$ko_trimmed)
+# Pre-allocate an empty list for protein dataframes
+protein_annotations_list <- vector(mode = "list", length = length(metap_ec_unique_df$biosample_id))
 
-modules_from_proteins <- data.frame(ko_id = toupper(names(modules_from_proteins)),
-                                    module_id = modules_from_proteins) %>%
-  nest(.by = ko_id, .key = "module_id")
+for (biosample in 1:length(metap_ec_unique_df$biosample_id)) {
 
-
-# Get pathways for each protein
-pathways_from_proteins <- keggLink("pathway", prot_annotations$ko_trimmed)
-
-pathways_from_proteins <- data.frame(ko_id = toupper(names(pathways_from_proteins)),
-                                     pathway_id = pathways_from_proteins) %>%
-  nest(.by = ko_id, .key = "pathway_id")
-
-
-
-
-
-
-# Gather gene annotations from workflow output
-metag_annotations <- full_join(example_gene_ec, 
-                               example_gene_ko,
-                               by = join_by("gene_id")) %>%
-  distinct(ko_term, EC) %>%
-  filter(!is.na(EC)) %>%
-  nest(.by = ko_term, .key = "EC") %>%
-  rename(ko_id = ko_term, ec_id = EC) %>%
+  # Gather protein annotations from workflow output
+  protein_annotations <- metap_ec_unique_df$metap_results[[biosample]] %>%
+    select(KO, EC_Number) %>%
+    rename(ko_id = KO, ec_id = EC_Number) %>%
+    mutate(ec_id = trimws(strsplit(ec_id, ","))) %>%
+    filter(if_any(everything(), ~ !is.na(.))) %>%
+    distinct() %>%
+    mutate(ko_trimmed = substring(ko_id, 4))
   
-  mutate(ko_trimmed = substring(ko_id, 4)) %>%
-
-  mutate(In_Metab_Annotations = vapply(.$ec_id, function(x) { any(tolower(x) %in% unique(unlist(metabolite_annotations$ec_id))) },
-                           FUN.VALUE = TRUE)) %>%
-  mutate(In_Prot_Annotations = ko_id %in% prot_annotations$ko_id)
-
-
-# Get modules for each gene
-# Break up vector of KO IDs, HTTP request URL gets too long
-modules_from_genes <- split(metag_annotations$ko_trimmed, 
-                            ceiling(seq_along(metag_annotations$ko_trimmed)/50)) %>%
-  lapply(FUN = function(x) { keggLink("module", x) }) %>%
-  list_c()
-
-
-modules_from_genes <- data.frame(ko_id = toupper(names(modules_from_genes)),
-                                 module_id = modules_from_genes) %>%
-  nest(.by = ko_id, .key = "module_id")
-
-
-# Get pathways for each gene
-pathways_from_genes <- split(metag_annotations$ko_trimmed, 
-                            ceiling(seq_along(metag_annotations$ko_trimmed)/50)) %>%
-  lapply(FUN = function(x) { keggLink("pathway", x) }) %>%
-  list_c()
-
-pathways_from_genes <- data.frame(ko_id = toupper(names(pathways_from_genes)),
-                                  pathway_id = pathways_from_genes) %>%
-  nest(.by = ko_id, .key = "pathway_id")
-
-
-# Add modules and pathways to gene annotations dataframe
-metag_annotations <- metag_annotations %>%
-  left_join(modules_from_genes) %>%
-  left_join(pathways_from_genes)
-
-
-
-
-
-
-# Add shared biomolecule identification counts to protein annotations dataframe
-prot_annotations <- prot_annotations %>% 
-  mutate(In_Metab_Annotations = vapply(.$EC_Number, function(x) { any(tolower(x) %in% unique(unlist(metabolite_annotations$ec_id))) },
-                           FUN.VALUE = TRUE)) %>%
-  mutate(In_Gene_Annotations = ko_id %in% metag_annotations$ko_id) %>%
+  unique_proteins <- protein_annotations$ko_trimmed
   
-  # Add modules and pathways to protein annotations dataframe
-  left_join(modules_from_proteins) %>%
-  left_join(pathways_from_proteins)
+  # Get modules for each protein
+  modules_from_proteins <- keggLink("module", unique_proteins)
   
+  modules_from_proteins <- data.frame(ko_id = toupper(names(modules_from_proteins)),
+                                      module_id = modules_from_proteins) %>%
+    nest(.by = ko_id, .key = "module_id")
+  
+  
+  # Get pathways for each protein
+  pathways_from_proteins <- keggLink("pathway", unique_proteins)
+  
+  pathways_from_proteins <- data.frame(ko_id = toupper(names(pathways_from_proteins)),
+                                       pathway_id = pathways_from_proteins) %>%
+    nest(.by = ko_id, .key = "pathway_id")
+
+  
+  # Join KO, EC, module, pathway IDs into one dataframe
+  protein_annotations <- protein_annotations %>%
+    left_join(modules_from_proteins) %>%
+    left_join(pathways_from_proteins) %>%
+    
+    # Search for corresponding biomolecules in other data types for this sample
+    mutate(In_Metab_Annotations = vapply(.$ec_id, function(x) { any(tolower(x) %in% unique(unlist(metabolite_annotations_list[[biosample]]$ec_id))) },
+                                         FUN.VALUE = TRUE)) %>%
+    mutate(In_Metag_Annotations = vapply(.$ko_id, function(x) { any(x %in% unique(metag_ko_unique_df$metag_ko_unique[[biosample]])) },
+                                         FUN.VALUE = TRUE))
+  
+  # Save dataframe to list
+  protein_annotations_list[[biosample]] <- protein_annotations
+}
 
 ```
 
-###### vis common biomolecule identifications
+
+```{r}
+
+# For each sample, assemble a dataframe of gene information
+
+# Pre-allocate an empty list for gene dataframes
+gene_annotations_list <- vector(mode = "list", length = length(metag_ko_unique_df$biosample_id))
+
+for (biosample in 1:1) { #length(metag_ko_unique_df$biosample_id)) {
+
+  # Gather gene annotations from workflow output
+  # Join KO and EC annotation dataframes using the NMDC workflow generated "gene_id"
+  metag_annotations <- full_join(metag_ko_unique_df$metag_ko_results[[biosample]], 
+                                 metag_ec_unique_df$metag_ec_results[[biosample]],
+                                 by = join_by("gene_id")) %>%
+    distinct(ko_term, EC) %>%
+    filter(!is.na(EC)) %>%
+    nest(.by = ko_term, .key = "EC") %>%
+    rename(ko_id = ko_term, ec_id = EC) %>%
+    
+    mutate(ko_trimmed = substring(ko_id, 4)) %>%
+  
+    mutate(In_Metab_Annotations = vapply(.$ec_id, function(x) { any(tolower(x) %in% unique(unlist(metabolite_annotations_list[[biosample]]$ec_id))) },
+                             FUN.VALUE = TRUE)) %>%
+    mutate(In_Prot_Annotations = ko_id %in% protein_annotations_list[[biosample]]$ko_id)
+  
+  
+  # Get modules for each gene
+  # Break up vector of KO IDs, HTTP request URL gets too long
+  modules_from_genes <- split(metag_annotations$ko_trimmed, 
+                              ceiling(seq_along(metag_annotations$ko_trimmed)/50)) %>%
+    lapply(FUN = function(x) { keggLink("module", x) }) %>%
+    list_c()
+  
+  
+  modules_from_genes <- data.frame(ko_id = toupper(names(modules_from_genes)),
+                                   module_id = modules_from_genes) %>%
+    nest(.by = ko_id, .key = "module_id")
+  
+  
+  # Get pathways for each gene
+  pathways_from_genes <- split(metag_annotations$ko_trimmed, 
+                              ceiling(seq_along(metag_annotations$ko_trimmed)/50)) %>%
+    lapply(FUN = function(x) { keggLink("pathway", x) }) %>%
+    list_c()
+  
+  pathways_from_genes <- data.frame(ko_id = toupper(names(pathways_from_genes)),
+                                    pathway_id = pathways_from_genes) %>%
+    nest(.by = ko_id, .key = "pathway_id")
+  
+  
+  # Add modules and pathways to gene annotations dataframe
+  metag_annotations <- metag_annotations %>%
+    left_join(modules_from_genes) %>%
+    left_join(pathways_from_genes)
+  
+  gene_annotations_list[[biosample]] <- metag_annotations
+
+}
+
+```
+
+## Visualize shared biomolecule identifications
+
+Generate sector and arc start/end values for the circos plot
 
 ```{r circos-counts}
 
-# generate counts for the plot
-# scale
+# Select an example biosample
+example_gene <- gene_annotations_list[[2]]
+example_prot <- protein_annotations_list[[2]]
+example_metab <- metabolite_annotations_list[[2]]
 
-largest_sector_xlim <- max(length(metag_annotations$ko_id),
-                           length(prot_annotations$ko_id),
-                           length(metabolite_annotations$compound_id))
+# Scale sectors so that arc widths are proportional rather than absolute
+# There are way more gene identifications than others so it gets hard to visualize as absolute counts
+largest_sector_xlim <- max(length(example_gene$ko_id),
+                           length(example_prot$ko_id),
+                           length(example_metab$compound_id))
 
-# gene sector
+# Gene sector
+gene_sector_xlim <- (length(example_gene$ko_id))
 
-gene_sector_xlim <- (length(metag_annotations$ko_id))
+gene_sector_prot_count <- (sum(example_gene$In_Prot_Annotations)) * (largest_sector_xlim / gene_sector_xlim)
+gene_sector_both_count <- (nrow(filter(example_gene, In_Metab_Annotations & In_Prot_Annotations))) * (largest_sector_xlim / gene_sector_xlim)
+gene_sector_metab_count <-(sum(example_gene$In_Metab_Annotations)) * (largest_sector_xlim / gene_sector_xlim)
 
-gene_sector_prot_count <- (sum(metag_annotations$In_Prot_Annotations)) * (largest_sector_xlim / gene_sector_xlim)
-gene_sector_both_count <- (nrow(filter(metag_annotations, In_Metab_Annotations & In_Prot_Annotations))) * (largest_sector_xlim / gene_sector_xlim)
-gene_sector_metab_count <-(sum(metag_annotations$In_Metab_Annotations)) * (largest_sector_xlim / gene_sector_xlim)
+# Prot sector
+prot_sector_xlim <- length(example_prot$ko_id)
 
-# prot sector
-
-prot_sector_xlim <- length(prot_annotations$ko_id)
-
-prot_sector_metab_count <- sum(prot_annotations$In_Metab_Annotations) * (largest_sector_xlim / prot_sector_xlim)
-prot_sector_both_count <- nrow(filter(prot_annotations, In_Metab_Annotations & In_Gene_Annotations)) * (largest_sector_xlim / prot_sector_xlim)
-prot_sector_gene_count <-sum(prot_annotations$In_Gene_Annotations) * (largest_sector_xlim / prot_sector_xlim)
-
-
-# metab sector
-
-metab_sector_xlim <- length(metabolite_annotations$compound_id)
-
-metab_sector_gene_count <- sum(metabolite_annotations$In_Metag_Annotations) * (metab_sector_xlim / prot_sector_xlim)
-metab_sector_both_count <- nrow(filter(metabolite_annotations, In_Metag_Annotations & In_Prot_Annotations)) * (metab_sector_xlim / prot_sector_xlim)
-metab_sector_prot_count <-sum(metabolite_annotations$In_Prot_Annotations) * (metab_sector_xlim / prot_sector_xlim)
+prot_sector_metab_count <- sum(example_prot$In_Metab_Annotations) * (largest_sector_xlim / prot_sector_xlim)
+prot_sector_both_count <- nrow(filter(example_prot, In_Metab_Annotations & In_Gene_Annotations)) * (largest_sector_xlim / prot_sector_xlim)
+prot_sector_gene_count <-sum(example_prot$In_Gene_Annotations) * (largest_sector_xlim / prot_sector_xlim)
 
 
+# Metab sector
+metab_sector_xlim <- length(example_metab$compound_id)
+
+metab_sector_gene_count <- sum(example_metab$In_Metag_Annotations) * (metab_sector_xlim / prot_sector_xlim)
+metab_sector_both_count <- nrow(filter(example_metab, In_Metag_Annotations & In_Prot_Annotations)) * (metab_sector_xlim / prot_sector_xlim)
+metab_sector_prot_count <-sum(example_metab$In_Prot_Annotations) * (metab_sector_xlim / prot_sector_xlim)
+
+# Reset sector sizes to scaled value
 gene_sector_xlim <- largest_sector_xlim
 prot_sector_xlim <- largest_sector_xlim
 metab_sector_xlim <- largest_sector_xlim
@@ -367,9 +396,10 @@ metab_sector_xlim <- largest_sector_xlim
 
 ```
 
-```{r circos}
 
-# circos plots
+Generate a chord diagram showing which biomolecules in each omics type have connections to each other omics type
+
+```{r circos}
 
 plot_sector_names <- c("genes", "proteins", "metabolites")
  
@@ -420,6 +450,23 @@ circos.link("metabolites", c(0, metab_sector_gene_count),
             col = "#8b24cd99")
 
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ###### pathway coverage
 
