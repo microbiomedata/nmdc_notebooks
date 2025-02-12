@@ -22,5 +22,5 @@ The analysis aims to provide the following key recommendations for data reproces
 
 
 ## Python
-- [Static rendered Jupyter notebook](https://nbviewer.org/github/microbiomedata/nmdc_notebooks/blob/main/data_reprocessing_analysis/python/data_reprocessing_analysis_visual_exploration.ipynb). _Viewing only, not editable_
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/data_reprocessing_analysis/python/data_reprocessing_analysis_visual_exploration.ipynb).This is the recommended way to interact with the notebook. _You need a google account to use this option_
+- [Static rendered Jupyter notebook](https://nbviewer.org/github/microbiomedata/nmdc_notebooks/blob/data_reprocessing_analysis/data_reprocessing_analysis/python/data_reprocessing_analysis_visual_exploration.ipynb). _Viewing only, not editable_
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/data_reprocessing_analysis/data_reprocessing_analysis/python/data_reprocessing_analysis_visual_exploration.ipynb).This is the recommended way to interact with the notebook. _You need a google account to use this option_
