@@ -8,5 +8,4 @@ This folder includes two notebooks, in R and Python, that explore various ways o
 
 ## Python
 - [Static rendered Jupyter notebook](https://nbviewer.org/github/microbiomedata/nmdc_notebooks/blob/main/NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb). _Viewing only, not editable_
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/123-python-api-to-package/NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb).This is the recommended way to interact with the notebook. _You need a google account to use this option_
-- [![Open In NbViewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.org/github/microbiomedata/nmdc_notebooks/blob/123-python-api-to-package/NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb). This is another recommended way to interact with the notebook.
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb).This is the recommended way to interact with the notebook. _You need a google account to use this option_
