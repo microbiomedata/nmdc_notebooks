@@ -52,8 +52,65 @@ def sequence_nopostpre(s):
     m = p.search(s)
     return m.group("cleanseq")
 
+def tsv_extract(url:str):
 
-def tsv_extract(identifier_col:str,url_col:str,extract_cols:list,pd_df:pd.DataFrame,header=None):
+    """
+    Define a function to extract a tsv from a url
+    """
+
+    try:
+    
+        # get TSV data using URL
+        response = requests.get(url)
+        tsv_data = StringIO(response.text)
+        tsv_df = pd.read_csv(tsv_data,sep='\t',header='infer')
+        tsv_data.close()
+
+    #if error print info
+    except Exception as e:
+        print(f"An error occurred fetching data from {url}: {e}")
+
+    return pd.DataFrame(tsv_df)
+
+
+
+def split_to_dict(row):
+
+    """
+    split the string into a dictionary and create new columns using title=value as format. specifically for gff_extract()
+    """
+
+    return dict(item.split('=') for item in row.split(';'))
+
+
+
+def gff_extract_features(url:str):
+
+    """
+    Define a function to extract the feature annotations column from gff (9th column, equivalent to [8] in python)
+    """
+
+    try:
+    
+        # get TSV data using URL
+        response = requests.get(url)
+        tsv_data = StringIO(response.text)
+        tsv_df = pd.read_csv(tsv_data,sep='\t',header=None,dtype={0:'string',1:'string',2:'string',3:'int64',4:'int64',5:'string',6:'string',7:'string',8:'string'})
+        tsv_data.close()
+
+        #create new columns for the listed values in last/feature column
+        tsv_df = tsv_df.iloc[:,8].apply(split_to_dict).apply(pd.Series)
+
+
+    #if error print info
+    except Exception as e:
+        print(f"An error occurred fetching data from {url}: {e}")
+
+    return pd.DataFrame(tsv_df)
+
+
+
+def iterate_file_extract(identifier_col:str,url_col:str,extract_cols:list, pd_df:pd.DataFrame, file_type:str, filter_col=None, filter_values=None):
 
     """
     Define a function to take a pandas dataframe (pd_df) with a column of tsv file urls (url_col) and a dataset identifier (identifier_col) and generate an aggregated pandas dataframe of the desired tsv columns (extract_cols).
@@ -71,18 +128,21 @@ def tsv_extract(identifier_col:str,url_col:str,extract_cols:list,pd_df:pd.DataFr
         try:
         
             # get TSV data using URL
-            response = requests.get(url)
-            tsv_data = StringIO(response.text)
-            tsv_df = pd.read_csv(tsv_data,sep='\t',header=header)
-            tsv_data.close()
+            if file_type == 'tsv':
+                tsv_df = tsv_extract(url)
+            if file_type == 'gff':
+                tsv_df = gff_extract_features(url)
 
             #get the relevant data
             tsv_subset = tsv_df.loc[:,extract_cols]
 
-
             #double check that subset will have unique rows
             if len(tsv_subset)!=len(tsv_subset.drop_duplicates()):
                 break
+
+            #filter if there's a column and values to filter with
+            if (filter_col != None) & (filter_values != None):
+                tsv_subset = tsv_subset[tsv_subset[filter_col].isin(filter_values)]
             
             #add data set level info to dataframe
             tsv_subset['id_col']=identifier
@@ -100,7 +160,6 @@ def tsv_extract(identifier_col:str,url_col:str,extract_cols:list,pd_df:pd.DataFr
 
 
     return pd.DataFrame(output)
-
 
 
 
