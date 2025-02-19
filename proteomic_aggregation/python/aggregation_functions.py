@@ -259,6 +259,7 @@ def visualize_optimization(optimize_output,forward_peptides:pd.DataFrame,reverse
         data= specedf[specedf['fdr']!=1.0], x='MSGFDB_SpecEValue', y='fdr', color='purple',ax=ax_fdr,label='fdr'
     )
     plt.legend(fontsize='x-small')
+    return plt
 
 
 

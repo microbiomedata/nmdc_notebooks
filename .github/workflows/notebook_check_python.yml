@@ -47,3 +47,8 @@ jobs:
       name: Execute NOM notebook
       run: |
         jupyter nbconvert --execute --to notebook --inplace NOM_visualizations/python/nom_data.ipynb
+
+    - id: execute-aggregation
+      name: Execute proteomic aggregation notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace proteomic_aggregation/python/proteomic_aggregation.ipynb
