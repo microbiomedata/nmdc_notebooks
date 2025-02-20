@@ -77,7 +77,7 @@ def tsv_extract(url:str):
 def split_to_dict(row):
 
     """
-    split the string into a dictionary and create new columns using title=value as format. specifically for gff_extract()
+    split string into a dictionary using title=value as format. specifically for gff_extract()
     """
 
     return dict(item.split('=') for item in row.split(';'))
@@ -87,7 +87,7 @@ def split_to_dict(row):
 def gff_extract_features(url:str):
 
     """
-    Define a function to extract the feature annotations column from gff (9th column, equivalent to [8] in python)
+    Define a function to extract the feature annotations column from gff3 (9th column, equivalent to [8] in python)
     """
 
     try:
@@ -276,7 +276,7 @@ def visualize_optimization(optimize_output,forward_peptides:pd.DataFrame,reverse
 
     # move legend to the bottom of the main plot and add title
     ax_main.legend(bbox_to_anchor=(0.5, -0.2), loc='upper center', ncol=2,fontsize='x-small')
-    ax_main.set_title('impact of imposing optimized spectral probability filter')
+    ax_main.set_title(f'impact of imposing optimized spectral probability filter of {10 ** fitted_params[0]}')
 
 
 
