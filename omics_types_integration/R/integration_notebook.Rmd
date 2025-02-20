@@ -213,9 +213,9 @@ for (biosample in 1:length(metab_ko_unique_df$biosample_id)) {
 
   # Join compound, EC, module, pathway IDs into one dataframe
   metabolite_annotations <- data.frame(compound_id = paste0("cpd:", unique_metabolites)) %>%
-    left_join(ec_from_metabolites) %>%
-    left_join(modules_from_metabolites) %>%
-    left_join(pathways_from_metabolites) %>%
+    left_join(ec_from_metabolites, by = join_by(compound_id)) %>%
+    left_join(modules_from_metabolites, by = join_by(compound_id)) %>%
+    left_join(pathways_from_metabolites, by = join_by(compound_id)) %>%
     mutate(compound_trimmed = unique_metabolites) %>%
     
     # Search for the EC IDs in the unique identification lists 
@@ -227,6 +227,9 @@ for (biosample in 1:length(metab_ko_unique_df$biosample_id)) {
 
   # Save dataframe to list
   metabolite_annotations_list[[biosample]] <- metabolite_annotations
+  
+  # Wait for 1 second to avoid KEGG REST API limits
+  Sys.sleep(1)
 }
 ```
 
@@ -273,8 +276,8 @@ for (biosample in 1:length(metap_ec_unique_df$biosample_id)) {
   
   # Join KO, EC, module, pathway IDs into one dataframe
   protein_annotations <- protein_annotations %>%
-    left_join(modules_from_proteins) %>%
-    left_join(pathways_from_proteins) %>%
+    left_join(modules_from_proteins, by = join_by(ko_id)) %>%
+    left_join(pathways_from_proteins, by = join_by(ko_id)) %>%
     
     # Search for corresponding biomolecules in other data types for this sample
     mutate(In_Metab_Annotations = vapply(.$ec_id, function(x) { any(tolower(x) %in% unique(unlist(metabolite_annotations_list[[biosample]]$ec_id))) },
@@ -284,6 +287,9 @@ for (biosample in 1:length(metap_ec_unique_df$biosample_id)) {
   
   # Save dataframe to list
   protein_annotations_list[[biosample]] <- protein_annotations
+  
+  # Wait for 1 second to avoid KEGG REST API limits
+  Sys.sleep(1)
 }
 
 ```
@@ -341,11 +347,14 @@ for (biosample in 1:length(metag_ko_unique_df$biosample_id)) {
   
   # Add modules and pathways to gene annotations dataframe
   metag_annotations <- metag_annotations %>%
-    left_join(modules_from_genes) %>%
-    left_join(pathways_from_genes)
+    left_join(modules_from_genes, by = join_by(ko_id)) %>%
+    left_join(pathways_from_genes, by = join_by(ko_id))
   
   
   gene_annotations_list[[biosample]] <- metag_annotations
+  
+  # Wait for 1 second to avoid KEGG REST API limits
+  Sys.sleep(1)
 
 }
 
