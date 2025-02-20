@@ -16,6 +16,7 @@ library(stringr, warn.conflicts = FALSE)
 library(readr, warn.conflicts = FALSE)
 library(purrr)
 library(ggplot2, warn.conflicts = FALSE)
+library(tibble)
 library(jsonlite)
 library(KEGGREST)
 library(httr)
@@ -295,7 +296,7 @@ for (biosample in 1:length(metap_ec_unique_df$biosample_id)) {
 # Pre-allocate an empty list for gene dataframes
 gene_annotations_list <- vector(mode = "list", length = length(metag_ko_unique_df$biosample_id))
 
-for (biosample in 1:1) { #length(metag_ko_unique_df$biosample_id)) {
+for (biosample in 1:length(metag_ko_unique_df$biosample_id)) {
 
   # Gather gene annotations from workflow output
   # Join KO and EC annotation dataframes using the NMDC workflow generated "gene_id"
@@ -342,6 +343,7 @@ for (biosample in 1:1) { #length(metag_ko_unique_df$biosample_id)) {
   metag_annotations <- metag_annotations %>%
     left_join(modules_from_genes) %>%
     left_join(pathways_from_genes)
+  
   
   gene_annotations_list[[biosample]] <- metag_annotations
 
@@ -456,105 +458,127 @@ circos.link("metabolites", c(0, metab_sector_gene_count),
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 ###### pathway coverage
 
 ```{r}
+# Assemble a list of all pathway IDs that any biomolecules in the sample map to
 
-# Get unique list of pathways from all identified biomolecules
-all_pathways <- c(metag_annotations$pathway_id, 
-                  prot_annotations$pathway_id,
-                  metabolite_annotations$pathway_id) %>%
+pathways_by_biosample <- vector(mode = "list", length = nrow(results_by_biosample))
+
+for (biosample in 1:length(pathways_by_biosample)) {
+
+  # Get unique list of pathways from all identified biomolecules
+  sample_pathways <- c(gene_annotations_list[[biosample]]$pathway_id, 
+                       protein_annotations_list[[biosample]]$pathway_id,
+                       metabolite_annotations_list[[biosample]]$pathway_id) %>%
+    unlist(use.names = FALSE) %>%
+    unique()
+  
+  # Look at basic pathway maps, exclude KO highlighted pathway maps
+  sample_pathways <- sample_pathways[!str_detect(sample_pathways, "path:ko")]
+  
+  # Exclude "overview" pathway maps
+  sample_pathways <- sample_pathways[!str_detect(sample_pathways, "path:map01")]
+  
+  pathways_by_biosample[[biosample]] <- sample_pathways
+  
+}
+```
+
+```{r}
+
+# Get all elements of each pathway (KO and compounds only - EC ids in pathways just highlight the corresponding KO element)
+
+# concatenate the pathways, make all the calls once, then join to pathways by biosample
+
+# Get all compounds for each pathway
+compounds_from_pathways <- pathways_by_biosample %>%
   unlist(use.names = FALSE) %>%
-  unique()
-
-# Look at basic pathway maps, exclude KO highlighted pathway maps
-all_pathways <- all_pathways[!str_detect(all_pathways, "path:ko")]
-
-# Exclude "overview" pathway maps
-all_pathways <- all_pathways[!str_detect(all_pathways, "path:map01")]
-
-
-
-# Get all elements of each pathway
-
-compounds_from_pathways <- split(all_pathways, ceiling(seq_along(all_pathways)/50)) %>%
+  unique() %>%
+  split(ceiling(seq_along(.)/50)) %>%
   lapply(FUN = function(x) { keggLink("compound", x) }) %>%
   list_c()
-
-
+  
+# Format into a nested dataframe
 compounds_from_pathways <- data.frame(pathway_id = names(compounds_from_pathways),
                                       compound_id = compounds_from_pathways) %>%
   nest(.by = pathway_id, .key = "compound_id")
-
-
-ko_from_pathways <- split(all_pathways, ceiling(seq_along(all_pathways)/50)) %>%
+  
+  
+  
+# Get all KO for each pathway
+ko_from_pathways <- pathways_by_biosample %>%
+  unlist(use.names = FALSE) %>%
+  unique() %>%
+  split(ceiling(seq_along(.)/50)) %>%
   lapply(FUN = function(x) { keggLink("ko", x) }) %>%
   list_c()
 
-
+# Format into a nested dataframe
 ko_from_pathways <- data.frame(pathway_id = names(ko_from_pathways),
                                ko_id = ko_from_pathways) %>%
   nest(.by = pathway_id, .key = "ko_id")
 
 
-
-
-
 # Count gene KOs
 # Count compounds
-# Total number of components of pathway
 
-pathway_stats <- data.frame(pathway_id = all_pathways) %>%
-  left_join(compounds_from_pathways) %>%
-  left_join(ko_from_pathways) %>%
+all_pathway_elements <- full_join(compounds_from_pathways, ko_from_pathways, 
+                                  by = join_by(pathway_id)) %>%
   mutate(compound_count = vapply(compound_id, 
                                  FUN = function(x) { ifelse(is.null(x), 0, nrow(x)) }, 
                                  FUN.VALUE = 1)) %>%
   mutate(ko_count =       vapply(ko_id, 
                                  FUN = function(x) { ifelse(is.null(x), 0, nrow(x)) }, 
-                                 FUN.VALUE = 1))
+                                 FUN.VALUE = 1)) %>%
+  mutate(total_elements = compound_count + ko_count)
+
+```
 
 
-# Count KOs detected in NMDC data (metag and metap)
-all_ko_detected <- unique(c(metag_annotations$ko_id, prot_annotations$ko_id))
 
+```{r}
 
-# Calculate coverage of pathways
+pathway_coverage_by_biosample <- vector(mode = "list", length = nrow(results_by_biosample))
 
-pathway_stats <- pathway_stats %>%
-  mutate(compound_coverage = map2_vec(compound_id, compound_count,
-    .f = function(x, y) { ifelse(is.null(x), 0, 
-             sum(x$compound_id %in% metabolite_annotations$compound_id)/y) }
-  )) %>%
-  mutate(ko_coverage = map2_vec(ko_id, ko_count,
-    .f = function(x, y) { ifelse(is.null(x), 0, 
-             sum(toupper(x$ko_id) %in% all_ko_detected)/y) }
-  )) %>%
+for (biosample in 1:length(pathways_by_biosample)) {
   
-  mutate(total_components = compound_count + ko_count,
-         total_coverage = (compound_coverage * compound_count + ko_coverage * ko_count)/total_components) %>%
+  all_ko_detected <- unique(c(gene_annotations_list[[biosample]]$ko_id,
+                              protein_annotations_list[[biosample]]$ko_id))
   
-  arrange(-total_coverage)
+  pathway_coverage_by_biosample[[biosample]] <- all_pathway_elements %>%
+    filter(pathway_id %in% pathways_by_biosample[[biosample]]) %>%
+    mutate(compound_found    = vapply(.$compound_id, 
+                                      function(x) { sum(x$compound_id %in% metabolite_annotations_list[[biosample]]$compound_id) }, 
+                                      FUN.VALUE = 1),
+           ko_found          = vapply(.$ko_id, 
+                                      function(x) { sum(toupper(x$ko_id) %in% all_ko_detected) }, 
+                                      FUN.VALUE = 1),
+           compound_coverage = compound_found / compound_count,
+           ko_coverage       = ko_found / ko_count,
+           total_coverage    = (compound_found + ko_found)/total_elements) %>%
+    
+    select(-c(compound_id, ko_id)) %>%
+    mutate_all(~ifelse(is.nan(.), NA, .)) %>%
+    
+    # Filter out pathways where we only found 1 element
+    filter(compound_found + ko_found > 1) %>%
+    arrange(-total_coverage)
+}
 
 
+
+
+
+```
+
+```{r}
 
 # What are the most covered pathways?
-pull(head(pathway_stats, 5), pathway_id)
+pull(head(pathway_coverage_by_biosample[[1]], 5), pathway_id)
 
 
-ggplot(pathway_stats) + 
+ggplot(pathway_coverage_by_biosample[[1]]) + 
   geom_point(aes(x = ko_coverage, y = compound_coverage, color = total_coverage)) +
   scale_color_gradient(low = "darkblue", high = "green") +
   coord_equal()
@@ -568,13 +592,104 @@ ggplot(pathway_stats) +
 
 ```{r heatmap}
 
+# sample vs. pathway
+# color by coverage
+
+options(repr.plot.width = 7, repr.plot.height = 5, repr.plot.res = 250)
+par(xpd = TRUE)
+
+pathway_coverage_by_biosample %>%
+  bind_rows(.id = "biosample") %>%
+  select(biosample, pathway_id, total_coverage) %>%
+  pivot_wider(names_from = "pathway_id", values_from = "total_coverage") %>%
+  replace(is.na(.), 0) %>%
+  column_to_rownames(var = "biosample") %>%
+  as.matrix() %>%
+  
+  heatmap(Rowv = NA, Colv = NA,
+          labRow = FALSE, labCol = FALSE, scale = "none",
+          main = "KEGG pathway coverage across biosamples",
+          xlab = "KEGG Pathways",
+          ylab = "Biosamples", 
+          keep.dendro = FALSE, na.rm= TRUE,
+          col = hcl.colors(50))
+
+par(cex = 0.8)
+
+legend(x = "bottomright", legend = c("Low coverage", "High coverage"), fill = c("#440154", "#FDE725"), inset = c(0, -0.2))
 
 
+# biosample_metadata <- get_results_by_id(collection = "biosample_set",
+#                   match_id_field = "id",
+#                   id_list = results_by_biosample$biosample_id,
+#                   fields = "id,samp_name,description,collection_date.has_raw_value,depth.has_numeric_value,lat_lon") %>% unnest(names_sep = ".")
 
 ```
 
 ```{r scatterplot}
 
+pathway_coverage_by_biosample %>%
+  bind_rows(.id = "biosample") %>%
+  select(biosample, pathway_id, total_coverage) %>%
+  group_by(pathway_id) %>%
+  filter(any(total_coverage > 0.5)) %>%
+  mutate(average_coverage = mean(total_coverage)) %>%
+  ungroup() %>%
+  arrange(-average_coverage) %>%
+  mutate(pathway_id = factor(pathway_id, levels = unique(pathway_id))) %>%
+  
+  ggplot() +
+  geom_violin(aes(x = pathway_id, y = total_coverage)) +
+  geom_jitter(aes(x = pathway_id, y = total_coverage)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+# now we see what pathways are in the plot, do it again with better labelling
+
+top_pathways <- data.frame(
+  pathway_id = c("path:map00571", "path:map00710", "path:map00020", "path:map00220", "path:map00770",
+                 "path:map00250", "path:map00260", "path:map04122", "path:map00010"),
+  pathway_category = c("1.7 Glycan biosynthesis and metabolism", "1.2 Energy metabolism",
+                       "1.1 Carbohydrate metabolism", "1.5 Amino acid metabolism", 
+                       "1.8 Metabolism of cofactors and vitamins", "1.5 Amino acid metabolism",
+                       "1.5 Amino acid metabolism", "2.3 Folding, sorting, and degradation",
+                       "1.1 Carbohydrate metabolism"),
+  pathway_name = c("Lipoarabinomannan (LAM) biosynthesis", "Carbon fixation by Calvin cycle", 
+                   "Citrate cycle (TCA cycle)", "Arginine biosynthesis", "Pantothenate and CoA biosynthesis",
+                   "Alanine, aspartate and glutamate metabolism", "Glycine, serine and threonine metabolism",
+                   "Sulfur relay system", "Gluconeogenesis"))
+
+
+pathway_coverage_by_biosample %>%
+  bind_rows(.id = "biosample") %>%
+  select(biosample, pathway_id, total_coverage) %>%
+  group_by(pathway_id) %>%
+  filter(any(total_coverage > 0.5)) %>%
+  mutate(average_coverage = mean(total_coverage)) %>%
+  ungroup() %>%
+  arrange(-average_coverage) %>%
+  left_join(top_pathways, by = join_by(pathway_id)) %>%
+  mutate(pathway_name = factor(pathway_name, levels = unique(pathway_name))) %>%
+  
+  ggplot() +
+  geom_violin(aes(x = pathway_name, y = total_coverage, fill = pathway_category)) +
+  geom_jitter(aes(x = pathway_name, y = total_coverage), shape = ".") +
+  labs(fill = "Pathway Category") +
+  theme(axis.text.x = element_text(angle = 40, vjust = 1, hjust=1),
+        axis.title.x = element_blank(),
+        legend.position = "left",
+        legend.text = element_text(size = 8))
+
+  
+
+# 00571 1.7 Glycan biosynthesis and metabolism / Lipoarabinomannan (LAM) biosynthesis
+# 00710 1.2 Energy metabolism / Carbon fixation by Calvin cycle
+# 00020 1.1 Carbohydrate metabolism / Citrate cycle (TCA cycle)
+# 00220 1.5 Amino acid metabolism / Arginine biosynthesis
+# 00770 1.8 Metabolism of cofactors and vitamins / Pantothenate and CoA biosynthesis
+# 00250 1.5 Amino acid metabolism / Alanine, aspartate and glutamate metabolism
+# 00260 1.5 Amino acid metabolism / Glycine, serine and threonine metabolism
+# 04122 2.3 Folding, sorting, and degradation / Sulfur relay system
+# 00010 1.1 Carbohydrate metabolism / Glycolysis / Gluconeogenesis
 
 
 ```
