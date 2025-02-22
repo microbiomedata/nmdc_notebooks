@@ -567,17 +567,13 @@ for (biosample in 1:length(pathways_by_biosample)) {
            ko_coverage       = ko_found / ko_count,
            total_coverage    = (compound_found + ko_found)/total_elements) %>%
     
-    select(-c(compound_id, ko_id)) %>%
-    mutate_all(~ifelse(is.nan(.), NA, .)) %>%
+    dplyr::select(-c(compound_id, ko_id)) %>%
+    mutate(across(where(is.numeric), function(x) ifelse(is.nan(x), NA, x))) %>%
     
     # Filter out pathways where we only found 1 element
     filter(compound_found + ko_found > 1) %>%
     arrange(-total_coverage)
 }
-
-
-
-
 
 ```
 
@@ -609,7 +605,7 @@ par(xpd = TRUE)
 
 pathway_coverage_by_biosample %>%
   bind_rows(.id = "biosample") %>%
-  select(biosample, pathway_id, total_coverage) %>%
+  dplyr::select(biosample, pathway_id, total_coverage) %>%
   pivot_wider(names_from = "pathway_id", values_from = "total_coverage") %>%
   replace(is.na(.), 0) %>%
   column_to_rownames(var = "biosample") %>%
@@ -708,6 +704,64 @@ pathway_coverage_by_biosample %>%
 
 
 ## Color pathway diagrams
+
+
+```{r}
+# pull out elements in the pathway
+
+pathway_detail_id <- "path:map00710"
+
+pathway_detail_elements <- c(
+  all_pathway_elements[which(all_pathway_elements$pathway_id == pathway_detail_id), 2],
+  all_pathway_elements[which(all_pathway_elements$pathway_id == pathway_detail_id), 3]) %>% 
+  unlist(use.names = FALSE)
+
+
+pathway_detail_identifications <- vector(mode = "list", length = nrow(results_by_biosample))
+
+for (biosample in 1:length(pathway_detail_identifications)) {
+  
+  all_detections <- unique(c(gene_annotations_list[[biosample]]$ko_id,
+                             protein_annotations_list[[biosample]]$ko_id,
+                             metabolite_annotations_list[[biosample]]$compound_id))
+  
+  
+  pathway_detail_identifications[[biosample]] <- data.frame(
+    biomolecules = all_detections[toupper(all_detections) %in% toupper(pathway_detail_elements)])
+
+}
+# count how many samples they appeared in
+
+pathway_detail_identifications <- pathway_detail_identifications %>%
+  bind_rows(.id = "biosample") %>%
+  group_by(biomolecules) %>%
+  summarize(sample_frequency = n()) %>% 
+  ungroup() %>%
+  mutate(sample_frequency = sample_frequency/length(pathway_detail_identifications)) %>%
+  mutate(biomolecules = str_match(biomolecules, ":(.+)$")[,2])
+
+pathway_detail_identifications <- pull(pathway_detail_identifications) %>%
+  setNames(pathway_detail_identifications$biomolecules)
+    
+
+# Save a colored KEGG pathway map to the working folder
+pathview(
+  gene.data = pathway_detail_identifications[which(str_detect(names(pathway_detail_identifications), "K"))],
+  cpd.data = pathway_detail_identifications[which(str_detect(names(pathway_detail_identifications), "C"))],
+  pathway.id = str_match(pathway_detail_id, ":map(.+)$")[,2],
+  species = "ko",
+  kegg.native = TRUE,
+  same.layer = TRUE,
+  limit = list(gene = c(0, 1), cpd = c(0, 1)),
+  bins = 14,
+  low=list(gene="cadetblue"),
+  mid = list(gene = "goldenrod"),
+  high=list(gene="palevioletred"),
+  key.align = "y"
+)
+
+```
+
 
 ```{r}
 
