@@ -43,10 +43,10 @@ def findproteinname(s):
     else:  # the rest
         return "Forward"
 
-def sequence_nopostpre(s):
+def sequence_noprefsuff(s):
 
     """
-    Function that takes a peptide sequence (s) and returns the same sequence but without any prefix and postfix
+    Function that takes a peptide sequence (s) and returns the same sequence but without any prefix and suffix
     """
     p = re.compile(r"\.(?P<cleanseq>[A-Z\*@#]+)\.")
     m = p.search(s)
