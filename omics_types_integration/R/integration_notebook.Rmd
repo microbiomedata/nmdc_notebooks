@@ -135,38 +135,6 @@ unlist_unique <- function (x) {
 #                                   FUN = function(x) { sort(unique(x$EC)) })) %>%
 #   select(biosample_id, metag_ec_results, metag_ec_unique)
 
-
-
-metag_ec_unique_list <- results_by_biosample$metag_ec_results %>%
-  lapply(FUN = function(x) { sort(unique(x$EC)) }) %>%
-  setNames(results_by_biosample$biosample_id)
-
-metag_ec_unique <- unlist_unique(metag_ec_unique_list)
-
-
-
-
-
-# Metagenome annotations - KEGG Orthology
-# metag_ko_unique_df <- results_by_biosample %>%
-#   distinct(biosample_id, .keep_all = TRUE) %>%
-# 
-#   # Save a unique vector of annotations by type for each sample for searching later
-#   mutate(metag_ko_unique = lapply(.$metag_ko_results, 
-#                                   FUN = function(x) { sort(unique(x$ko_term)) })) %>%
-#   select(biosample_id, metag_ko_results, metag_ko_unique)
-
-
-
-metag_ko_unique_list <- results_by_biosample$metag_ko_results %>%
-  lapply(FUN = function(x) { sort(unique(x$ko_term)) }) %>%
-  setNames(results_by_biosample$biosample_id)
-
-metag_ko_unique <- unlist_unique(metag_ko_unique_list)
-
-
-
-
 # Metaproteome annotations - Enzyme Commission
 # metap_ec_unique_df <- results_by_biosample %>%
 #   distinct(biosample_id, .keep_all = TRUE) %>%
@@ -177,30 +145,6 @@ metag_ko_unique <- unlist_unique(metag_ko_unique_list)
 #     FUN = function(x) { sort(unique(x$EC_Number)) %>% strsplit(",") %>% unlist() })) %>%
 #   select(biosample_id, metap_results, metap_ec_unique)
 
-
-
-metap_ko_unique_list <- results_by_biosample$metap_results %>%
-  lapply(FUN = function(x) { sort(unique(x$KO)) }) %>%
-  setNames(results_by_biosample$biosample_id)
-
-metap_ko_unique <- unlist_unique(metap_ko_unique_list)
-
-
-metap_ec_unique_list <- results_by_biosample$metap_results %>%
-  lapply(FUN = function(x) { 
-    sort(unique(x$EC_Number)) %>% strsplit(",") %>% unlist() 
-    }) %>%
-  setNames(results_by_biosample$biosample_id)
-
-metap_ec_unique <- unlist_unique(metap_ec_unique_list)
-
-metap_combined_unique <- results_by_biosample$metap_results %>%
-  bind_rows() %>%
-  select(EC_Number, KO) %>%
-  distinct()
-
-
-
 # Metabolome annotations - KEGG Compound
 
 # metab_ko_unique_df <- results_by_biosample %>%
@@ -210,17 +154,6 @@ metap_combined_unique <- results_by_biosample$metap_results %>%
 #   mutate(metab_ko_unique = lapply(.$metab_results, 
 #                                   FUN = function(x) { sort(unique(x$`Kegg Compound ID`)) })) %>%
 #   select(biosample_id, metab_results, metab_ko_unique)
-
-
-
-metab_co_unique_list <- results_by_biosample$metab_results %>%
-  lapply(FUN = function(x) { sort(unique(x$`Kegg Compound ID`)) }) %>%
-  setNames(results_by_biosample$biosample_id)
-
-metab_co_unique <- unlist_unique(metab_co_unique_list)
-
-
-# rm(results_by_biosample)
 
 ```
 
@@ -233,6 +166,13 @@ Now we will use the KEGGREST package (available on Bioconductor) to make calls t
 First we will find all of the Enzyme Commission numbers available for each identified compound. These EC numbers represent enzymes involved in recorded reactions that produce the compound of interest.
 
 ```{r get-other-metabolite-info}
+
+metab_co_unique_list <- results_by_biosample$metab_results %>%
+  lapply(FUN = function(x) { sort(unique(x$`Kegg Compound ID`)) }) %>%
+  setNames(results_by_biosample$biosample_id)
+
+metab_co_unique <- unlist_unique(metab_co_unique_list)
+
 
 # Concatenate the metabolites, make all the calls once, then split up by biosample
 
@@ -292,7 +232,7 @@ for (biosample in 1:nrow(results_by_biosample)) {
     left_join(metabolite_annotations, by = join_by(compound_id))
 }
 
-rm(ec_from_metabolites, modules_from_metabolites, pathways_from_metabolites)
+rm(metabolite_annotations, ec_from_metabolites, modules_from_metabolites, pathways_from_metabolites, metab_co_unique, metab_co_unique_list)
 
 ```
 
@@ -356,6 +296,41 @@ for (biosample in 1:33) {
 
 ```{r get-other-protein-info}
 
+
+
+metap_ko_unique_list <- results_by_biosample$metap_results %>%
+  lapply(FUN = function(x) { sort(unique(x$KO)) }) %>%
+  setNames(results_by_biosample$biosample_id)
+
+metap_ko_unique <- unlist_unique(metap_ko_unique_list)
+
+
+metap_ec_unique_list <- results_by_biosample$metap_results %>%
+  lapply(FUN = function(x) { x$EC_Number %>% strsplit(",") %>% unlist_unique() %>% sort() }) %>%
+  setNames(results_by_biosample$biosample_id)
+
+metap_ec_unique <- unlist_unique(metap_ec_unique_list)
+
+metap_combined_unique <- results_by_biosample$metap_results %>%
+  bind_rows() %>%
+  select(KO, EC_Number) %>%
+  rename(ec_id = "EC_Number",
+         ko_id = "KO") %>%
+  separate_wider_delim(ec_id, delim = ",", names_sep = ".", too_few = "align_start") %>%
+  pivot_longer(cols = starts_with("ec_id"), names_to = NULL, values_to = "ec_id") %>%
+  filter(if_any(everything(), ~ !is.na(.))) %>%
+  group_by(ko_id) %>%
+  mutate(has_value = any(!is.na(ec_id))) %>%
+  ungroup() %>%
+  # filter OUT rows where has value is TRUE and ec is NA
+  filter(!(has_value & is.na(ec_id))) %>%
+  select(-has_value) %>%
+  distinct()
+
+
+
+
+
 # Concatenate the proteins, make all the calls once, then split up by biosample
 
 # Get all module ids for each protein
@@ -385,8 +360,7 @@ pathways_from_proteins <- data.frame(ko_id = toupper(names(pathways_from_protein
 
 
 # Assemble
-protein_annotations <- data.frame(ko_id = metap_ko_unique,
-                                  ec_id = metap_ec_unique) %>%
+protein_annotations <- metap_combined_unique %>%
   left_join(modules_from_proteins, by = join_by(ko_id)) %>%
   left_join(pathways_from_proteins, by = join_by(ko_id))
 
@@ -403,7 +377,7 @@ for (biosample in 1:nrow(results_by_biosample)) {
     left_join(protein_annotations, by = join_by(ko_id))
 }
 
-rm(modules_from_proteins, pathways_from_proteins)
+rm(protein_annotations, modules_from_proteins, pathways_from_proteins, metap_ec_unique_list, metap_ko_unique_list, metap_combined_unique, metap_ec_unique, metap_ko_unique)
 
 ```
 
@@ -465,10 +439,31 @@ for (biosample in 1:length(metap_ec_unique_df$biosample_id)) {
 
 ```{r get-other-gene-info}
 
+
+# metag_ec_unique_list <- results_by_biosample$metag_ec_results %>%
+#   lapply(FUN = function(x) { sort(unique(x$EC)) }) %>%
+#   setNames(results_by_biosample$biosample_id)
+# 
+# metag_ec_unique <- unlist_unique(metag_ec_unique_list)
+
+
+
+metag_ko_unique_list <- results_by_biosample$metag_ko_results %>%
+  lapply(FUN = function(x) { sort(unique(x$ko_term)) }) %>%
+  setNames(results_by_biosample$biosample_id)
+
+metag_ko_unique <- unlist_unique(metag_ko_unique_list)
+
+
+
+
+
+
 # Concatenate the genes, make all the calls once, then split up by biosample
 
 # Get all module ids for each gene
 modules_from_genes <- metag_ko_unique %>%
+  substring(4) %>%
   split(ceiling(seq_along(.)/50)) %>%
   lapply(FUN = function(x) { Sys.sleep(0.5); keggLink("module", x) }) %>%
   list_c()
@@ -481,6 +476,7 @@ modules_from_genes <- data.frame(ko_id = toupper(names(modules_from_genes)),
 
 # Get all pathway ids for each gene
 pathways_from_genes <- metag_ko_unique %>%
+  substring(4) %>%
   split(ceiling(seq_along(.)/50)) %>%
   lapply(FUN = function(x) { Sys.sleep(0.5); keggLink("pathway", x) }) %>%
   list_c()
@@ -492,8 +488,7 @@ pathways_from_genes <- data.frame(ko_id = toupper(names(pathways_from_genes)),
 
 
 # Assemble
-gene_annotations <- data.frame(ko_id = metag_ko_unique,
-                               ec_id = metag_ec_unique) %>%
+gene_annotations <- data.frame(ko_id = metag_ko_unique) %>%
   left_join(modules_from_genes, by = join_by(ko_id)) %>%
   left_join(pathways_from_genes, by = join_by(ko_id))
 
@@ -503,14 +498,24 @@ gene_annotations_list <- vector(mode = "list", length = nrow(results_by_biosampl
 
 for (biosample in 1:nrow(results_by_biosample)) {
   
-  # For each sample, assemble a dataframe of protein information
-  # Start with the unique list of proteins for this sample
-  gene_annotations_list[[biosample]] <- data.frame(ko_id = metag_ko_unique_list[[biosample]]) %>%
-    # Filter join all metabolite annotations down to just the ones in this sample
+  # Add in the EC annotations here - it will be easier since they are in a separate file per sample
+  
+  # For each sample, assemble a dataframe of gene information
+
+  # Start by pairing the KO and EC information from the annotation results files
+  gene_annotations_list[[biosample]] <- results_by_biosample$metag_ko_results[[biosample]] %>%
+    full_join(results_by_biosample$metag_ec_results[[biosample]],
+              by = join_by(gene_id)) %>%
+    select(ko_term, EC) %>%
+    distinct() %>%
+    rename(ko_id = "ko_term",
+           ec_id = "EC") %>%
+    
+    # Now filter join all gene annotations down to just the ones in this sample
     left_join(gene_annotations, by = join_by(ko_id))
 }
 
-rm(modules_from_genes, pathways_from_genes)
+rm(gene_annotations, modules_from_genes, pathways_from_genes, metag_ko_unique, metag_ko_unique_list)
 
 
 ```
@@ -584,39 +589,26 @@ for (biosample in 1:length(metag_ko_unique_df$biosample_id)) {
 ```{r overlap}
 # Add "is this x in y" columns for all biomolecules
 
-
 for (biosample in 1:nrow(results_by_biosample)) {
   
   metabolite_annotations_list[[biosample]] <- metabolite_annotations_list[[biosample]] %>%
     
-    mutate(In_Metag_Annotations = vapply(.$ec_id, function(x) { any(x$ec_id %in% tolower(metag_ec_unique_df$metag_ec_unique[[biosample]])) },
-                            FUN.VALUE = TRUE)) %>%
-    
-    mutate(In_Prot_Annotations = vapply(.$ec_id, function(x) { any(x$ec_id %in% tolower(metap_ec_unique_df$metap_ec_unique[[biosample]])) },
+    # The EC ID column in metabolite annotations is actually a list of character vectors,
+    # since each compound (row) can have multiple EC annotations
+    mutate(In_Metag_Annotations = vapply(.$ec_id, function(x) { any(x$ec_id %in% tolower(gene_annotations_list[[biosample]]$ec_id)) },
+                            FUN.VALUE = TRUE),
+           In_Prot_Annotations = vapply(.$ec_id, function(x) { any(x$ec_id %in% tolower(protein_annotations_list[[biosample]]$ec_id)) },
                             FUN.VALUE = TRUE))
   
+  protein_annotations_list[[biosample]] <- protein_annotations_list[[biosample]] %>% 
+    # tolower() is needed because the KEGG output has lowercase prefixes
+    mutate(In_Metab_Annotations = tolower(ec_id) %in% unlist_unique(metabolite_annotations_list[[biosample]]$ec_id),
+           In_Metag_Annotations = ko_id %in% gene_annotations_list[[biosample]]$ko_id)
   
-  
-  protein_annotations_list[[biosample]] %>% 
-        mutate(In_Metab_Annotations = vapply(.$ec_id, function(x) { any(tolower(x) %in% unique(unlist(metabolite_annotations_list[[biosample]]$ec_id))) },
-                                         FUN.VALUE = TRUE)) %>%
-    mutate(In_Metag_Annotations = vapply(.$ko_id, function(x) { any(x %in% unique(metag_ko_unique_df$metag_ko_unique[[biosample]])) },
-                                         FUN.VALUE = TRUE))
-  
-  
-  
-  
-  gene_annotations_list[[biosample]] %>%
-        mutate(In_Metab_Annotations = vapply(.$ec_id, function(x) { any(tolower(x) %in% unique(unlist(metabolite_annotations_list[[biosample]]$ec_id))) },
-                             FUN.VALUE = TRUE)) %>%
-    mutate(In_Prot_Annotations = ko_id %in% protein_annotations_list[[biosample]]$ko_id)
-    
-  
-  
-  
+  gene_annotations_list[[biosample]] <- gene_annotations_list[[biosample]] %>%
+    mutate(In_Metab_Annotations = tolower(ec_id) %in% unlist_unique(metabolite_annotations_list[[biosample]]$ec_id),
+           In_Prot_Annotations = ko_id %in% protein_annotations_list[[biosample]]$ko_id)
 }
-
-
 
 ```
 
@@ -650,8 +642,8 @@ gene_sector_metab_count <-(sum(example_gene$In_Metab_Annotations)) * (largest_se
 prot_sector_xlim <- length(example_prot$ko_id)
 
 prot_sector_metab_count <- sum(example_prot$In_Metab_Annotations) * (largest_sector_xlim / prot_sector_xlim)
-prot_sector_both_count <- nrow(filter(example_prot, In_Metab_Annotations & In_Gene_Annotations)) * (largest_sector_xlim / prot_sector_xlim)
-prot_sector_gene_count <-sum(example_prot$In_Gene_Annotations) * (largest_sector_xlim / prot_sector_xlim)
+prot_sector_both_count <- nrow(filter(example_prot, In_Metab_Annotations & In_Metag_Annotations)) * (largest_sector_xlim / prot_sector_xlim)
+prot_sector_gene_count <-sum(example_prot$In_Metag_Annotations) * (largest_sector_xlim / prot_sector_xlim)
 
 
 # Metab sector
@@ -694,9 +686,9 @@ circos.initialize(factors = data$sectors, x = data$x)
 
 circos.labels(plot_sector_names, 
               x = c(gene_sector_xlim/2, prot_sector_xlim/2, metab_sector_xlim/2), 
-              labels = c(paste0("genes (", nrow(metag_annotations), ")"),
-                         paste0("proteins (", nrow(prot_annotations), ")"), 
-                         paste0("metabolites (", nrow(metabolite_annotations), ")")),
+              labels = c(paste0("genes (", nrow(example_gene), ")"),
+                         paste0("proteins (", nrow(example_prot), ")"), 
+                         paste0("metabolites (", nrow(example_metab), ")")),
               side = "outside")
 
  
