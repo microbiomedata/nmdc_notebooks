@@ -28,6 +28,11 @@ jobs:
         pip install -r requirements_dev.txt
         pip install jupyter
 
+    - id: execute-aggregation
+      name: Execute proteomic aggregation notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace proteomic_aggregation/python/proteomic_aggregation.ipynb
+
     - id: execute-bioscales
       name: Execute bioscales notebook
       run: |
