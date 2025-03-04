@@ -6,3 +6,4 @@ plotly==5.18.0
 dill==0.3.7
 statsmodels
 seaborn==0.13.2
+gffpandas==1.2.0
