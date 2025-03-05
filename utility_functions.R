@@ -125,5 +125,5 @@ get_data_objects_for_study <- function(study_id) {
   response <- jsonlite::fromJSON(URLencode(url, repeated = TRUE))
   
   # Response is a nested dataframe, return flattened
-  return(unnest(response))
+  return(unnest(response, cols = c(data_objects)))
 }
