@@ -8,6 +8,8 @@ Notebooks that are ready for use and exploration.
 - [NEON Soil Microbial Community Composition](https://github.com/microbiomedata/nmdc_notebooks/tree/main/taxonomic_dist_by_soil_layer)
 - [Natural Organic Matter Composition by Sample Type](https://github.com/microbiomedata/nmdc_notebooks/tree/main/NOM_visualizations)
 - [Proteomic Data Aggregation](https://github.com/microbiomedata/nmdc_notebooks/tree/main/proteomic_aggregation)
+- [Omics Types Data Integration](https://github.com/microbiomedata/nmdc_notebooks/tree/main/omics_types_integration)
+
 
 ## Overview 
 
