@@ -181,6 +181,82 @@ head(read_tsv(proteomic_output_df$url[1], show_col_types = FALSE, progress = FAL
 
 Extract information from all 33 proteomic results via the function iterate_file_extract() in agg_func, and put them into a single dataframe, where each scan in each dataset has the unique identifier `SpecID`. Clean prefix and suffix off of each peptide sequence. Since this data was processed using a target-decoy approach, determine the type of protein being matched to each peptide: contaminant, reverse (false positive match to the reversed amino acid sequence of a protein), or forward (match to the true, forward amino acid sequence of a protein). The presence of forward and reverse matches enables FDR estimation in the next step.
 
+```{r define}
+
+# Define functions
+
+gff_extract_features <- function(url) { paste("Placeholder for reading gff from", url) }
+
+iterate_file_extract <- function(input_df, identifier_col, url_col, 
+                                 extract_cols, file_type, 
+                                 filter_col = NA, filter_values = NA) {
+  
+  output <- vector(mode = "list", length = nrow(input_df))
+  
+  for (row in 1:nrow(input_df)) {
+    
+    # Extract url and id for readability
+    file_url <- input_df[[url_col]][row]
+    identifier <- input_df[[identifier_col]][row]
+    
+    tryCatch(
+      expr = {
+        if(file_type == "tsv") {
+          df <- read_tsv(file_url, show_col_types = FALSE, progress = FALSE)
+          }
+        if (file_type == "gff") {
+          df <- gff_extract_features(file_url)
+        }
+      },
+      error = function(e){ 
+        print(paste("An error occurred fetching data from", identifier, ":", e))
+      },
+      warning = function(w){
+        print(paste("An warning occurred fetching data from", identifier, ":", w))
+      },
+    )
+    
+    # Check that the subsetted df will have unique rows, otherwise break
+    if(nrow(df) != nrow(distinct(df[extract_cols]))) {
+      print(paste("Selected columns result in non-unique rows for ", identifier, ". Data will not be included in output."))
+      break
+    }
+    
+    # Subset data frame to desired columns
+    df <- df[extract_cols]
+    
+    # Filter if specified
+    if (!is.na(filter_col) & !is.na(filter_values)) {
+      df <- filter(df, {{filter_col}} %in% {{filter_values}})
+    }
+    
+    # Add identifier column
+    df <- mutate(df, id = identifier)
+    
+    # Append to list
+    output[[row]] <- df
+  }
+  return(bind_rows(output))
+}
+
+
+
+
+test_df <- data.frame(a = c(1, 2, 3, 4, 5),
+                      b = c(2, 3, 5, 6, 6),
+                      xyz = c(1, 1, 1, 1, 1),
+                      abc = c(2, 2, 2, 2, 2),
+                      url = proteomic_output_df$url[1:5])
+
+
+q <- iterate_file_extract(input_df = test_df,
+                     identifier_col = "a",
+                     url_col = "url",
+                     extract_cols = c('Charge','Scan','Peptide','Protein','MSGFDB_SpecEValue','StatMomentsArea'),
+                     file_type = "tsv")
+
+```
+
 ```{r}
 # unfilt_res = agg_func.iterate_file_extract(identifier_col='processed_DO_id',
 #                                 url_col='url',
@@ -192,64 +268,21 @@ Extract information from all 33 proteomic results via the function iterate_file_
 #                                 )
 
 
-iterate_file_extract <- function(identifier_col,
-                                 url_col,
-                                 extract_cols,
-                                 pd_df,
-                                 file_type,
-                                 filter_col,
-                                 filter_values) {
-  
-  
-  
-    #   output=[]
-    # 
-    # for index, row in pd_df.iterrows():
-    #     
-    #     #identifier information
-    #     identifier = row[identifier_col]
-    #     url = row[url_col]
-    # 
-    #     try:
-    #     
-    #         # get TSV data using URL
-    #         if file_type == 'tsv':
-    #             tsv_df = tsv_extract(url)
-    #         if file_type == 'gff':
-    #             tsv_df = gff_extract_features(url)
-    # 
-    #         #get the relevant data
-    #         tsv_subset = tsv_df.loc[:,extract_cols]
-    # 
-    #         #double check that subset will have unique rows
-    #         if len(tsv_subset)!=len(tsv_subset.drop_duplicates()):
-    #             break
-    # 
-    #         #filter if there's a column and values to filter with
-    #         if (filter_col != None) & (filter_values != None):
-    #             tsv_subset = tsv_subset[tsv_subset[filter_col].isin(filter_values)]
-    #         
-    #         #add data set level info to dataframe
-    #         tsv_subset['id_col']=identifier
-    # 
-    #         #append dataframe to list
-    #         output.append(tsv_subset)
-    # 
-    #     #if error print info
-    #     except Exception as e:
-    #         print(f"An error occurred fetching data from {identifier}: {e}")
-    #         continue
-    # 
-    # #concatenate list
-    # output=pd.concat(output,ignore_index=True)
-    # 
-    # 
-    # return pd.DataFrame(output)
-  
-  
-  
-  
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
