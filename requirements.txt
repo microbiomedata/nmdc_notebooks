@@ -8,4 +8,4 @@ statsmodels
 seaborn==0.13.2
 scipy==1.15.1
 ## NMDC python package
-nmdc_api_utilities>=0.3.5
+nmdc_api_utilities>=0.3.6
