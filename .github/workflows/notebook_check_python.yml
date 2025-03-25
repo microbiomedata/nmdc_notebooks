@@ -47,3 +47,8 @@ jobs:
       name: Execute NOM notebook
       run: |
         jupyter nbconvert --execute --to notebook --inplace NOM_visualizations/python/nom_data.ipynb
+
+    - id: execute-over_representation
+      name: Execute over_representation notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace over_representation/python/overrepresentation_notebook.ipynb
