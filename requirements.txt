@@ -7,6 +7,6 @@ dill==0.3.7
 statsmodels
 seaborn==0.13.2
 scipy==1.15.1
-gffpandas==1.2.0
 ## NMDC python package
 nmdc_api_utilities>=0.3.1
+gffpandas==1.2.0
