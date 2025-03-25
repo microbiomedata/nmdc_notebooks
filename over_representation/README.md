@@ -7,5 +7,5 @@ This folder includes two notebooks, in R and Python, that finds over-represented
 - 
 
 ## Python
-- [Static rendered Jupyter notebook](https://nbviewer.org/github/microbiomedata/nmdc_notebooks/blob/93-create-notebook-that-finds-overepresented-functions-single-proteomics-sample/over_representation/Python/Draft%201.ipynb). _Viewing only, not editable_
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/93-create-notebook-that-finds-overepresented-functions-single-proteomics-sample/over_representation/python/Draft%201.ipynb?authuser=2).This is the recommended way to interact with the notebook. _You need a google account to use this option_
+- [Static rendered Jupyter notebook](https://nbviewer.org/github/microbiomedata/nmdc_notebooks/blob/8279a0e90bcad48c2013b5b347d96dc1f14c2170/over_representation/python/overrepresentation_notebook.ipynb). _Viewing only, not editable_
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/8279a0e90bcad48c2013b5b347d96dc1f14c2170/over_representation/python/overrepresentation_notebook.ipynb).This is the recommended way to interact with the notebook. _You need a google account to use this option_
