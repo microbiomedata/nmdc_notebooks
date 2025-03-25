@@ -10,3 +10,5 @@ venv/
 taxonomic_dist_by_soil_layer/python/contig_notebook_session.pkl
 __pycache__/
 .pyc
+over_representation/R/Draft1.Rmd
+over_representation/R/temp_gff.gff
