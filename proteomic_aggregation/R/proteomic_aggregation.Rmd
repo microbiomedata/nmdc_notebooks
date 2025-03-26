@@ -186,11 +186,80 @@ Extract information from all 33 proteomic results via the function iterate_file_
 
 # Define functions
 
-gff_extract_features <- function(url) { paste("Placeholder for reading gff from", url) }
+gff_extract_features <- function(url) {
+  
+  withCallingHandlers(
+    expr = {
+      
+      tsv_df <- suppressWarnings(read_tsv(url, col_names = FALSE, progress = FALSE, show_col_types = FALSE))
+      
+      colnames(tsv_df) <- c("seqname", "source", "feature", "start", "end", "score", "strand", "frame", "attribute") 
+      # See https://www.ensembl.org/info/website/upload/gff.html for GFF format specification
+      
+      # Break "attribute" column by separator
+      tsv_df <- strsplit(tsv_df$attribute, split = ";") %>%
+        lapply(strsplit, split = "=") %>%
+        lapply(function (x) { 
+          do.call(rbind, x) %>%
+            t() %>%
+            data.frame() %>%
+            row_to_names(row_number = 1) }) %>%
+        bind_rows() %>%
+        distinct()
+    },
+    error = function(e) print(paste("Error while reading GFF from", url, ":", e))
+  )
+  return(tsv_df)
+}
 
 
 
+iterate_file_extract <- function(input_df, identifier_col, url_col, 
+                                 extract_cols, file_type, 
+                                 filter_col = NA, filter_values = NA) {
+  
+  output <- vector(mode = "list", length = nrow(input_df))
 
+  for (row in 1:nrow(input_df)) {
+    
+    # Extract url and id for readability
+    file_url <- input_df[[url_col]][row]
+    identifier <- input_df[[identifier_col]][row]
+    
+    tryCatch(
+      expr = {
+        if(file_type == "tsv") {
+          df <- read_tsv(file_url, show_col_types = FALSE, progress = FALSE)
+          }
+        if (file_type == "gff") {
+          df <- gff_extract_features(file_url)
+        }
+      },
+      error = function(e) print(paste("An error occurred fetching data from", identifier, ":", e))
+    )
+    
+    # Check that the subsetted df will have unique rows, otherwise break
+    if(nrow(df) != nrow(distinct(df[extract_cols]))) {
+      print(paste("Selected columns result in non-unique rows for ", identifier, ". Data will not be included in output."))
+      break
+    }
+    
+    # Subset data frame to desired columns
+    df <- df[extract_cols]
+    
+    # Filter if specified
+    if (!is.na(filter_col) & all(is.na(filter_values))) {
+      df <- filter(df, {{filter_col}} %in% filter_values)
+    }
+    
+    # Add identifier column
+    df <- mutate(df, id = identifier)
+    
+    # Append to list
+    output[[row]] <- df
+  }
+  return(bind_rows(output))
+}
 
 
 # test_df <- data.frame(a = c(1, 2, 3, 4, 5),
@@ -614,7 +683,8 @@ forward_peptides <- forward_peptides %>%
   mutate(StatMomentsAreaLog2 = log2(StatMomentsArea)) %>%
   group_by(processed_dobj_id) %>%
   mutate(group_medians = median(StatMomentsAreaLog2)) %>%
-  ungroup()
+  ungroup() %>%
+  distinct()
 
 
 # Calculate data wide median
@@ -683,31 +753,7 @@ Preview the 'Functional Annotation GFF' files and determine a subset of gene ann
 ```{r}
 #example annotation file
 
-gff_extract_features <- function(url) {
-  
-  withCallingHandlers(
-    expr = {
-      
-      tsv_df <- suppressWarnings(read_tsv(url, col_names = FALSE, progress = FALSE, show_col_types = FALSE))
-      
-      colnames(tsv_df) <- c("seqname", "source", "feature", "start", "end", "score", "strand", "frame", "attribute") 
-      # See https://www.ensembl.org/info/website/upload/gff.html for GFF format specification
-      
-      # Break "attribute" column by separator
-      tsv_df <- strsplit(tsv_df$attribute, split = ";") %>%
-        lapply(strsplit, split = "=") %>%
-        lapply(function (x) { 
-          do.call(rbind, x) %>%
-            t() %>%
-            data.frame() %>%
-            row_to_names(row_number = 1) }) %>%
-        bind_rows() %>%
-        distinct()
-    },
-    error = function(e) print(paste("Error while reading GFF from", url, ":", e))
-  )
-  return(tsv_df)
-}
+
 
 
 
@@ -735,56 +781,6 @@ gene_mapping <- distinct(annotation_input_df, id, url)
 # )
 
 
-
-iterate_file_extract <- function(input_df, identifier_col, url_col, 
-                                 extract_cols, file_type, 
-                                 filter_col = NA, filter_values = NA) {
-  
-  output <- vector(mode = "list", length = nrow(input_df))
-
-  for (row in 1:nrow(input_df)) {
-    
-    # Extract url and id for readability
-    file_url <- input_df[[url_col]][row]
-    identifier <- input_df[[identifier_col]][row]
-    
-    tryCatch(
-      expr = {
-        if(file_type == "tsv") {
-          df <- read_tsv(file_url, show_col_types = FALSE, progress = FALSE)
-          }
-        if (file_type == "gff") {
-          df <- gff_extract_features(file_url)
-        }
-      },
-      error = function(e) print(paste("An error occurred fetching data from", identifier, ":", e))
-    )
-    
-    # Check that the subsetted df will have unique rows, otherwise break
-    if(nrow(df) != nrow(distinct(df[extract_cols]))) {
-      print(paste("Selected columns result in non-unique rows for ", identifier, ". Data will not be included in output."))
-      break
-    }
-    
-    # Subset data frame to desired columns
-    df <- df[extract_cols]
-    
-    # Filter if specified
-    if (!is.na(filter_col) & all(is.na(filter_values))) {
-      df <- filter(df, {{filter_col}} %in% filter_values)
-    }
-    
-    # Add identifier column
-    df <- mutate(df, id = identifier)
-    
-    # Append to list
-    output[[row]] <- df
-  }
-  return(bind_rows(output))
-}
-
-
-
 gene_mapping <- iterate_file_extract(
   input_df = gene_mapping,
   identifier_col = "id",
@@ -794,8 +790,6 @@ gene_mapping <- iterate_file_extract(
   filter_values = unique(peptide_protein_mapping$Protein),
   file_type = "gff"
 )
-
-
 
 
 #merge with protein mapping information. drop columns ID (which is equivalent to Protein) and id_col (which is the dataset id, unnecessary here since peptide to protein information isn't dataset specific)
@@ -821,96 +815,108 @@ The rules are as follows:
 Use `annotation_mapping` as the input to the function razorprotein() from the agg_func script. This will return protein and gene annotation information for each peptide, according to the above rules. 
 
 ```{r}
-# razormapping = agg_func.razorprotein(annotation_mapping)
-# razormapping
 
-
-get_razor_protein <- function(annot_df){
-
-    #determine if peptides are redundant (map to more than one protein) or unique (map to only one protein)
-    peptide_type = peptide_protein_mapping[["Peptide Sequence with Mods","Protein"]].groupby(["Peptide Sequence with Mods"]).count()
-    peptide_type.reset_index(inplace=True)
-    peptide_type['peptide_type']=np.where(peptide_type['Protein']>1,"redundant","unique")
-    peptide_type = pd.DataFrame(peptide_type.drop('Protein',axis=1))
-
-    #count the number of redundant and unique peptides mapping to each protein after FDR filter
-    protein_redundancy = peptide_type.merge(peptide_protein_mapping[["Peptide Sequence with Mods","Protein"]],how='right',on=['Peptide Sequence with Mods'])
-    protein_redundancy=protein_redundancy.groupby(["Protein","peptide_type"]).count().pivot_table(values='Peptide Sequence with Mods',index=['Protein'],columns=['peptide_type']).fillna(0).reset_index().rename_axis(None,axis=1)
-
-    razor_mapping=[]
-
-    for index, row in peptide_type.iterrows():
-
-        mapping_subset = peptide_protein_mapping[(peptide_protein_mapping['Peptide Sequence with Mods']==row['Peptide Sequence with Mods'])]
-
-        #if the peptide only maps to one protein, that is the razor protein
-        if row['peptide_type']=='unique':
-            output=pd.DataFrame(mapping_subset)
-            output=output.rename(columns={'Protein':"razor"})
-
-
-
-        #if the peptide maps to more than one protein and....
-        else:
-
-            proteins = mapping_subset["Protein"].tolist()
-            redundancy_subset = protein_redundancy[(protein_redundancy['Protein'].isin(proteins))]
-
-            #number of proteins in each group with unique peptides
-            proteins_w_uniquepeptides = len(redundancy_subset[redundancy_subset['unique']>0])
-
-            #number of proteins with highest number of reudundant peptides
-            proteins_w_maxredpeptides = len(redundancy_subset[redundancy_subset['redundant']==max(redundancy_subset['redundant'])])
-
-
-            #if there is only one protein with unique peptides, that is the razor protein
-            if proteins_w_uniquepeptides==1:
-                razor = redundancy_subset[redundancy_subset['unique']>0]['Protein'].iloc[0]
-                output = pd.DataFrame(mapping_subset[(mapping_subset['Protein']==razor)])
-                output=output.rename(columns={'Protein':"razor"})
- 
-
-
-            #if there is more than one protein with unique peptides, toss because razor protein indeterminant
-            if proteins_w_uniquepeptides>1:
-                continue
-
-
-            #if there are no proteins with unique peptides...
-            if proteins_w_uniquepeptides==0:
-
-                    #there is one protein with the highest number of redundant peptides
-                    if proteins_w_maxredpeptides==1:
-                        razor = redundancy_subset[redundancy_subset['redundant']==max(redundancy_subset['redundant'])]['Protein'].iloc[0]
-                        output = pd.DataFrame(mapping_subset[(mapping_subset['Protein']==razor)])
-                        output=output.rename(columns={'Protein':"razor"})
-
-
-
-                    #there is more than one protein with the highest number of redundant peptides
-                    if proteins_w_maxredpeptides>1:
-                        razors=redundancy_subset[redundancy_subset['redundant']==max(redundancy_subset['redundant'])]['Protein'].tolist()
-                        output = pd.DataFrame(mapping_subset[mapping_subset['Protein'].isin(razors)])
-                        output=output.rename(columns={'Protein':"razor"})
-
-                        output = output.sort_values(by=['razor'])
-
-                        #return lists of all matching protein information for each column
-                        for column in output.columns[output.columns!="Peptide Sequence with Mods"]:
-                            output[column]=', '.join(output[column].astype(str))
-
-                        output = output.drop_duplicates()
-
-
-        razor_mapping.append(output)
-
-    razor_mapping=pd.concat(razor_mapping,ignore_index=True)
-
-    return(razor_mapping)
+# Add counts for use in razor logic function
+# annotation_mapping has already been through distinct() so pairs (rows) are unique
+annotation_mapping <- annotation_mapping %>%
   
+  dplyr::rename(Protein = ID) %>%
+  
+  # Count the number of proteins that each peptide maps to
+  group_by(Peptide_Sequence_with_Mods) %>%
+  mutate(prot_count = n()) %>%
+  ungroup() %>%
+  
+  # Count the number of REDUNDANT and UNIQUE peptides that each protein maps to
+  group_by(Protein) %>%
+  mutate(redundant_pep_count = sum(prot_count > 1),
+         unique_pep_count = sum(prot_count == 1)) %>%
+  ungroup()
+
+
+get_razor_protein <- function(mapping_df) {
+    
+  # Make the mapping df into a bunch of named vectors for easier indexing
+  
+  # Names = peptides, values = number of proteins the peptide maps to
+  a <- distinct(mapping_df, Peptide_Sequence_with_Mods, prot_count)
+  prot_count_vec <- setNames(a$prot_count, a$Peptide_Sequence_with_Mods)
+  
+  # Names = peptides, values = proteins
+  pep_prot_vec <- setNames(mapping_df$Protein, nm = mapping_df$Peptide_Sequence_with_Mods)
+  
+  # Create vector of all peptides for readability
+  pep_vec <- a$Peptide_Sequence_with_Mods
+  rm(a)
+  
+
+  # Pre allocate results list
+  razor_result <- vector(mode = "list", length = length(pep_vec))
+  
+  # Iterate through peptides to choose a razor protein for each one
+  for (pep in 1:length(pep_vec)) {
+    
+    query_peptide <- pep_vec[pep]
+    
+    # If the peptide only maps to one protein, that is the razor protein
+    if (prot_count_vec[query_peptide] == 1) { razor_result[[pep]] <- pep_prot_vec[query_peptide] }
+    
+    # If the peptide maps to more than one protein and ...
+    else {
+      mapping_subset <- filter(mapping_df, Peptide_Sequence_with_Mods == query_peptide)
+      prots_with_unique_peptides <- sum(mapping_subset$unique_pep_count > 0)
+      
+      razor_result[[pep]] <- case_when(
+        
+        # ...there is only one potential protein with unique peptides, that is the razor protein
+        prots_with_unique_peptides == 1 ~ mapping_subset$Protein[which.max(mapping_subset$unique_pep_count)],
+        
+        # ...there is more than one potential protein with unique peptides, razor protein cannot be determined
+        prots_with_unique_peptides > 1  ~ "indeterminate - discard",
+        
+        # ...there are no potential proteins with unique peptides, 
+        # and ONE potential protein has the most redundant peptides, that is the razor protein
+        # note: which.max returns the FIRST maximum index which in this case should be the only one
+        prots_with_unique_peptides == 0 & 
+          sum(mapping_subset$redundant_pep_count == max(mapping_subset$redundant_pep_count)) == 1 ~ 
+          mapping_subset$Protein[which.max(mapping_subset$redundant_pep_count)],
+        
+        # ...there are no potential proteins with unique peptides, 
+        # and more than one potential protein has the most redundant peptides, those are the razor proteins
+        # note: which ( blah == max(blah) ) will return ALL of the maximum indices
+        prots_with_unique_peptides == 0 &
+          sum(mapping_subset$redundant_pep_count == max(mapping_subset$redundant_pep_count)) > 1 ~ 
+          mapping_subset$Protein[which(mapping_subset$redundant_pep_count == max(mapping_subset$redundant_pep_count))],
+        
+        # there should be no cases not captured
+        TRUE ~ "fix razor logic until you don't see this"
+      )
+    }
+    razor_result[[pep]] <- data.frame(Peptide = query_peptide,
+                                      Razor_Protein = razor_result[[pep]], 
+                                      row.names = NULL)
+  }
+  # Bind into one long dataframe
+  bind_rows(razor_result, .id = NULL) %>%
+    
+    # Discard indeterminate cases
+    filter(Razor_Protein != "indeterminate - discard") %>%
+    
+    # Add the protein annotations back in
+    left_join(select(mapping_df, Protein, product, product_source, Peptide_Sequence_with_Mods),
+              by = join_by(Razor_Protein == Protein, Peptide == Peptide_Sequence_with_Mods)) %>%
+    distinct()
 }
 
+razor_mapping_long <- get_razor_protein(annotation_mapping)
 
+razor_mapping_oneline <- razor_mapping_long %>%
+  group_by(Peptide) %>%
+  mutate(Razor_Protein  = paste(Razor_Protein, collapse = ", "),
+         product        = paste(product, collapse = ", "),
+         product_source = paste(product_source, collapse = ", ")) %>%
+  ungroup() %>%
+  distinct()
 
 ```
 
@@ -919,29 +925,56 @@ get_razor_protein <- function(annot_df){
 Combine razor information with relative abundance values.
 
 ```{r}
-#merge needs to be 'right' because some peptides are removed in mapping functions if they have indeterminante mappings
-forward_peptides = forward_peptides.merge(razormapping,how='right',on=['Peptide Sequence with Mods'])
-del annotation_mapping, peptide_protein_mapping, genemapping
+# #merge needs to be 'right' because some peptides are removed in mapping functions if they have indeterminante mappings
+# forward_peptides = forward_peptides.merge(razormapping,how='right',on=['Peptide Sequence with Mods'])
+# del annotation_mapping, peptide_protein_mapping, genemapping
+# 
+# forward_peptides
 
-forward_peptides
+
+
+
+
+forward_peptides <- forward_peptides %>%
+  right_join(razor_mapping_oneline, by = join_by(Peptide_Sequence_with_Mods == Peptide)) %>%
+  distinct()
+
 ```
 
 De-log the peptide abundances, sum the abundances for each razor protein and log transform the rolled up protein abundances.
 
 ```{r}
-#de-log abundance
-forward_peptides['StatMomentsAreaNorm']=2**forward_peptides['StatMomentsAreaLog+Norm']
-forward_peptides.drop('StatMomentsAreaLog+Norm',axis=1,inplace=True)
+# #de-log abundance
+# forward_peptides['StatMomentsAreaNorm']=2**forward_peptides['StatMomentsAreaLog+Norm']
+# forward_peptides.drop('StatMomentsAreaLog+Norm',axis=1,inplace=True)
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# #sum abundance for each sorted_list protein in each dataset
+# prot_info = forward_peptides.columns[~forward_peptides.columns.isin(['StatMomentsAreaNorm','Peptide Sequence with Mods'])].tolist()
+# protein_abundances = forward_peptides.groupby(prot_info)['StatMomentsAreaNorm'].sum().reset_index()
+# 
+# #re-log2 tranform abundance
+# protein_abundances['StatMomentsAreaLog+Norm']=np.log2(protein_abundances['StatMomentsAreaNorm'])
+# protein_abundances.drop('StatMomentsAreaNorm',axis=1,inplace=True)
+# 
+# del prot_info, forward_peptides
 
-#sum abundance for each sorted_list protein in each dataset
-prot_info = forward_peptides.columns[~forward_peptides.columns.isin(['StatMomentsAreaNorm','Peptide Sequence with Mods'])].tolist()
-protein_abundances = forward_peptides.groupby(prot_info)['StatMomentsAreaNorm'].sum().reset_index()
 
-#re-log2 tranform abundance
-protein_abundances['StatMomentsAreaLog+Norm']=np.log2(protein_abundances['StatMomentsAreaNorm'])
-protein_abundances.drop('StatMomentsAreaNorm',axis=1,inplace=True)
+protein_abundances <- forward_peptides %>%
+  mutate(StatMomentsAreaNorm = 2 ^ StatMomentsAreaLogNorm) %>%
+  group_by(processed_dobj_id, Razor_Protein) %>%
+  mutate(StatMomentsAreaNormSum = sum(StatMomentsAreaNorm)) %>%
+  ungroup() %>%
+  distinct(processed_dobj_id, product, product_source, Razor_Protein, StatMomentsAreaNormSum) %>%
+  mutate(StatMomentsAreaLogNormSum = log2(StatMomentsAreaNormSum)) %>%
+  select(-StatMomentsAreaNormSum)
 
-del prot_info, forward_peptides
 
 protein_abundances
 ```
@@ -952,13 +985,22 @@ Reformat these results into a proteomic table, where each row indicates a protei
 
 ```{r}
 #pivot to wide crosstab
-aggregated_proteomic_output = protein_abundances.pivot(index='razor',columns='processed_DO_id',values='StatMomentsAreaLog+Norm')
-aggregated_proteomic_output.columns.name = None
+# aggregated_proteomic_output = protein_abundances.pivot(index='razor',columns='processed_DO_id',values='StatMomentsAreaLog+Norm')
+# aggregated_proteomic_output.columns.name = None
+# 
+# aggregated_proteomic_output
 
-aggregated_proteomic_output
+
+protein_abundances %>%
+  select(processed_dobj_id, Razor_Protein, StatMomentsAreaLogNormSum) %>%
+  pivot_wider(names_from = "processed_dobj_id", values_from = "StatMomentsAreaLogNormSum") -> a
+
+
+
+
 ```
 
-The generated protein table can be used as input to the software [pmartR](https://shinyproxy.emsl.pnnl.gov/app/pmart), which performs statistical analyses such as ANOVA and independence of missing data (IMD) tests. In this case, the aggregated proteomics table (`aggregated_proteomic_output`) would be equivalent to pmartR's `e_data` and the peptide to protein to gene mappings (`razor_mapping`) would be equivalent to pmartR's `e_meta`.
+The generated protein table can be used as input to the software [pmartR](https://shinyproxy.emsl.pnnl.gov/app/pmart), which performs statistical analyses such as ANOVA and independence of missing data (IMD) tests. In this case, the aggregated proteomics table (`aggregated_proteomic_output`) would be equivalent to pmartR's `e_data` and the long form peptide to protein to gene mappings (`razor_mapping_long`) would be equivalent to pmartR's `e_meta`.
 
 <img src="../pmartR_logo_final.jpg" width="25%"/>
 
@@ -967,20 +1009,32 @@ pmartR requires sample metadata to parameterize analyses and interpret the data.
 Gather biosample metadata via the NMDC API `collection` endpoint, using the function get_id_results() in api_func and searching for the `biosample_id`s associated with each output in `proteomic_output_df`.
 
 ```{r}
-#collect biosample metadata via the API
-biosamples = api_func.get_id_results(newest_results = proteomic_output_df.to_dict(orient='records'), 
-                                     id_field = 'biosample_id', 
-                                     query_collection = 'biosample_set', 
-                                     match_id_field = 'id', 
-                                     query_fields = 'id,depth.has_numeric_value')
+# #collect biosample metadata via the API
+# biosamples = api_func.get_id_results(newest_results = proteomic_output_df.to_dict(orient='records'), 
+#                                      id_field = 'biosample_id', 
+#                                      query_collection = 'biosample_set', 
+#                                      match_id_field = 'id', 
+#                                      query_fields = 'id,depth.has_numeric_value')
+# 
+# #normalize the json columns
+# biosamples = pd.json_normalize(biosamples).drop_duplicates().rename(columns={'id':'biosample_id'})
+# 
+# #merge biosample and processed data object information
+# sample_metadata = biosamples.merge(proteomic_output_df[['processed_DO_id','biosample_id']],on='biosample_id')
+# del biosamples
+# 
+# sample_metadata
 
-#normalize the json columns
-biosamples = pd.json_normalize(biosamples).drop_duplicates().rename(columns={'id':'biosample_id'})
+biosample_metadata <- get_results_by_id(collection = "biosample_set",
+                                        match_id_field = "id", 
+                                        id_list = proteomic_output_df$biosample_id, 
+                                        fields = "id,depth.has_numeric_value") %>%
+  # Cleanup json output
+  unnest(depth) %>%
+  dplyr::rename(biosample_id = id,
+                depth_m = has_numeric_value) %>%
+  # Add data object IDs to connect biosample metadata to processed results
+  left_join(select(proteomic_output_df, processed_dobj_id, biosample_id), by = join_by("biosample_id"))
 
-#merge biosample and processed data object information
-sample_metadata = biosamples.merge(proteomic_output_df[['processed_DO_id','biosample_id']],on='biosample_id')
-del biosamples
-
-sample_metadata
 ```
 
