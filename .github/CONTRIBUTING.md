@@ -111,7 +111,7 @@ This project uses `renv` for package management. We maintain a libraries.R mini 
 
 ### Python
 
-This project uses pip paired with venv to manage dependencies. Note that requirements_dev.txt should be used and updated for local development dependencies, and requirements.txt should be used for production/binder dependencies (updated manually and with discretion).
+This project uses pip paired with venv to manage dependencies. Note that requirements.txt should be used for production dependencies (updated manually and with discretion).
 
 #### To install the python dependencies:
 
@@ -121,9 +121,9 @@ This project uses pip paired with venv to manage dependencies. Note that require
 3. Activate the virtual environment:
     `source venv/bin/activate`
 4. Install the necessary packages:
-    `pip install -r requirements_dev.txt`
+    `pip install -r requirements.txt`
     **Note** to update your package installations:
-        `pip install -U -r requirements_dev.txt`
+        `pip install -U -r requirements.txt`
 
 #### To add new python dependencies:
 
@@ -132,5 +132,5 @@ This project uses pip paired with venv to manage dependencies. Note that require
 2. Install any new packages:
     `pip install <package>`
 3. Capture the new requirements:
-    `pip freeze > requirements_dev.txt`
+    `pip freeze > requirements.txt`
 4. Push changes to github
