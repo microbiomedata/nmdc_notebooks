@@ -68,6 +68,7 @@ suppressPackageStartupMessages({
   library(ggplot2, warn.conflicts = FALSE)
   library(jsonlite, warn.conflicts = FALSE)
   library(janitor, warn.conflicts = FALSE)
+  library(grid, warn.conflicts = FALSE)
   })
 
 # Load NMDC API functions from this repo
@@ -407,48 +408,19 @@ The main plot below is a histogram of forward and reverse peptides across all sp
 initial_specprob_filter = -15
 
 
-
-# def specFiltValue(Params, reversed_peptides:pd.DataFrame, forward_peptides:pd.DataFrame):
-  
 spec_filt_value <- function(specprob, forward_peptides, reversed_peptides) {
-
-    # # function to minimize
-    # (
-    #     specprob,
-    # ) = Params  # use log10 value so that it is managable for the computer
-  
-  
-    # ### The FDR function ###
-    # 
-    # # filter forward and reverse data sets to rows where the MSGFDB_SpecEValue is less than the specprob
-    # df_r = reversed_peptides[ (reversed_peptides["MSGFDB_SpecEValue"] < 10 ** specprob) ].copy()
-    # df_f = forward_peptides[ (forward_peptides["MSGFDB_SpecEValue"] < 10 ** specprob) ].copy()
 
   df_r <- filter(reversed_peptides, MSGFDB_SpecEValue < 10 ^ specprob)
   df_f <- filter(forward_peptides, MSGFDB_SpecEValue < 10 ^ specprob)
-  
-  
-    # ### fdr_spec ###
-    # f_spec = (df_f["SpecID"].unique().size)  # Modified on Apr23 to only count for unique dataset-scan
-    # r_spec = df_r["SpecID"].unique().size  
+
   f_spec <- length(unique(df_f$SpecID))
   r_spec <- length(unique(df_r$SpecID))
-
-    # if (f_spec == 0) & (r_spec == 0):
-    #     fdr_spec = 1
-    # else:
-    #     fdr_spec = (2*r_spec)/ (f_spec + r_spec)
   
   fdr_spec <- ifelse(f_spec == 0 & r_spec == 0,
                      1,
                      (2 * r_spec) / (f_spec + r_spec))
-  
-    # 
-    # filter_value=1 / (0.050001 - fdr_spec) * (-f_spec)
     
   filter_value <- 1 / (0.050001 - fdr_spec) * (-f_spec)
-    # 
-    # return filter_value
   
   return(filter_value)
 }
@@ -456,18 +428,9 @@ spec_filt_value <- function(specprob, forward_peptides, reversed_peptides) {
 
 
 
-# def optimize_specFilt(initial_specprob_filter:float,forward_peptides:pd.DataFrame,reversed_peptides:pd.DataFrame):
-  
+
 optimize_spec_filt <- function(initial_specprob_filter, forward_peptides, reversed_peptides) {
 
-    # result = minimize(
-    #     specFiltValue, 
-    #     initial_guess, 
-    #     args=(reversed_peptides, forward_peptides),  # Pass in the peptides as additional arguments
-    #     method="COBYLA"
-    # )
-  
-  
  result <- optim(fn = spec_filt_value, par = initial_specprob_filter, 
           forward_peptides = forward_peptides, reversed_peptides = reversed_peptides,
            method = "Brent", lower = -100, upper = 100)
@@ -483,24 +446,7 @@ optimize_spec_filt <- function(initial_specprob_filter, forward_peptides, revers
     error = function(e) message(paste("Error in optimization:", e)),
     warning = function(w) message(paste("Warning in optimization:", w))
   )
- 
-  
-  
-
-    # try:
-    #     #if minimize is succesful, save result
-    #     if result.success:
-    #         return result
-
-    # #if minimize() is unsuccesful
-    # except ValueError as e:
-    #     print("Failed optimization:", e)
-
 }
-
-
-# perform optimization
-# optimization = agg_func.optimize_specFilt(initial_specprob_filter,forward_peptides,reversed_peptides)
 
 optimized_filter <- optimize_spec_filt(initial_specprob_filter, forward_peptides, reversed_peptides)$par
 
@@ -554,18 +500,33 @@ plt.show
 
 ```{r}
 
+peps_for_plot <- bind_rows(forward_peptides, reversed_peptides, .id = "direction") %>%
+  mutate(direction = case_when(direction == 1 ~ "forward", direction == 2 ~ "reverse"),
+         direction = factor(direction))
+
+main_plot <- ggplot(peps_for_plot) +
+  geom_histogram(aes(x = MSGFDB_SpecEValue, fill = direction), bins = 50, alpha = 0.5, position = "identity") + 
+  geom_vline(xintercept = 10 ^ optimized_filter) +
+  scale_fill_manual(values = c("forward" = "seagreen", "reverse" = "orangered")) +
+  ylab("Number of peptide-spectrum matches") +
+  ggtitle("Impact of spectral probability filter")
+
+zoom_plot <- peps_for_plot %>%
+  # subset data - zoom in 
+  filter(MSGFDB_SpecEValue < 2e-9) %>%
+  ggplot() +
+    geom_histogram(aes(x = MSGFDB_SpecEValue, fill = direction), bins = 30, alpha = 0.5, position = "identity") + 
+    geom_vline(xintercept = 10 ^ optimized_filter) +
+    scale_fill_manual(values = c("forward" = "seagreen", "reverse" = "orangered")) +
+    theme(legend.position = "none", axis.title.x = element_blank(), axis.title.y = element_blank())
+    
+vp <- viewport(width = 0.4, height = 0.45, x = 0.6, y = 0.65)
+
+main_plot
+print(zoom_plot, vp = vp)
 
 
-
-
-
-
-
-
-
-
-
-
+# rm(peps_for_plot, main_plot, zoom_plot, vp)
 ```
 
 Apply the filter to the dataset and recalculate peptide and spectral FDR.
@@ -668,6 +629,18 @@ plt.ticklabel_format(style='plain', axis='y')
 plt.xticks([])
 plt.xlabel('sample')
 plt.ylabel('Relative Peptide Abundance (Un-Normalized)')
+
+
+ggplot(forward_peptides) +
+  geom_boxplot(aes(x = processed_dobj_id, y = StatMomentsArea)) +
+  labs(x = "Samples", y = "Relative Peptide Abundance (Not Normalized)", title = "Peptide relative abundances by sample") +
+  theme(axis.text.x = element_blank())
+
+
+
+
+
+
 ```
 
 Apply log2 transformation and median normalize peptide abundances.
@@ -706,7 +679,6 @@ forward_peptides <- forward_peptides %>%
 
 
 
-
 # transformed_abundances_fig, ax = plt.subplots(figsize=(8,6))
 # sns.boxplot(x='processed_DO_id',y='StatMomentsAreaLog+Norm',data=forward_peptides)
 # plt.xticks([])
@@ -714,6 +686,14 @@ forward_peptides <- forward_peptides %>%
 # plt.ylabel('Relative Peptide Abundance (Normalized)')
 # 
 # del ax, group_medians, all_data_median, forward_peptides['StatMomentsArea'], forward_peptides['StatMomentsAreaLog2'], reversed_peptides
+
+
+ggplot(forward_peptides) +
+  geom_boxplot(aes(x = processed_dobj_id, y = StatMomentsAreaLogNorm)) +
+  labs(x = "Samples", y = "Relative Peptide Abundance (Normalized)", title = "Peptide relative abundances by sample") +
+  theme(axis.text.x = element_blank())
+
+
 ```
 
 ## 4) Extract functional gene annotations for proteins
@@ -727,6 +707,8 @@ Collect peptide to protein mapping information for the passing peptide sequences
 peptide_protein_mapping <- unfiltered_results %>%
   filter(Peptide_Sequence_with_Mods %in% forward_peptides$Peptide_Sequence_with_Mods) %>%
   distinct(Peptide_Sequence_with_Mods, Protein)
+
+peptide_protein_mapping
 ```
 
 Annotation information for these proteins can be found in 'Functional Annotation GFF' files.
@@ -798,7 +780,7 @@ gene_mapping <- iterate_file_extract(
 annotation_mapping <- inner_join(gene_mapping, peptide_protein_mapping, by = join_by(ID == Protein)) %>%
   distinct()
 
-head(annotation_mapping)
+annotation_mapping
 ```
 
 ## 5) Generate annotation and protein mappings for peptides using "Razor" strategy
@@ -832,6 +814,12 @@ annotation_mapping <- annotation_mapping %>%
   mutate(redundant_pep_count = sum(prot_count > 1),
          unique_pep_count = sum(prot_count == 1)) %>%
   ungroup()
+
+annotation_mapping
+
+```
+
+```{r}
 
 
 get_razor_protein <- function(mapping_df) {
@@ -918,6 +906,8 @@ razor_mapping_oneline <- razor_mapping_long %>%
   ungroup() %>%
   distinct()
 
+razor_mapping_oneline
+
 ```
 
 ## 6) Perform protein rollup and summarize into a final aggregated table of relative protein abundance
@@ -938,6 +928,8 @@ Combine razor information with relative abundance values.
 forward_peptides <- forward_peptides %>%
   right_join(razor_mapping_oneline, by = join_by(Peptide_Sequence_with_Mods == Peptide)) %>%
   distinct()
+
+forward_peptides
 
 ```
 
@@ -991,12 +983,12 @@ Reformat these results into a proteomic table, where each row indicates a protei
 # aggregated_proteomic_output
 
 
-protein_abundances %>%
+aggregated_proteomic_output <- protein_abundances %>%
   select(processed_dobj_id, Razor_Protein, StatMomentsAreaLogNormSum) %>%
-  pivot_wider(names_from = "processed_dobj_id", values_from = "StatMomentsAreaLogNormSum") -> a
+  pivot_wider(names_from = "processed_dobj_id", values_from = "StatMomentsAreaLogNormSum")
 
 
-
+aggregated_proteomic_output
 
 ```
 
@@ -1035,6 +1027,8 @@ biosample_metadata <- get_results_by_id(collection = "biosample_set",
                 depth_m = has_numeric_value) %>%
   # Add data object IDs to connect biosample metadata to processed results
   left_join(select(proteomic_output_df, processed_dobj_id, biosample_id), by = join_by("biosample_id"))
+
+biosample_metadata
 
 ```
 
