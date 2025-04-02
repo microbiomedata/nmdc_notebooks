@@ -1,5 +1,14 @@
-# Define functions
+# Function definitions for /R/proteomic_aggregation.ipynb
 
+# Function that takes a peptide sequence (s: string) and 
+# returns the same sequence but without any prefix or suffix.
+trim_peptide_sequence <- function(s) {
+  str_match(s, "\\.([A-Z\\\\*@#]+)\\.")[, 2]
+}
+
+
+# Function that extracts the feature annotations column from
+# GFF3 format files located at the provided address (url: string)
 gff_extract_features <- function(url) {
   
   withCallingHandlers(
@@ -27,7 +36,13 @@ gff_extract_features <- function(url) {
 }
 
 
-
+# Function that takes a dataframe (input_df: data.frame) with a column of urls
+# (url_col: a column name in input_df, string) and a column of dataset identifiers
+# (identifier_col: a column name in input_df, string) and returns a data.frame
+# of the desired columns (extract_cols: character vector) from each file in url_col.
+# Use file_type (str) to specify "tsv" or "gff" files.
+# Use filter_col (column name, str) and filter_values (vector) to filter the 
+# output data.frame.
 iterate_file_extract <- function(input_df, identifier_col, url_col, 
                                  extract_cols, file_type, 
                                  filter_col = NA, filter_values = NA) {
@@ -75,11 +90,10 @@ iterate_file_extract <- function(input_df, identifier_col, url_col,
   return(bind_rows(output))
 }
 
-trim_peptide_sequence <- function(s) {
-  str_match(s, "\\.([A-Z\\\\*@#]+)\\.")[, 2]
-}
 
-
+# Function that implements a spectral probability filter (specprob: numeric) and 
+# returns a value representing the impact on FDR of using specprob as the filter.
+# Takes two data.frames (forward_peptides, reversed_peptides) to calculate FDR.
 spec_filt_value <- function(specprob, forward_peptides, reversed_peptides) {
 
   df_r <- filter(reversed_peptides, MSGFDB_SpecEValue < 10 ^ specprob)
@@ -98,9 +112,9 @@ spec_filt_value <- function(specprob, forward_peptides, reversed_peptides) {
 }
 
 
-
-
-
+# Function that returns a spectral probability filter that optimizes the number
+# of forward peptides retained, given an FDR of 0.05. Takes an initial filter 
+# value (initial_specprob_filter: numeric) and two data.frames (forward_peptides, reversed_peptides)
 optimize_spec_filt <- function(initial_specprob_filter, forward_peptides, reversed_peptides) {
 
  result <- optim(fn = spec_filt_value, par = initial_specprob_filter, 
@@ -108,21 +122,30 @@ optimize_spec_filt <- function(initial_specprob_filter, forward_peptides, revers
            method = "Brent", lower = -100, upper = 100)
  
  # Brent method for optim() function always returns 0 (success) for convergence
- 
-  tryCatch(
-    expr = {
-      result <- optim(fn = spec_filt_value, par = initial_specprob_filter, 
-                      reversed_peptides = reversed_peptides, forward_peptides = forward_peptides,
-                      method = "Brent", lower = -100, upper = 100)
-      },
-    error = function(e) message(paste("Error in optimization:", e)),
-    warning = function(w) message(paste("Warning in optimization:", w))
-  )
 }
 
+
+# Function taking a dataframe of all peptide to protein mappings and 
+# returning a dataframe of peptide to razor protein mappings.
+# Rules for 'razor protein' are as follows:
+# - If a peptide is unique to a protein, then that is the razor
+# - If a peptide belongs to more than one protein, but one of those proteins 
+#   has a unique peptide, then that protein is the razor
+# - If a peptide belongs to more than one protein and one of those proteins has
+#   has the maximal number of peptides, then that protein is the razor
+# - If a peptide belongs to more than one protein and more than one of those 
+#   proteins has the maximal number of peptides, then collapse the proteins and
+#   gene annotations into single strings
+# - If a peptide belongs to more than one protein and more than one of those 
+#   proteins has a unique peptide, then the peptide is removed from analysis 
+#   because its mapping is inconclusive
+# Takes a mapping dataframe (mapping_df) with a row for each unique peptide to 
+# protein mapping and columns 'Peptide Sequence with Mods' and 'Protein'
+# Returns a mapping dataframe with a row for each unique peptide to razor 
+# protein mapping
 get_razor_protein <- function(mapping_df) {
     
-  # Make the mapping df into a bunch of named vectors for easier indexing
+  # Make the mapping df into named vectors for easier indexing
   
   # Names = peptides, values = number of proteins the peptide maps to
   a <- distinct(mapping_df, Peptide_Sequence_with_Mods, prot_count)
