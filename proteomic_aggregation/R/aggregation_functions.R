@@ -23,10 +23,11 @@ gff_extract_features <- function(url) {
       tsv_df <- strsplit(tsv_df$attribute, split = ";") %>%
         lapply(strsplit, split = "=") %>%
         lapply(function (x) { 
-          do.call(rbind, x) %>%
+          a <- do.call(rbind, x) %>%
             t() %>%
-            data.frame() %>%
-            row_to_names(row_number = 1) }) %>%
+            data.frame()
+          colnames(a) <- a[1, ]
+          a[-1, ] }) %>%
         bind_rows() %>%
         distinct()
     },
