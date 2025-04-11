@@ -43,10 +43,10 @@ jobs:
         R -e 'install.packages("IRkernel")'
         R -e 'IRkernel::installspec()'
 
-    - id: execute-integration
-      name: Execute integration notebook
-      run: |
-        jupyter nbconvert --execute --to notebook --inplace omics_types_integration/R/integration_notebook.ipynb
+#    - id: execute-integration
+#      name: Execute integration notebook
+#      run: |
+#        jupyter nbconvert --execute --to notebook --inplace omics_types_integration/R/integration_notebook.ipynb
 
     - id: execute-bioscales
       name: Execute bioscales notebook
