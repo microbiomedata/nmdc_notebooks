@@ -28,11 +28,6 @@ jobs:
         pip install -r requirements.txt
         pip install jupyter
 
-    - id: execute-integration
-      name: Execute integration notebook
-      run: |
-        jupyter nbconvert --execute --to notebook --inplace omics_types_integration/python/integration_notebook.ipynb
-
     - id: execute-over_representation
       name: Execute over_representation notebook
       run: |
