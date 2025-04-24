@@ -337,7 +337,7 @@
     },
     "Rgraphviz": {
       "Package": "Rgraphviz",
-      "Version": "2.50.0",
+      "Version": "2.52.0",
       "Source": "Bioconductor",
       "Repository": "Bioconductor 3.20",
       "Requirements": [
