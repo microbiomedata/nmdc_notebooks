@@ -44,7 +44,12 @@ jobs:
         R -e 'renv::restore()'
         R -e 'install.packages("IRkernel")'
         R -e 'IRkernel::installspec()'
-    
+
+    - id: execute-aggregation
+      name: Execute aggregation notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace proteomic_aggregation/R/proteomic_aggregation.ipynb
+
     - id: execute-integration
       name: Execute integration notebook
       run: |
