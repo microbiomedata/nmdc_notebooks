@@ -1,4 +1,4 @@
-# This workflow will check all the links in the markdown files in the repository every day at 6 PM.
+# This workflow will check all the links in the markdown files in the repository on Mondays at 4am UTC.
 
 name: Check links on schedule
 # https://github.com/lycheeverse/lychee-action
@@ -7,7 +7,7 @@ on:
   repository_dispatch:
   workflow_dispatch:
   schedule:
-    - cron: "00 18 * * *"
+    - cron: "00 4 * * 1"
 
 jobs:
   linkChecker:
