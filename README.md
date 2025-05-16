@@ -8,12 +8,13 @@ Notebooks that are ready for use and exploration.
 - [NEON Soil Microbial Community Composition](https://github.com/microbiomedata/nmdc_notebooks/tree/main/taxonomic_dist_by_soil_layer)
 - [Natural Organic Matter Composition by Sample Type](https://github.com/microbiomedata/nmdc_notebooks/tree/main/NOM_visualizations)
 - [Proteomic Data Aggregation](https://github.com/microbiomedata/nmdc_notebooks/tree/main/proteomic_aggregation)
+- [Proteomic Overrepresentation](https://github.com/microbiomedata/nmdc_notebooks/tree/main/over_representation)
 - [Omics Types Data Integration](https://github.com/microbiomedata/nmdc_notebooks/tree/main/omics_types_integration)
 
 
 ## Overview 
 
-This repository includes jupyter notebooks that explore and analyze microbiome data from the National Microbiome Data Collaborative's (NMDC) data portal. These notebooks aim to:
+This repository includes Jupyter Notebooks that explore and analyze microbiome data from the National Microbiome Data Collaborative's (NMDC) data portal. These notebooks aim to:
 
 - highlight the NMDC's metadata and data
 - demonstrate how the NMDC's API may be used to retrieve metadata and data of various microbiome research
@@ -25,7 +26,7 @@ Each folder's scope attempts to explore a scientific question using the NMDC's (
 
 R and Python were chosen since they are popular languages among scientists to explore and visualize data. Jupyter Notebook paired with Google Colab is used because of its interactive code and data exploration features, effectiveness in teaching, language independency, and ease of sharing code.
 
-A challenging aspect that has been highlighted with this process is accessing the (meta)data in a user-friendly way via the NMDC API. Because the NMDC metadata schema is highly modular, retrieving metadata is not straight forward without extensive knowledge of the metadata schema's infrastructure, modeling language ([LinkML](https://linkml.io/)), and naming conventions. A proposed solution to this challenge is the creation of an R or Python package that would allow users to access NMDC's data in an easier and more straight forward way.
+A challenging aspect that has been highlighted with this process is accessing the (meta)data in a user-friendly way via the NMDC API. Because the NMDC metadata schema is highly modular, retrieving metadata is not straightforward without extensive knowledge of the metadata schema's infrastructure, modeling language ([LinkML](https://linkml.io/)), and naming conventions. A proposed solution to this challenge is the creation of R and Python packages that would allow users to access NMDC's data in an easier and more straightforward way. The Python package used in the notebooks is being developed here: https://github.com/microbiomedata/nmdc_api_utilities
 
 ## Contributing
 
