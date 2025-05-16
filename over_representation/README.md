@@ -6,5 +6,5 @@ This folder includes two notebooks, in R and Python, that finds over-represented
 - In progress
 
 ## Python
-- [Static rendered Jupyter notebook](https://github.com/microbiomedata/nmdc_notebooks/blob/main/over_representation/python/overrepresentation_notebook.ipynb). _Viewing only, not editable_
+- [Static rendered Jupyter notebook](https://nbviewer.org/github/microbiomedata/nmdc_notebooks/blob/main/over_representation/python/overrepresentation_notebook.ipynb). _Viewing only, not editable_
 - [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/over_representation/python/overrepresentation_notebook.ipynb).This is the recommended way to interact with the notebook. _You need a google account to use this option_
