@@ -13,3 +13,5 @@ __pycache__/
 over_representation/R/Draft1.Rmd
 over_representation/R/temp_gff.gff
 over_representation/python/overrepresentation_notebook_.ipynb
+over_representation/R/overrep_figure.png
+over_representation/R/overrepresentation_notebook.Rmd
