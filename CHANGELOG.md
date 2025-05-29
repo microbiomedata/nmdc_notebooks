@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v3.0.0] - 2025-05-29
+
+### Changed
+- Three Python and two R notebooks
+ - Omics Types Integration
+ - Proteomic Aggregation
+ - Over Representation (python only)
+
 ## [v2.0.0] - 2024-10-17
 
 ### Changed
