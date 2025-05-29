@@ -8,9 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Three Python and two R notebooks
- - Omics Types Integration
- - Proteomic Aggregation
- - Over Representation (python only)
+  - Omics Types Integration
+  - Proteomic Aggregation
+  - Over Representation (python only)
 
 ### Changed
 - Update existing notebooks to utilize nmdc_api_utilities package
