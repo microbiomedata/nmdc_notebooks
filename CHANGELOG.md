@@ -6,11 +6,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v3.0.0] - 2025-05-29
 
-### Changed
+### Added
 - Three Python and two R notebooks
  - Omics Types Integration
  - Proteomic Aggregation
  - Over Representation (python only)
+
+### Changed
+- Update existing notebooks to utilize nmdc_api_utilities package
+
+### Fixed
+- Various bugs created with workflow changes
 
 ## [v2.0.0] - 2024-10-17
 
