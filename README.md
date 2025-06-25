@@ -19,7 +19,7 @@ This repository includes Jupyter Notebooks that explore and analyze microbiome d
 - highlight the NMDC's metadata and data
 - demonstrate how the NMDC's API may be used to retrieve metadata and data of various microbiome research
 - illustrate example use cases of using the NMDC's (meta)data to answer scientific questions
-- encourage scientists to programmaticly access the NMDC Data Portal
+- encourage scientists to programmatically access the NMDC Data Portal
 - promote the accessiblity of microbiome research by demonstrating various modes of finding, accessing, and reusing existing microbiome data.
 
 Each folder's scope attempts to explore a scientific question using the NMDC's (meta)data. A folder includes a `README.md` that outlines the question or analysis posed as well as two sub-folders, one labeled `R`, and the other `python` that comprises the sample notebooks using the R and Python programming languages, respectively. 
