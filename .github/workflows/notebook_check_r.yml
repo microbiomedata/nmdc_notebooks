@@ -45,6 +45,11 @@ jobs:
         R -e 'install.packages("IRkernel")'
         R -e 'IRkernel::installspec()'
 
+    - id: execute-over_representation
+      name: Execute over_representation notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace over_representation/R/overrepresentation_notebook.ipynb
+
     - id: execute-aggregation
       name: Execute aggregation notebook
       run: |
