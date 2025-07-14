@@ -1,0 +1,70 @@
+name: Execute python notebooks
+
+on:
+  pull_request:
+  workflow_dispatch:
+  # run once a week
+  schedule:
+    - cron: "0 0 * * 0"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - id: checkout
+      uses: actions/checkout@v3
+
+    - id: python-setup
+      name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+
+    - id: python-dependencies
+      name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install jupyter
+
+    - id: env-vars
+      name: Set up environment variables
+      run: echo "Environment variables set up"
+      env:
+        ENV : "dev"
+
+    - id: execute-integration
+      name: Execute integration notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace omics_types_integration/python/integration_notebook.ipynb
+
+    - id: execute-over_representation
+      name: Execute over_representation notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace over_representation/python/overrepresentation_notebook.ipynb
+
+    - id: execute-aggregation
+      name: Execute proteomic aggregation notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace proteomic_aggregation/python/proteomic_aggregation.ipynb
+
+    - id: execute-bioscales
+      name: Execute bioscales notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace bioscales_biogeochemical_metadata/python/bioscales.ipynb
+
+    - id: execute-neon
+      name: Execute neon notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb
+
+    - id: execute-taxonomic
+      name: Execute taxonomic notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb
+
+    - id: execute-NOM
+      name: Execute NOM notebook
+      run: |
+        jupyter nbconvert --execute --to notebook --inplace NOM_visualizations/python/nom_data.ipynb
