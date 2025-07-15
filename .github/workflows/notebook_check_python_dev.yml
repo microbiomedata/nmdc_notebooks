@@ -1,4 +1,4 @@
-name: Execute python notebooks
+name: Execute python notebooks with dev api
 
 on:
   pull_request:
