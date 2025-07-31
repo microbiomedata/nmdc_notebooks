@@ -1,0 +1,276 @@
+name: Execute changed notebooks on PR
+
+on:
+  pull_request:
+    paths:
+      - 'omics_types_integration/python/**'
+      - 'over_representation/python/**'
+      - 'proteomic_aggregation/python/**'
+      - 'bioscales_biogeochemical_metadata/python/**'
+      - 'NEON_soil_metadata/python/**'
+      - 'taxonomic_dist_by_soil_layer/python/**'
+      - 'NOM_visualizations/python/**'
+      - 'requirements.txt'
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      notebooks: ${{ steps.changes.outputs.notebooks }}
+      has-changes: ${{ steps.changes.outputs.has-changes }}
+    steps:
+    - id: checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - id: changes
+      name: Detect changed notebooks
+      run: |
+        # Get list of changed files
+        changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+        echo "Changed files:"
+        echo "$changed_files"
+        echo ""
+        
+        # Initialize notebooks array
+        notebooks="["
+        count=0
+        
+        # Check each notebook directory for changes
+        if echo "$changed_files" | grep -q "omics_types_integration/python/\|requirements.txt"; then
+          if [ $count -gt 0 ]; then notebooks="$notebooks, "; fi
+          notebooks="$notebooks{\"name\": \"integration\", \"path\": \"omics_types_integration/python/integration_notebook.ipynb\"}"
+          count=$((count + 1))
+          echo "✓ Integration notebook needs testing (changes detected)"
+        fi
+        
+        if echo "$changed_files" | grep -q "over_representation/python/\|requirements.txt"; then
+          if [ $count -gt 0 ]; then notebooks="$notebooks, "; fi
+          notebooks="$notebooks{\"name\": \"over_representation\", \"path\": \"over_representation/python/overrepresentation_notebook.ipynb\"}"
+          count=$((count + 1))
+          echo "✓ Over representation notebook needs testing (changes detected)"
+        fi
+        
+        if echo "$changed_files" | grep -q "proteomic_aggregation/python/\|requirements.txt"; then
+          if [ $count -gt 0 ]; then notebooks="$notebooks, "; fi
+          notebooks="$notebooks{\"name\": \"aggregation\", \"path\": \"proteomic_aggregation/python/proteomic_aggregation.ipynb\"}"
+          count=$((count + 1))
+          echo "✓ Proteomic aggregation notebook needs testing (changes detected)"
+        fi
+        
+        if echo "$changed_files" | grep -q "bioscales_biogeochemical_metadata/python/\|requirements.txt"; then
+          if [ $count -gt 0 ]; then notebooks="$notebooks, "; fi
+          notebooks="$notebooks{\"name\": \"bioscales\", \"path\": \"bioscales_biogeochemical_metadata/python/bioscales.ipynb\"}"
+          count=$((count + 1))
+          echo "✓ Bioscales notebook needs testing (changes detected)"
+        fi
+        
+        if echo "$changed_files" | grep -q "NEON_soil_metadata/python/\|requirements.txt"; then
+          if [ $count -gt 0 ]; then notebooks="$notebooks, "; fi
+          notebooks="$notebooks{\"name\": \"neon\", \"path\": \"NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb\"}"
+          count=$((count + 1))
+          echo "✓ NEON notebook needs testing (changes detected)"
+        fi
+        
+        if echo "$changed_files" | grep -q "taxonomic_dist_by_soil_layer/python/\|requirements.txt"; then
+          if [ $count -gt 0 ]; then notebooks="$notebooks, "; fi
+          notebooks="$notebooks{\"name\": \"taxonomic\", \"path\": \"taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb\"}"
+          count=$((count + 1))
+          echo "✓ Taxonomic notebook needs testing (changes detected)"
+        fi
+        
+        if echo "$changed_files" | grep -q "NOM_visualizations/python/\|requirements.txt"; then
+          if [ $count -gt 0 ]; then notebooks="$notebooks, "; fi
+          notebooks="$notebooks{\"name\": \"NOM\", \"path\": \"NOM_visualizations/python/nom_data.ipynb\"}"
+          count=$((count + 1))
+          echo "✓ NOM notebook needs testing (changes detected)"
+        fi
+        
+        notebooks="$notebooks]"
+        
+        echo ""
+        echo "Final notebooks to test: $notebooks"
+        echo "Total notebooks to test: $count"
+        
+        # Set outputs
+        echo "notebooks=$notebooks" >> $GITHUB_OUTPUT
+        if [ $count -gt 0 ]; then
+          echo "has-changes=true" >> $GITHUB_OUTPUT
+        else
+          echo "has-changes=false" >> $GITHUB_OUTPUT
+          echo "ℹ️ No notebook-related changes detected - skipping execution"
+        fi
+
+  setup:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-changes == 'true'
+    steps:
+    - id: checkout
+      uses: actions/checkout@v4
+
+    - id: python-setup
+      name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - id: python-dependencies
+      name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install jupyter
+
+    # Cache the installed dependencies for parallel jobs
+    - name: Cache Python dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+  execute-notebooks:
+    runs-on: ubuntu-latest
+    needs: [detect-changes, setup]
+    if: needs.detect-changes.outputs.has-changes == 'true'
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.detect-changes.outputs.notebooks) }}
+    outputs:
+      result: ${{ steps.execute.outcome }}
+      notebook-name: ${{ matrix.notebook.name }}
+    
+    steps:
+    - id: checkout
+      uses: actions/checkout@v4
+
+    - id: python-setup
+      name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Restore Python dependencies cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - id: python-dependencies
+      name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install jupyter
+
+    - id: execute
+      name: Execute ${{ matrix.notebook.name }} notebook
+      run: |
+        echo "Executing notebook: ${{ matrix.notebook.path }}"
+        jupyter nbconvert --execute --to notebook --inplace "${{ matrix.notebook.path }}"
+        echo "Successfully executed ${{ matrix.notebook.name }} notebook"
+
+    # Save execution result for the summary job
+    - name: Save result
+      if: always()
+      run: |
+        mkdir -p results
+        if [ "${{ steps.execute.outcome }}" == "success" ]; then
+          echo "SUCCESS" > results/${{ matrix.notebook.name }}.txt
+        else
+          echo "FAILED" > results/${{ matrix.notebook.name }}.txt
+        fi
+
+    - name: Upload results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: notebook-results-${{ matrix.notebook.name }}
+        path: results/
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: [detect-changes, execute-notebooks]
+    if: always() && needs.detect-changes.outputs.has-changes == 'true'
+    steps:
+    - name: Download all results
+      uses: actions/download-artifact@v4
+      with:
+        pattern: notebook-results-*
+        path: results/
+        merge-multiple: true
+
+    - name: Generate summary
+      run: |
+        echo "## Changed Notebook Execution Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "This PR triggered testing of notebooks with detected changes." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        success_count=0
+        failed_count=0
+        failed_notebooks=""
+        
+        for result_file in results/*.txt; do
+          if [ -f "$result_file" ]; then
+            notebook_name=$(basename "$result_file" .txt)
+            result=$(cat "$result_file")
+            
+            if [ "$result" == "SUCCESS" ]; then
+              echo "✅ **$notebook_name**: SUCCESS" >> $GITHUB_STEP_SUMMARY
+              ((success_count++))
+            else
+              echo "❌ **$notebook_name**: FAILED" >> $GITHUB_STEP_SUMMARY
+              ((failed_count++))
+              if [ -z "$failed_notebooks" ]; then
+                failed_notebooks="$notebook_name"
+              else
+                failed_notebooks="$failed_notebooks, $notebook_name"
+              fi
+            fi
+          fi
+        done
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Total**: $((success_count + failed_count)) notebooks tested" >> $GITHUB_STEP_SUMMARY
+        echo "**Successful**: $success_count" >> $GITHUB_STEP_SUMMARY
+        echo "**Failed**: $failed_count" >> $GITHUB_STEP_SUMMARY
+        
+        if [ $failed_count -gt 0 ]; then
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "❌ **Failed notebooks**: $failed_notebooks" >> $GITHUB_STEP_SUMMARY
+          echo "failed_notebooks=$failed_notebooks" >> $GITHUB_OUTPUT
+          exit 1
+        else
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🎉 **All changed notebooks executed successfully!**" >> $GITHUB_STEP_SUMMARY
+        fi
+
+  no-changes:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-changes == 'false'
+    steps:
+    - name: No notebook changes
+      run: |
+        echo "## No Notebook Changes Detected" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "ℹ️ This PR doesn't contain changes to any notebook directories or requirements.txt." >> $GITHUB_STEP_SUMMARY
+        echo "No notebook execution needed." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Monitored paths:**" >> $GITHUB_STEP_SUMMARY
+        echo "- omics_types_integration/python/" >> $GITHUB_STEP_SUMMARY
+        echo "- over_representation/python/" >> $GITHUB_STEP_SUMMARY
+        echo "- proteomic_aggregation/python/" >> $GITHUB_STEP_SUMMARY
+        echo "- bioscales_biogeochemical_metadata/python/" >> $GITHUB_STEP_SUMMARY
+        echo "- NEON_soil_metadata/python/" >> $GITHUB_STEP_SUMMARY
+        echo "- taxonomic_dist_by_soil_layer/python/" >> $GITHUB_STEP_SUMMARY
+        echo "- NOM_visualizations/python/" >> $GITHUB_STEP_SUMMARY
+        echo "- requirements.txt" >> $GITHUB_STEP_SUMMARY
