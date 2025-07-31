@@ -11,3 +11,4 @@ pycirclize>=1.9.1
 gffpandas==1.2.0
 ## NMDC python package
 nmdc_api_utilities>=0.3.1
+python-dotenv
