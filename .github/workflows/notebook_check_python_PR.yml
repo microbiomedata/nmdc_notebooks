@@ -1,7 +1,7 @@
-name: Execute modified notebooks on PR
+name: Execute modified python notebooks on PR
 
 on:
-  pull_request:
+  #pull_request:
 
 jobs:
   detect-changes:
@@ -362,18 +362,6 @@ jobs:
         name: result-nom
         path: results/
 
-  summary:
-    runs-on: ubuntu-latest
-    needs: [detect-changes, execute-integration, execute-over-representation, execute-aggregation, execute-bioscales, execute-neon, execute-taxonomic, execute-nom]
-    if: always() && needs.detect-changes.outputs.has-changes == 'true'
-    steps:
-    - name: Download all results
-      uses: actions/download-artifact@v4
-      with:
-        pattern: result-*
-        path: results/
-        merge-multiple: true
-
     - name: Generate summary
       run: |
         echo "## Changed Notebook Execution Summary" >> $GITHUB_STEP_SUMMARY
@@ -381,27 +369,27 @@ jobs:
         
         success_count=0
         total_count=0
-        
+
+        # Iterate through each notebook type
         for notebook in integration over_representation aggregation bioscales neon taxonomic nom; do
+          # Check if the result file exists for the notebook
           if [ -f "results/$notebook.txt" ]; then
             echo "✅ **$notebook**: SUCCESS" >> $GITHUB_STEP_SUMMARY
-            ((success_count++))
-            ((total_count++))
+            total_count=$((total_count + 1))
+            success_count=$((success_count + 1))
+          else
+            echo "❌ **$notebook**: FAILED or NOT EXECUTED" >> $GITHUB_STEP_SUMMARY
+            total_count=$((total_count + 1))
           fi
         done
         
+        # Add final summary statistics
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Total**: $total_count notebooks tested" >> $GITHUB_STEP_SUMMARY
-        echo "**Successful**: $success_count" >> $GITHUB_STEP_SUMMARY
-        echo "🎉 **All changed notebooks executed successfully!**" >> $GITHUB_STEP_SUMMARY
-
-  no-changes:
-    runs-on: ubuntu-latest
-    needs: detect-changes
-    if: needs.detect-changes.outputs.has-changes == 'false'
-    steps:
-    - name: No notebook changes
-      run: |
-        echo "## No Notebook Changes Detected" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "ℹ️ This PR doesn't contain changes to notebook directories or requirements.txt." >> $GITHUB_STEP_SUMMARY
+        echo "**Total notebooks tested**: $total_count" >> $GITHUB_STEP_SUMMARY
+        echo "**Successful notebooks**: $success_count" >> $GITHUB_STEP_SUMMARY
+        # Only show a celebratory message if all notebooks succeeded
+        if [ "$success_count" -eq "$total_count" ]; then
+          echo "🎉 **All changed notebooks executed successfully!**" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ **Some notebooks failed or were not executed. Please review the logs!**" >> $GITHUB_STEP_SUMMARY
+        fi
