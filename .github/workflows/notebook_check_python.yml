@@ -8,9 +8,10 @@ on:
     - cron: "0 0 * * 0"
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
-
+    outputs:
+      notebooks: ${{ steps.set-notebooks.outputs.notebooks }}
     steps:
     - id: checkout
       uses: actions/checkout@v3
@@ -28,37 +29,141 @@ jobs:
         pip install -r requirements.txt
         pip install jupyter
 
-    - id: execute-integration
-      name: Execute integration notebook
-      run: |
-        jupyter nbconvert --execute --to notebook --inplace omics_types_integration/python/integration_notebook.ipynb
+    # Cache the installed dependencies for parallel jobs
+    - name: Cache Python dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
 
-    - id: execute-over_representation
-      name: Execute over_representation notebook
+    - id: set-notebooks
+      name: Set notebook matrix
       run: |
-        jupyter nbconvert --execute --to notebook --inplace over_representation/python/overrepresentation_notebook.ipynb
+        echo "notebooks=[
+          {\"name\": \"integration\", \"path\": \"omics_types_integration/python/integration_notebook.ipynb\"},
+          {\"name\": \"over_representation\", \"path\": \"over_representation/python/overrepresentation_notebook.ipynb\"},
+          {\"name\": \"aggregation\", \"path\": \"proteomic_aggregation/python/proteomic_aggregation.ipynb\"},
+          {\"name\": \"bioscales\", \"path\": \"bioscales_biogeochemical_metadata/python/bioscales.ipynb\"},
+          {\"name\": \"neon\", \"path\": \"NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb\"},
+          {\"name\": \"taxonomic\", \"path\": \"taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb\"},
+          {\"name\": \"NOM\", \"path\": \"NOM_visualizations/python/nom_data.ipynb\"}
+        ]" >> $GITHUB_OUTPUT
 
-    - id: execute-aggregation
-      name: Execute proteomic aggregation notebook
-      run: |
-        jupyter nbconvert --execute --to notebook --inplace proteomic_aggregation/python/proteomic_aggregation.ipynb
+  execute-notebooks:
+    runs-on: ubuntu-latest
+    needs: setup
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.setup.outputs.notebooks) }}
+    outputs:
+      result: ${{ steps.execute.outcome }}
+      notebook-name: ${{ matrix.notebook.name }}
+    
+    steps:
+    - id: checkout
+      uses: actions/checkout@v3
 
-    - id: execute-bioscales
-      name: Execute bioscales notebook
-      run: |
-        jupyter nbconvert --execute --to notebook --inplace bioscales_biogeochemical_metadata/python/bioscales.ipynb
+    - id: python-setup
+      name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
 
-    - id: execute-neon
-      name: Execute neon notebook
-      run: |
-        jupyter nbconvert --execute --to notebook --inplace NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb
+    - name: Restore Python dependencies cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
 
-    - id: execute-taxonomic
-      name: Execute taxonomic notebook
+    - id: python-dependencies
+      name: Install dependencies
       run: |
-        jupyter nbconvert --execute --to notebook --inplace taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install jupyter
 
-    - id: execute-NOM
-      name: Execute NOM notebook
+    - id: execute
+      name: Execute ${{ matrix.notebook.name }} notebook
       run: |
-        jupyter nbconvert --execute --to notebook --inplace NOM_visualizations/python/nom_data.ipynb
+        echo "Executing notebook: ${{ matrix.notebook.path }}"
+        jupyter nbconvert --execute --to notebook --inplace "${{ matrix.notebook.path }}"
+        echo "Successfully executed ${{ matrix.notebook.name }} notebook"
+
+    # Save execution result for the summary job
+    - name: Save result
+      if: always()
+      run: |
+        mkdir -p results
+        if [ "${{ steps.execute.outcome }}" == "success" ]; then
+          echo "SUCCESS" > results/${{ matrix.notebook.name }}.txt
+        else
+          echo "FAILED" > results/${{ matrix.notebook.name }}.txt
+        fi
+
+    - name: Upload results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: notebook-results
+        path: results/
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: execute-notebooks
+    if: always()
+    steps:
+    - name: Download all results
+      uses: actions/download-artifact@v3
+      with:
+        name: notebook-results
+        path: results/
+
+    - name: Generate summary
+      run: |
+        echo "## Notebook Execution Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        success_count=0
+        failed_count=0
+        failed_notebooks=""
+        
+        for result_file in results/*.txt; do
+          if [ -f "$result_file" ]; then
+            notebook_name=$(basename "$result_file" .txt)
+            result=$(cat "$result_file")
+            
+            if [ "$result" == "SUCCESS" ]; then
+              echo "✅ **$notebook_name**: SUCCESS" >> $GITHUB_STEP_SUMMARY
+              ((success_count++))
+            else
+              echo "❌ **$notebook_name**: FAILED" >> $GITHUB_STEP_SUMMARY
+              ((failed_count++))
+              if [ -z "$failed_notebooks" ]; then
+                failed_notebooks="$notebook_name"
+              else
+                failed_notebooks="$failed_notebooks, $notebook_name"
+              fi
+            fi
+          fi
+        done
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Total**: $((success_count + failed_count)) notebooks" >> $GITHUB_STEP_SUMMARY
+        echo "**Successful**: $success_count" >> $GITHUB_STEP_SUMMARY
+        echo "**Failed**: $failed_count" >> $GITHUB_STEP_SUMMARY
+        
+        if [ $failed_count -gt 0 ]; then
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "❌ **Failed notebooks**: $failed_notebooks" >> $GITHUB_STEP_SUMMARY
+          echo "failed_notebooks=$failed_notebooks" >> $GITHUB_OUTPUT
+          exit 1
+        else
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🎉 **All notebooks executed successfully!**" >> $GITHUB_STEP_SUMMARY
+        fi
