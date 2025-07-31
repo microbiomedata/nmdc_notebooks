@@ -39,6 +39,15 @@ jobs:
       if: runner.os == 'Linux'
       run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
 
+    - name: Cache R packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.local/share/renv
+        key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-renv-
+          renv-
+
     - name: Restore R packages cache
       uses: actions/cache@v3
       with:
