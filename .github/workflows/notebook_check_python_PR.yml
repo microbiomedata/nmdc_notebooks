@@ -1,4 +1,4 @@
-name: Execute changed notebooks on PR
+name: Execute modified notebooks on PR
 
 on:
   pull_request:
