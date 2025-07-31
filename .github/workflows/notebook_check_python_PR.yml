@@ -28,12 +28,14 @@ jobs:
           {"name": "nom", "path": "NOM_visualizations/python/nom_data.ipynb"}
         ]'
 
+        # Initialize changed_notebooks as valid JSON
+        changed_notebooks="[]"
+        has_changes=false
+
         # Get list of changed files
         changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
         
         # Check if each notebook has been modified
-        changed_notebooks="[]"
-        has_changes=false
         for notebook in $(echo "$notebooks" | jq -c '.[]'); do
           name=$(echo "$notebook" | jq -r '.name')
           path=$(echo "$notebook" | jq -r '.path')
@@ -45,8 +47,8 @@ jobs:
           fi
         done
 
-        # Output changed notebooks and flag
-        echo "changed-notebooks=$changed_notebooks" >> $GITHUB_OUTPUT
+        # Write compact JSON to outputs
+        echo "changed-notebooks=$(echo "$changed_notebooks" | jq -c .)" >> $GITHUB_OUTPUT
         echo "has-changes=$has_changes" >> $GITHUB_OUTPUT
 
   setup:
