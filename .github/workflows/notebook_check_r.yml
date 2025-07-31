@@ -39,6 +39,14 @@ jobs:
       if: runner.os == 'Linux'
       run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
 
+    - name: Restore R packages cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.local/share/renv
+        key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-renv-
+
     - id: r-dependencies
       name: Install R dependencies
       run: |
@@ -47,19 +55,17 @@ jobs:
         R -e 'install.packages("IRkernel")'
         R -e 'IRkernel::installspec()'
 
-    # Cache R packages for parallel jobs
-    - name: Cache R packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.local/share/renv
-        key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-renv-
-
     - id: set-notebooks
       name: Set notebook matrix
       run: |
-        echo 'notebooks=[{"name": "integration", "path": "omics_types_integration/R/integration_notebook.ipynb"}, {"name": "aggregation", "path": "proteomic_aggregation/R/proteomic_aggregation.ipynb"}, {"name": "bioscales", "path": "bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb"}, {"name": "neon", "path": "NEON_soil_metadata/R/NEON_data_exploration.ipynb"}, {"name": "taxonomic", "path": "taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb"}, {"name": "NOM", "path": "NOM_visualizations/R/NOM_R_notebook.ipynb"}]' >> $GITHUB_OUTPUT
+        echo 'notebooks=[
+          {"name": "integration", "path": "omics_types_integration/R/integration_notebook.ipynb"},
+          {"name": "aggregation", "path": "proteomic_aggregation/R/proteomic_aggregation.ipynb"},
+          {"name": "bioscales", "path": "bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb"},
+          {"name": "neon", "path": "NEON_soil_metadata/R/NEON_data_exploration.ipynb"},
+          {"name": "taxonomic", "path": "taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb"},
+          {"name": "nom", "path": "NOM_visualizations/R/NOM_R_notebook.ipynb"}
+        ]' >> $GITHUB_OUTPUT
 
   execute-notebooks:
     runs-on: ubuntu-latest
@@ -69,7 +75,6 @@ jobs:
       fail-fast: false
       matrix:
         notebook: ${{ fromJson(needs.setup.outputs.notebooks) }}
-    
     steps:
     - id: checkout
       uses: actions/checkout@v4
@@ -104,14 +109,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-renv-
 
-    - id: r-dependencies
-      name: Install R dependencies
-      run: |
-        R -e 'install.packages("renv")'
-        R -e 'renv::restore()'
-        R -e 'install.packages("IRkernel")'
-        R -e 'IRkernel::installspec()'
-
     - id: execute
       name: Execute ${{ matrix.notebook.name }} notebook
       run: |
@@ -120,17 +117,30 @@ jobs:
 
         if [ $? -ne 0 ]; then
           echo "Notebook ${{ matrix.notebook.name }} failed."
-          exit 1
+          echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+        else
+          echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
         fi
 
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      with:
+        name: notebook-results-${{ matrix.notebook.name }}
+        path: results-${{ matrix.notebook.name }}.txt
+
   post-check:
-    needs: execute-notebooks
     runs-on: ubuntu-latest
+    needs: execute-notebooks
     if: always() # Always run this job
     steps:
-    - id: aggregate-results
+    - name: Aggregate all notebook results
+      uses: actions/download-artifact@v4
+      with:
+        path: results/
+
+    - name: Check notebook results
       run: |
-        FAILED_COUNT=$(find results -name "*.txt" -exec cat {} \; | grep -c "FAILED")
+        FAILED_COUNT=$(grep -l "FAILED" results/*.txt | wc -l)
 
         if [ "$FAILED_COUNT" -gt 0 ]; then
           echo "At least one notebook failed execution."

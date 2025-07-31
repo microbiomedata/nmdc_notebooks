@@ -83,6 +83,7 @@ jobs:
     continue-on-error: true
     if: needs.detect-changes.outputs.has-changes == 'true'
     strategy:
+      fail-fast: false
       matrix:
         notebook: ${{ fromJson(needs.detect-changes.outputs.changed-notebooks) }}
     steps:
