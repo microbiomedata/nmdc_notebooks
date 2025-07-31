@@ -58,14 +58,13 @@ jobs:
     - id: set-notebooks
       name: Set notebook matrix
       run: |
-        echo 'notebooks=[
-          {"name": "integration", "path": "omics_types_integration/R/integration_notebook.ipynb"},
-          {"name": "aggregation", "path": "proteomic_aggregation/R/proteomic_aggregation.ipynb"},
-          {"name": "bioscales", "path": "bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb"},
-          {"name": "neon", "path": "NEON_soil_metadata/R/NEON_data_exploration.ipynb"},
-          {"name": "taxonomic", "path": "taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb"},
-          {"name": "nom", "path": "NOM_visualizations/R/NOM_R_notebook.ipynb"}
-        ]' >> $GITHUB_OUTPUT
+        echo "notebooks=[ \
+        {\"name\": \"integration\", \"path\": \"omics_types_integration/R/integration_notebook.ipynb\"}, \
+        {\"name\": \"aggregation\", \"path\": \"proteomic_aggregation/R/proteomic_aggregation.ipynb\"}, \
+        {\"name\": \"bioscales\", \"path\": \"bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb\"}, \
+        {\"name\": \"neon\", \"path\": \"NEON_soil_metadata/R/NEON_data_exploration.ipynb\"}, \
+        {\"name\": \"taxonomic\", \"path\": \"taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb\"}, \
+        {\"name\": \"nom\", \"path\": \"NOM_visualizations/R/NOM_R_notebook.ipynb\"}]" >> $GITHUB_OUTPUT
 
   execute-notebooks:
     runs-on: ubuntu-latest
