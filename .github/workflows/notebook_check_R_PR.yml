@@ -1,8 +1,7 @@
-name: Execute modified python notebooks on PR
+name: Execute modified R notebooks on PR
 
 on:
-  #pull_request:
-  workflow_dispatch: # --- IGNORE ---
+  pull_request:
 
 jobs:
   detect-changes:
@@ -18,14 +17,14 @@ jobs:
     - name: Detect changed notebooks
       id: find-changes
       run: |
-        # List of all notebooks
+        # List of all R notebooks
         notebooks='[
-          {"name": "bioscales", "path": "bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb"},
-          {"name": "neon", "path": "NEON_soil_metadata/R/NEON_data_exploration.ipynb"},
-          {"name": "nom", "path": "NOM_visualizations/R/NOM_R_notebook.ipynb"},
           {"name": "integration", "path": "omics_types_integration/R/integration_notebook.ipynb"},
           {"name": "aggregation", "path": "proteomic_aggregation/R/proteomic_aggregation.ipynb"},
-          {"name": "taxonomic", "path": "taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb"}
+          {"name": "bioscales", "path": "bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb"},
+          {"name": "neon", "path": "NEON_soil_metadata/R/NEON_data_exploration.ipynb"},
+          {"name": "taxonomic", "path": "taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb"},
+          {"name": "nom", "path": "NOM_visualizations/R/NOM_R_notebook.ipynb"}
         ]'
 
         # Initialize changed_notebooks as valid JSON
@@ -35,17 +34,24 @@ jobs:
         # Get list of changed files
         changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
         
-        # Check if each notebook has been modified
-        for notebook in $(echo "$notebooks" | jq -c '.[]'); do
-          name=$(echo "$notebook" | jq -r '.name')
-          path=$(echo "$notebook" | jq -r '.path')
-          
-          if echo "$changed_files" | grep -q "$path"; then
-            changed_notebooks=$(echo "$changed_notebooks" | jq ". += [{\"name\": \"$name\", \"path\": \"$path\"}]")
-            has_changes=true
-            echo "✓ Notebook $name needs testing"
-          fi
-        done
+        # Check if renv.lock changed (affects all notebooks)
+        if echo "$changed_files" | grep -q "renv.lock"; then
+          echo "✓ renv.lock changed - all notebooks need testing"
+          changed_notebooks="$notebooks"
+          has_changes=true
+        else
+          # Check if each notebook has been modified
+          for notebook in $(echo "$notebooks" | jq -c '.[]'); do
+            name=$(echo "$notebook" | jq -r '.name')
+            path=$(echo "$notebook" | jq -r '.path')
+            
+            if echo "$changed_files" | grep -q "$path"; then
+              changed_notebooks=$(echo "$changed_notebooks" | jq ". += [{\"name\": \"$name\", \"path\": \"$path\"}]")
+              has_changes=true
+              echo "✓ Notebook $name needs testing"
+            fi
+          done
+        fi
 
         # Write compact JSON to outputs
         echo "changed-notebooks=$(echo "$changed_notebooks" | jq -c .)" >> $GITHUB_OUTPUT
@@ -56,23 +62,24 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.has-changes == 'true'
     steps:
-    - id: checkout
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - id: python-setup
-      name: Set up Python
+    - name: Set RENV_PATHS_ROOT
+      shell: bash
+      run: |
+        echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
+
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
-    - id: install-jupyter
-      name: Install Jupyter
+    - name: Install Jupyter
       run: |
         python -m pip install --upgrade pip
         pip install jupyter
 
-    - id: r-setup
-      name: Set up R
+    - name: Set up R
       uses: r-lib/actions/setup-r@v2
       with:
         r-version: '4.4.3'
@@ -81,27 +88,29 @@ jobs:
       if: runner.os == 'Linux'
       run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
 
-    - id: r-dependencies
-      name: Install R dependencies
+    - name: Get R and OS version
+      id: get-version
+      shell: Rscript {0}
       run: |
-        R -e 'install.packages("renv")'
-        R -e 'renv::restore()'
-        R -e 'install.packages("IRkernel")'
-        R -e 'IRkernel::installspec()'
+        cat("##[set-output name=os-version;]", sessionInfo()$running, "\n", sep = "")
+        cat("##[set-output name=r-version;]", R.Version()$version.string, sep = "")
 
-    # Cache R packages for parallel jobs
     - name: Cache R packages
       uses: actions/cache@v3
       with:
-        path: ~/.local/share/renv
-        key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+        path: ${{ env.RENV_PATHS_ROOT }}
+        key: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-${{ hashFiles('renv.lock') }}
         restore-keys: |
-          ${{ runner.os }}-renv-
+          ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-
 
-    - id: set-notebooks
-      name: Set notebook matrix
+    - name: Install R dependencies
+      shell: Rscript {0}
       run: |
-        echo 'notebooks=[{"name": "integration", "path": "omics_types_integration/R/integration_notebook.ipynb"}, {"name": "aggregation", "path": "proteomic_aggregation/R/proteomic_aggregation.ipynb"}, {"name": "bioscales", "path": "bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb"}, {"name": "neon", "path": "NEON_soil_metadata/R/NEON_data_exploration.ipynb"}, {"name": "taxonomic", "path": "taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb"}, {"name": "NOM", "path": "NOM_visualizations/R/NOM_R_notebook.ipynb"}]' >> $GITHUB_OUTPUT
+        install.packages("renv", repos = "https://cloud.r-project.org/")
+        renv::activate()
+        renv::restore()
+        install.packages("IRkernel", repos = "https://cloud.r-project.org/")
+        IRkernel::installspec(name = "ir", displayname = "R")
 
   execute-notebooks:
     runs-on: ubuntu-latest
@@ -115,19 +124,22 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
+    - name: Set RENV_PATHS_ROOT
+      shell: bash
+      run: |
+        echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
-    - id: install-jupyter
-      name: Install Jupyter
+    - name: Install Jupyter
       run: |
         python -m pip install --upgrade pip
         pip install jupyter
 
-    - id: r-setup
-      name: Set up R
+    - name: Set up R
       uses: r-lib/actions/setup-r@v2
       with:
         r-version: '4.4.3'
@@ -136,21 +148,29 @@ jobs:
       if: runner.os == 'Linux'
       run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
 
-    - name: Restore R packages cache
+    - name: Get R and OS version
+      id: get-version
+      shell: Rscript {0}
+      run: |
+        cat("##[set-output name=os-version;]", sessionInfo()$running, "\n", sep = "")
+        cat("##[set-output name=r-version;]", R.Version()$version.string, sep = "")
+
+    - name: Restore R package cache
       uses: actions/cache@v3
       with:
-        path: ~/.local/share/renv
-        key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+        path: ${{ env.RENV_PATHS_ROOT }}
+        key: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-${{ hashFiles('renv.lock') }}
         restore-keys: |
-          ${{ runner.os }}-renv-
+          ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-
 
-    - id: r-dependencies
-      name: Install R dependencies
+    - name: Install R dependencies
+      shell: Rscript {0}
       run: |
-        R -e 'install.packages("renv")'
-        R -e 'renv::restore()'
-        R -e 'install.packages("IRkernel")'
-        R -e 'IRkernel::installspec()'
+        install.packages("renv", repos = "https://cloud.r-project.org/")
+        renv::activate()
+        renv::restore()
+        install.packages("IRkernel", repos = "https://cloud.r-project.org/")
+        IRkernel::installspec(name = "ir", displayname = "R")
 
     - name: Execute notebook
       run: |
