@@ -1,11 +1,12 @@
 name: Execute R notebooks
 
 on:
-  pull_request:
-    types: [opened, synchronize]
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * 0"
+  push:
+    branches:
+      - main
 
 jobs:
   setup:
