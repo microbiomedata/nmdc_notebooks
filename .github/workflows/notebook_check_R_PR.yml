@@ -1,7 +1,8 @@
 name: Execute modified python notebooks on PR
 
 on:
-  pull_request:
+  #pull_request:
+  workflow_dispatch: # --- IGNORE ---
 
 jobs:
   detect-changes:

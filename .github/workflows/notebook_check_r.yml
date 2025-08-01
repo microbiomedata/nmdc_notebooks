@@ -17,6 +17,11 @@ jobs:
     - id: checkout
       uses: actions/checkout@v4
 
+    - name: Set RENV_PATHS_ROOT
+      shell: bash
+      run: |
+        echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
+
     - id: python-setup
       name: Set up Python
       uses: actions/setup-python@v4
@@ -39,30 +44,34 @@ jobs:
       if: runner.os == 'Linux'
       run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
 
-    - name: Cache R packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.local/share/renv
-        key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-renv-
-          renv-
+    - name: Install and activate renv
+      shell: Rscript {0}
+      run: |
+        install.packages("renv")
+        renv::activate()
 
-    - name: Restore R packages cache
-      uses: actions/cache@v3
+    - name: Get R and OS version
+      id: get-version
+      shell: Rscript {0}
+      run: |
+        cat("##[set-output name=os-version;]", sessionInfo()$running, "\n", sep = "")
+        cat("##[set-output name=r-version;]", R.Version()$version.string, sep = "")
+
+    - name: Restore Renv package cache
+      uses: actions/cache@v4
       with:
-        path: ~/.local/share/renv
-        key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+        path: ${{ env.RENV_PATHS_ROOT }}
+        key: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-8a6894215af13-${{ hashFiles('renv.lock') }}
         restore-keys: |
-          ${{ runner.os }}-renv-
+          ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-8a6894215af13-
 
     - id: r-dependencies
       name: Install R dependencies
+      shell: Rscript {0}
       run: |
-        R -e 'install.packages("renv")'
-        R -e 'renv::restore()'
-        R -e 'install.packages("IRkernel")'
-        R -e 'IRkernel::installspec()'
+        renv::restore()
+        install.packages("IRkernel")
+        IRkernel::installspec(name = "ir", displayname = "R")
 
     - id: set-notebooks
       name: Set notebook matrix
@@ -78,7 +87,7 @@ jobs:
   execute-notebooks:
     runs-on: ubuntu-latest
     needs: setup
-    continue-on-error: true
+    continue-on-error: false # Fail individual notebooks if errors occur
     strategy:
       fail-fast: false
       matrix:
@@ -109,13 +118,13 @@ jobs:
       if: runner.os == 'Linux'
       run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
 
-    - name: Restore R packages cache
-      uses: actions/cache@v3
+    - name: Restore Renv package cache
+      uses: actions/cache@v4
       with:
-        path: ~/.local/share/renv
-        key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+        path: ${{ env.RENV_PATHS_ROOT }}
+        key: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-8a6894215af13-${{ hashFiles('renv.lock') }}
         restore-keys: |
-          ${{ runner.os }}-renv-
+          ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-8a6894215af13-
 
     - id: execute
       name: Execute ${{ matrix.notebook.name }} notebook
