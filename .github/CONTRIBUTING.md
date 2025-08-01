@@ -87,12 +87,11 @@ _or_
 6. Update the `README.md` in the folder to include links to the rendered notebook (using [nbviewer](https://nbviewer.org/) and [google colab](https://colab.research.google.com/)).
 7. Add the notebooks to the appropriate github workflows to ensure they are included in the continuous integration process.
     - For python notebooks
-        1. Add the notebook short name and path to the `notebooks` matrix in the `set-notebooks` step in the `.github/workflows/notebook_check_python.yml` file.
-        2. Add the notebook short name and path to the `notebooks` matrix in the `find-changes` step in the `.github/workflows/notebook_check_python_PR.yml` file
+        1. Add the notebook short name and path to the `notebooks` matrix in the `set-notebooks` step of the `setup` job in the `.github/workflows/notebook_check_python.yml` file.
+        2. Add the notebook short name and path to the `notebooks` matrix in the `find-changes` step of the `detect-changes` job in the `.github/workflows/notebook_check_python_PR.yml` file
     - For R notebooks
         1. Add the notebook short name and path to the `notebooks` matrix in the `set-notebooks` step in the `.github/workflows/notebook_check_r.yml` file
-
-#TODO KRH: expand on this before merging.
+        2. Add the notebook short name and path to the `notebooks` matrix in the `find-changes` step of the `detect-changes` job in the `.github/workflows/notebook_check_r_PR.yml` file
 
 See the `.github/workflows` folder for existing workflows (one for the R notebooks and one for the python notebooks). Add the new notebook to the end of the list of notebooks in the workflow file.
 
