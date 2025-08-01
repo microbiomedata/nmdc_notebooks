@@ -4,7 +4,6 @@ on:
   pull_request:
     types: [opened, synchronize]
   workflow_dispatch:
-  # run once a week
   schedule:
     - cron: "0 0 * * 0"
 
@@ -69,9 +68,16 @@ jobs:
       name: Install R dependencies
       shell: Rscript {0}
       run: |
-        renv::restore()
-        install.packages("IRkernel")
-        IRkernel::installspec(name = "ir", displayname = "R")
+        tryCatch({
+          install.packages("renv", repos = "https://cloud.r-project.org/")
+          renv::restore()
+          # IRkernel is specifically excluded from renv.lock but installed here for execution
+          install.packages("IRkernel", repos = "https://cloud.r-project.org/")
+          IRkernel::installspec(name = "ir", displayname = "R")
+        }, error = function(err) {
+          cat("ERROR during R dependency installation:\n", err$message)
+          stop(err)
+        })
 
     - id: set-notebooks
       name: Set notebook matrix
@@ -125,6 +131,12 @@ jobs:
         key: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-8a6894215af13-${{ hashFiles('renv.lock') }}
         restore-keys: |
           ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-8a6894215af13-
+
+    - name: Reinstall IRkernel for notebook execution
+      shell: Rscript {0}
+      run: |
+        install.packages("IRkernel", repos = "https://cloud.r-project.org/")
+        IRkernel::installspec(name = "ir", displayname = "R")
 
     - id: execute
       name: Execute ${{ matrix.notebook.name }} notebook
