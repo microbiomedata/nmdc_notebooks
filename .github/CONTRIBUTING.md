@@ -89,6 +89,8 @@ _or_
     - For python notebooks
         1. Add the notebook short name and path to the `notebooks` matrix in the `set-notebooks` step of the `setup` job in the `.github/workflows/notebook_check_python.yml` file.
         2. Add the notebook short name and path to the `notebooks` matrix in the `find-changes` step of the `detect-changes` job in the `.github/workflows/notebook_check_python_PR.yml` file
+        3. Add the notebook short name and path to the `notebooks` matrix in the `set-notebooks` step of the `setup` job in the `.github/workflows/notebook_check_python_dev.yml` file.
+        4. Add the notebook short name and path to the `notebooks` matrix in the `find-changes` step of the `detect-changes` job in the `.github/workflows/notebook_check_python_dev_PR.yml` file
     - For R notebooks
         1. Add the notebook short name and path to the `notebooks` matrix in the `set-notebooks` step in the `.github/workflows/notebook_check_r.yml` file
         2. Add the notebook short name and path to the `notebooks` matrix in the `find-changes` step of the `detect-changes` job in the `.github/workflows/notebook_check_r_PR.yml` file
