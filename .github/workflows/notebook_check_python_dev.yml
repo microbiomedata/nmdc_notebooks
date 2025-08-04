@@ -1,4 +1,4 @@
-name: Execute python notebooks
+name: (dev) Execute python notebooks
 
 on:
   workflow_dispatch:
@@ -44,7 +44,7 @@ jobs:
       run: |
         echo 'notebooks=[{"name": "integration", "path": "omics_types_integration/python/integration_notebook.ipynb"}, {"name": "over_representation", "path": "over_representation/python/overrepresentation_notebook.ipynb"}, {"name": "aggregation", "path": "proteomic_aggregation/python/proteomic_aggregation.ipynb"}, {"name": "bioscales", "path": "bioscales_biogeochemical_metadata/python/bioscales.ipynb"}, {"name": "neon", "path": "NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb"}, {"name": "taxonomic", "path": "taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb"}, {"name": "NOM", "path": "NOM_visualizations/python/nom_data.ipynb"}]' >> $GITHUB_OUTPUT
 
-  execute-notebooks:
+  execute-notebooks-dev:
     runs-on: ubuntu-latest
     needs: setup
     continue-on-error: true
@@ -85,7 +85,7 @@ jobs:
         pip install jupyter
 
     - id: execute
-      name: Execute ${{ matrix.notebook.name }} notebook
+      name: (dev) Execute ${{ matrix.notebook.name }} notebook
       run: |
         echo "Executing notebook: ${{ matrix.notebook.path }}"
         jupyter nbconvert --execute --to notebook --inplace "${{ matrix.notebook.path }}"
@@ -106,7 +106,7 @@ jobs:
 
   post-check:
     runs-on: ubuntu-latest
-    needs: execute-notebooks
+    needs: execute-notebooks-dev
     if: always()  # Run post-check no matter what
     steps:
     - name: Gather all notebook results
