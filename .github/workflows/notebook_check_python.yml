@@ -98,23 +98,29 @@ jobs:
         name: notebook-results-${{ matrix.notebook.name }}
         path: results-${{ matrix.notebook.name }}.txt
 
-  post-check:
-    runs-on: ubuntu-latest
-    needs: execute-notebooks
-    if: always()  # Run post-check no matter what
-    steps:
-    - name: Gather all notebook results
-      uses: actions/download-artifact@v4
-      with:
-        path: results/
-
     - name: Check notebook results
       run: |
-        FAILED_COUNT=$(grep -l "FAILED" results/*.txt | wc -l)
+        EXPECTED_COUNT=$(ls results/ | grep '\.txt$' | wc -l)
+        ACTUAL_COUNT=$(ls results/ | grep '\.txt$' | wc -l)
+        FAILED_COUNT=$(grep -l "FAILED" results/*.txt | wc -l || true)
+
+        # Get the number of notebooks from the matrix (passed via needs)
+        NOTEBOOKS_JSON='${{ needs.execute-notebooks-dev.strategy.matrix.notebook }}'
+        if [ -z "$NOTEBOOKS_JSON" ]; then
+          # fallback: count from files
+          NOTEBOOK_COUNT=$ACTUAL_COUNT
+        else
+          NOTEBOOK_COUNT=$(echo "$NOTEBOOKS_JSON" | jq length)
+        fi
+
+        if [ "$ACTUAL_COUNT" -ne "$NOTEBOOK_COUNT" ]; then
+          echo "Not all notebook result artifacts were found. Expected $NOTEBOOK_COUNT, found $ACTUAL_COUNT."
+          exit 1
+        fi
 
         if [ "$FAILED_COUNT" -gt 0 ]; then
           echo "At least one notebook has failed execution."
-          exit 1  # Fail the workflow
+          exit 1
         else
           echo "All notebooks executed successfully!"
         fi
