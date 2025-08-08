@@ -81,22 +81,26 @@ jobs:
 
     - id: execute
       name: (dev) Execute ${{ matrix.notebook.name }} notebook
-      continue-on-error: true
       run: |
         echo "Executing notebook: ${{ matrix.notebook.path }}"
+        set +e  # Don't exit on error
         jupyter nbconvert --execute --to notebook --inplace "${{ matrix.notebook.path }}"
         EXIT_CODE=$?
+        set -e  # Re-enable exit on error
 
         if [ $EXIT_CODE -ne 0 ]; then
           echo "Notebook ${{ matrix.notebook.name }} failed."
           echo "FAILED" > results-${{ matrix.notebook.name }}.txt
         else
+          echo "Notebook ${{ matrix.notebook.name }} succeeded."
           echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
         fi
+        
+        # Always exit with 0 so upload step runs
+        exit 0
 
     - name: Upload results
       uses: actions/upload-artifact@v4
-      if: always()
       with:
         name: notebook-results-${{ matrix.notebook.name }}
         path: results-${{ matrix.notebook.name }}.txt
