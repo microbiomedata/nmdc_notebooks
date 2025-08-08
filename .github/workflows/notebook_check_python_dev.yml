@@ -48,7 +48,7 @@ jobs:
   execute-notebooks-dev:
     runs-on: ubuntu-latest
     needs: setup
-    continue-on-error: true  # Allow all notebooks to run even if one fails
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -81,6 +81,7 @@ jobs:
 
     - id: execute
       name: (dev) Execute ${{ matrix.notebook.name }} notebook
+      continue-on-error: true
       run: |
         echo "Executing notebook: ${{ matrix.notebook.path }}"
         jupyter nbconvert --execute --to notebook --inplace "${{ matrix.notebook.path }}"
@@ -95,6 +96,7 @@ jobs:
 
     - name: Upload results
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: notebook-results-${{ matrix.notebook.name }}
         path: results-${{ matrix.notebook.name }}.txt
@@ -102,7 +104,7 @@ jobs:
   post-check:
     runs-on: ubuntu-latest
     needs: execute-notebooks-dev
-    if: always()  # Run post-check no matter what
+    if: always()
     steps:
     - name: Gather all notebook results
       uses: actions/download-artifact@v4
@@ -111,7 +113,7 @@ jobs:
 
     - name: Check notebook results
       run: |
-        FAILED_COUNT=$(grep -l "FAILED" results/*.txt | wc -l)
+        FAILED_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; | wc -l)
         if [ "$FAILED_COUNT" -gt 0 ]; then
           echo "At least one notebook has failed execution."
           exit 1  # Fail the workflow
