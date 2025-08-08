@@ -118,16 +118,30 @@ jobs:
         EXPECTED_COUNT=$(jq length expected_notebooks.json)
 
         echo "Expected number of notebooks: $EXPECTED_COUNT"
+        echo "Expected notebooks JSON: $EXPECTED_NOTEBOOKS"
+
+        # List what we actually downloaded for debugging
+        echo "Downloaded artifacts structure:"
+        find results/ -type f -name "*.txt" | head -10
 
         touch errors.log
 
         # Validate that all expected artifacts exist and check their content
         for notebook in $(jq -r '.[] | .name' expected_notebooks.json); do
-          ARTIFACT_FILE="results-${notebook}.txt"
+          # The artifact structure is: results/notebook-results-{name}/results-{name}.txt
+          ARTIFACT_DIR="results/notebook-results-${notebook}"
+          ARTIFACT_FILE="${ARTIFACT_DIR}/results-${notebook}.txt"
+          
+          echo "Checking for artifact: $ARTIFACT_FILE"
+          
           if [ ! -f "$ARTIFACT_FILE" ]; then
-            echo "::error::Missing artifact for notebook: ${notebook}" >> errors.log
+            echo "Missing artifact for notebook: ${notebook}" | tee -a errors.log
+            echo "::error::Missing artifact for notebook: ${notebook}"
           elif grep -q "FAILED" "$ARTIFACT_FILE"; then
-            echo "::error::Execution failed for notebook: ${notebook}" >> errors.log
+            echo "Execution failed for notebook: ${notebook}" | tee -a errors.log
+            echo "::error::Execution failed for notebook: ${notebook}"
+          else
+            echo "Notebook ${notebook}: SUCCESS"
           fi
         done
 
