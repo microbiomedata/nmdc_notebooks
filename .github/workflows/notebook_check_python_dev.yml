@@ -1,6 +1,7 @@
 name: (dev) Execute python notebooks
 
 on:
+  pull_request:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * 0"
