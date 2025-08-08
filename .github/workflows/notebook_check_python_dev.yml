@@ -100,7 +100,7 @@ jobs:
 
   post-check:
     runs-on: ubuntu-latest
-    needs: execute-notebooks-dev
+    needs: [setup, execute-notebooks-dev]
     if: always()  # Ensure this step runs even if notebooks fail
     steps:
     - name: Gather all notebook results
@@ -113,16 +113,13 @@ jobs:
       run: |
         EXPECTED_NOTEBOOKS='${{ needs.setup.outputs.notebooks }}'
 
-        # Parse expected notebook names from setup step matrix
-        echo "$EXPECTED_NOTEBOOKS" > expected_notebooks.json
-        EXPECTED_COUNT=$(jq length expected_notebooks.json)
-
-        echo "Expected number of notebooks: $EXPECTED_COUNT"
         echo "Expected notebooks JSON: $EXPECTED_NOTEBOOKS"
 
-        # List what we actually downloaded for debugging
-        echo "Downloaded artifacts structure:"
-        find results/ -type f -name "*.txt" | head -10
+        # Check if we got the expected notebooks JSON
+        if [ -z "$EXPECTED_NOTEBOOKS" ] || [ "$EXPECTED_NOTEBOOKS" = "null" ]; then
+          echo "::error::Failed to get expected notebooks from setup job"
+          exit 1
+        fi
 
         touch errors.log
 
