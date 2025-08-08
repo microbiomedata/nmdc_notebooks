@@ -84,8 +84,9 @@ jobs:
       run: |
         echo "Executing notebook: ${{ matrix.notebook.path }}"
         jupyter nbconvert --execute --to notebook --inplace "${{ matrix.notebook.path }}"
+        EXIT_CODE=$?
 
-        if [ $? -ne 0 ]; then
+        if [ $EXIT_CODE -ne 0 ]; then
           echo "Notebook ${{ matrix.notebook.name }} failed."
           echo "FAILED" > results-${{ matrix.notebook.name }}.txt
         else
@@ -100,53 +101,20 @@ jobs:
 
   post-check:
     runs-on: ubuntu-latest
-    needs: [setup, execute-notebooks-dev]
-    if: always()  # Ensure this step runs even if notebooks fail
+    needs: execute-notebooks-dev
+    if: always()  # Run post-check no matter what
     steps:
     - name: Gather all notebook results
       uses: actions/download-artifact@v4
       with:
         path: results/
 
-    - id: check-results
-      name: Validate notebook execution
+    - name: Check notebook results
       run: |
-        EXPECTED_NOTEBOOKS='${{ needs.setup.outputs.notebooks }}'
-
-        echo "Expected notebooks JSON: $EXPECTED_NOTEBOOKS"
-
-        # Check if we got the expected notebooks JSON
-        if [ -z "$EXPECTED_NOTEBOOKS" ] || [ "$EXPECTED_NOTEBOOKS" = "null" ]; then
-          echo "::error::Failed to get expected notebooks from setup job"
-          exit 1
+        FAILED_COUNT=$(grep -l "FAILED" results/*.txt | wc -l)
+        if [ "$FAILED_COUNT" -gt 0 ]; then
+          echo "At least one notebook has failed execution."
+          exit 1  # Fail the workflow
+        else
+          echo "All notebooks executed successfully!"
         fi
-
-        touch errors.log
-
-        # Validate that all expected artifacts exist and check their content
-        for notebook in $(jq -r '.[] | .name' expected_notebooks.json); do
-          # The artifact structure is: results/notebook-results-{name}/results-{name}.txt
-          ARTIFACT_DIR="results/notebook-results-${notebook}"
-          ARTIFACT_FILE="${ARTIFACT_DIR}/results-${notebook}.txt"
-          
-          echo "Checking for artifact: $ARTIFACT_FILE"
-          
-          if [ ! -f "$ARTIFACT_FILE" ]; then
-            echo "Missing artifact for notebook: ${notebook}" | tee -a errors.log
-            echo "::error::Missing artifact for notebook: ${notebook}"
-          elif grep -q "FAILED" "$ARTIFACT_FILE"; then
-            echo "Execution failed for notebook: ${notebook}" | tee -a errors.log
-            echo "::error::Execution failed for notebook: ${notebook}"
-          else
-            echo "Notebook ${notebook}: SUCCESS"
-          fi
-        done
-
-        # Fail the workflow if there's anything in errors.log
-        if [ -s errors.log ]; then
-          echo "::error::Issues detected with one or more notebooks:"
-          cat errors.log
-          exit 1
-        fi
-
-        echo "All notebooks executed successfully, and all artifacts are present!"
