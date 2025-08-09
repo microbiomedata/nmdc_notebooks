@@ -67,7 +67,7 @@ jobs:
       name: Set up environment variables
       run: echo "Environment variables set up"
       env:
-        ENV : "dev"
+        ENV: "dev"
 
     - name: Restore Python dependencies cache
       uses: actions/cache@v3
@@ -88,18 +88,23 @@ jobs:
       name: (dev) Execute ${{ matrix.notebook.name }} notebook
       run: |
         echo "Executing notebook: ${{ matrix.notebook.path }}"
+        set +e  # Don't exit on error
         jupyter nbconvert --execute --to notebook --inplace "${{ matrix.notebook.path }}"
-        
-        if [ $? -ne 0 ]; then
+        EXIT_CODE=$?
+        set -e  # Re-enable exit on error
+
+        if [ $EXIT_CODE -ne 0 ]; then
           echo "Notebook ${{ matrix.notebook.name }} failed."
           echo "FAILED" > results-${{ matrix.notebook.name }}.txt
-          exit 1
+          exit 1  # Fail this step
         else
+          echo "Notebook ${{ matrix.notebook.name }} succeeded."
           echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
         fi
 
     - name: Upload results
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: notebook-results-${{ matrix.notebook.name }}
         path: results-${{ matrix.notebook.name }}.txt
@@ -107,7 +112,7 @@ jobs:
   post-check:
     runs-on: ubuntu-latest
     needs: execute-notebooks-dev
-    if: always()  # Run post-check no matter what
+    if: always()
     steps:
     - name: Gather all notebook results
       uses: actions/download-artifact@v4
@@ -116,8 +121,7 @@ jobs:
 
     - name: Check notebook results
       run: |
-        FAILED_COUNT=$(grep -l "FAILED" results/*.txt | wc -l)
-
+        FAILED_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; | wc -l)
         if [ "$FAILED_COUNT" -gt 0 ]; then
           echo "At least one notebook has failed execution."
           exit 1  # Fail the workflow
