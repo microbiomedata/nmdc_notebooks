@@ -63,6 +63,12 @@ jobs:
       with:
         python-version: '3.11'
 
+    - id: env-vars
+      name: Set up environment variables
+      run: echo "Environment variables set up"
+      env:
+        ENV: "dev"
+
     - name: Restore Python dependencies cache
       uses: actions/cache@v3
       with:
@@ -77,12 +83,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install jupyter
-
-    - id: env-vars
-      name: Set up environment variables
-      run: echo "Environment variables set up"
-      env:
-        ENV: "dev"
 
     - id: execute
       name: (dev) Execute ${{ matrix.notebook.name }} notebook
