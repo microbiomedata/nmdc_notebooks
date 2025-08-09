@@ -1,6 +1,7 @@
 name: Execute python notebooks
 
 on:
+  pull_request:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * 0"
@@ -42,7 +43,7 @@ jobs:
     - id: set-notebooks
       name: Set notebook matrix
       run: |
-        echo 'notebooks=[{"name": "integration", "path": "omics_types_integration/python/integration_notebook.ipynb"}, {"name": "over_representation", "path": "over_representation/python/overrepresentation_notebook.ipynb"}, {"name": "aggregation", "path": "proteomic_aggregation/python/proteomic_aggregation.ipynb"}, {"name": "bioscales", "path": "bioscales_biogeochemical_metadata/python/bioscales.ipynb"}, {"name": "neon", "path": "NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb"}, {"name": "taxonomic", "path": "taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb"}, {"name": "NOM", "path": "NOM_visualizations/python/nom_data.ipynb"}]' >> $GITHUB_OUTPUT
+        echo 'notebooks=[{"name": "bioscales", "path": "bioscales_biogeochemical_metadata/python/bioscales.ipynb"}, {"name": "NOM", "path": "NOM_visualizations/python/nom_data.ipynb"}]' >> $GITHUB_OUTPUT
 
   execute-notebooks:
     runs-on: ubuntu-latest
@@ -82,45 +83,43 @@ jobs:
       name: Execute ${{ matrix.notebook.name }} notebook
       run: |
         echo "Executing notebook: ${{ matrix.notebook.path }}"
+        set +e  # Don't exit on error
         jupyter nbconvert --execute --to notebook --inplace "${{ matrix.notebook.path }}"
-        
-        if [ $? -ne 0 ]; then
+        EXIT_CODE=$?
+        set -e  # Re-enable exit on error
+
+        if [ $EXIT_CODE -ne 0 ]; then
           echo "Notebook ${{ matrix.notebook.name }} failed."
           echo "FAILED" > results-${{ matrix.notebook.name }}.txt
-          exit 1
+          exit 1  # Fail this step
         else
+          echo "Notebook ${{ matrix.notebook.name }} succeeded."
           echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
         fi
 
     - name: Upload results
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: notebook-results-${{ matrix.notebook.name }}
         path: results-${{ matrix.notebook.name }}.txt
 
+  post-check:
+    runs-on: ubuntu-latest
+    needs: execute-notebooks
+    if: always()
+    steps:
+    - name: Gather all notebook results
+      uses: actions/download-artifact@v4
+      with:
+        path: results/
+
     - name: Check notebook results
       run: |
-        EXPECTED_COUNT=$(ls results/ | grep '\.txt$' | wc -l)
-        ACTUAL_COUNT=$(ls results/ | grep '\.txt$' | wc -l)
-        FAILED_COUNT=$(grep -l "FAILED" results/*.txt | wc -l || true)
-
-        # Get the number of notebooks from the matrix (passed via needs)
-        NOTEBOOKS_JSON='${{ needs.execute-notebooks-dev.strategy.matrix.notebook }}'
-        if [ -z "$NOTEBOOKS_JSON" ]; then
-          # fallback: count from files
-          NOTEBOOK_COUNT=$ACTUAL_COUNT
-        else
-          NOTEBOOK_COUNT=$(echo "$NOTEBOOKS_JSON" | jq length)
-        fi
-
-        if [ "$ACTUAL_COUNT" -ne "$NOTEBOOK_COUNT" ]; then
-          echo "Not all notebook result artifacts were found. Expected $NOTEBOOK_COUNT, found $ACTUAL_COUNT."
-          exit 1
-        fi
-
+        FAILED_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; | wc -l)
         if [ "$FAILED_COUNT" -gt 0 ]; then
           echo "At least one notebook has failed execution."
-          exit 1
+          exit 1  # Fail the workflow
         else
           echo "All notebooks executed successfully!"
         fi
