@@ -127,3 +127,74 @@ get_data_objects_for_study <- function(study_id) {
   # Response is a nested dataframe, return flattened
   return(unnest(response, cols = c(data_objects)))
 }
+
+# This function takes a vector of processed sample and/or biosample IDs and 
+# returns the first biosample in the chain. It iterates through MaterialProcessing
+# records to get the has_input and has_output sample IDs and adds them to a dataframe.
+# It returns the final (rightmost) value in each row and checks that they are all 
+# biosample IDs.
+# May need work to handle pooled biosamples.
+
+get_bsm_source_for_procsm <- function(data_df, procsm_column) {
+  
+  # Pull out all of the processed sample IDs to start from
+  id_vec <- data_df[[procsm_column]][str_which(data_df[[procsm_column]], "nmdc:procsm-")]
+  
+  # Starting variables
+  joined_df <- data.frame(starting_sample = data_df[[procsm_column]])
+  join_colname <- "starting_sample"
+  counter <- 1
+  
+  # As long as there are still processed samples left in the id list...
+  while(length(id_vec) > 0) {
+
+    # Assemble column names
+    id_colname <- paste0("mp.id.", counter)
+    in_colname <- paste0("mp.has_input.", counter)
+    out_colname <- paste0("mp.has_output.", counter)
+    
+    # Query material processing steps
+    material_processing_steps <- get_results_by_id(
+      collection = "material_processing_set",
+      match_id_field = "has_output",
+      id_list = id_vec,
+      fields = "id,has_input,has_output",
+      max_page_size = 20
+      ) %>%
+      
+      # Flatten results for viewing
+      mutate(has_input = unlist(has_input)) %>%
+      unnest(cols = has_output) %>%
+      distinct() %>%
+      
+      # Rename columns for consistency
+      dplyr::rename_with(
+        .fn = function(x) return(c(id_colname, in_colname, out_colname)),
+        .cols = c(id, has_input, has_output))
+    
+    # Add to last round of data
+    joined_df <- left_join(
+      joined_df, material_processing_steps,
+      by = join_by({{join_colname}} == {{out_colname}}))
+    
+    # Assign next join colname
+    join_colname <- in_colname
+
+    # Create next ID list
+    id_vec <- material_processing_steps[[in_colname]][str_which(material_processing_steps[[in_colname]], "nmdc:procsm-")]
+
+    # Increment loop counter
+    counter <- counter + 1
+  }
+  
+  # Find last value in each row (terminal/source biosample) and return that vector
+  last_value <- function(x) tail(x[!is.na(x)], 1)
+  source_biosample_vec <- apply(joined_df, 1, last_value)
+
+  # Check that the last value in each row was actually a biosample. If not,
+  # something has gone awry and someone familiar with the NMDC database
+  # needs to troubleshoot
+  stopifnot(str_detect(source_biosample_vec, "nmdc:bsm-"))
+
+  return(source_biosample_vec)
+}
