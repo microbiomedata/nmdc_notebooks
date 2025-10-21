@@ -7,7 +7,7 @@
 
 get_first_page_results <- function(collection, filter, max_page_size, fields) {
   og_url <- paste0(
-      'https://api.microbiomedata.org/nmdcschema/', 
+      'https://api-backup.microbiomedata.org/nmdcschema/', 
       collection, '?&filter=', filter, '&max_page_size=', max_page_size, '&projection=', fields
       )
   
@@ -33,7 +33,7 @@ get_all_results <- function(collection, filter_text, max_page_size, fields) {
     next_page_token <- initial_data$next_page_token
     
     while (TRUE) {
-      url <- paste0('https://api.microbiomedata.org/nmdcschema/', collection, '?&filter=', filter_text, '&max_page_size=', max_page_size, '&page_token=', next_page_token, '&projection=', fields)
+      url <- paste0('https://api-backup.microbiomedata.org/nmdcschema/', collection, '?&filter=', filter_text, '&max_page_size=', max_page_size, '&page_token=', next_page_token, '&projection=', fields)
       response <- jsonlite::fromJSON(URLencode(url, repeated = TRUE))
 
       results_df <- results_df %>% bind_rows(response$resources)
@@ -100,7 +100,7 @@ get_results_by_id <- function(collection, match_id_field, id_list, fields, max_p
 get_collection_by_id <- function(id) {
   
   # Create API endpoint URL
-  url <- paste0("https://api.microbiomedata.org/nmdcschema/ids/", id, "/collection-name")
+  url <- paste0("https://api-backup.microbiomedata.org/nmdcschema/ids/", id, "/collection-name")
 
   # Retrieve the JSON result from the API endpoint URL
   response <- jsonlite::fromJSON(URLencode(url, repeated = TRUE))
@@ -119,7 +119,7 @@ get_collection_by_id <- function(id) {
 
 get_data_objects_for_study <- function(study_id) {
   # Create API endpoint URL
-  url <- paste0("https://api.microbiomedata.org/data_objects/study/", study_id)
+  url <- paste0("https://api-backup.microbiomedata.org/data_objects/study/", study_id)
   
   # Retrieve the JSON result from the API endpoint URL
   response <- jsonlite::fromJSON(URLencode(url, repeated = TRUE))
@@ -197,4 +197,32 @@ get_bsm_source_for_procsm <- function(data_df, procsm_column) {
   stopifnot(str_detect(source_biosample_vec, "nmdc:bsm-"))
 
   return(source_biosample_vec)
+}
+
+# This function retrieves a biosample record from the NMDC API given a
+# biosample ID. It allows for optional specification of maximum page size
+# and fields to be returned. It returns the parsed JSON content as a list.
+get_biosample_record_by_id <- function(biosample_id,
+                                       max_page_size = 100,
+                                       fields = "") {
+  url <- paste0(
+    "https://api-backup.microbiomedata.org/nmdcschema/biosample_set/",
+    biosample_id,
+    "?max_page_size=", max_page_size,
+    "&projection=", fields
+  )
+  
+  # Perform request
+  response <- GET(url)
+  
+  # Check response
+  if (http_error(response)) {
+    stop("Failed to get collection by id from NMDC API: ",
+         status_code(response))
+  }
+  
+  # Parse and return JSON content
+  results <- jsonlite::fromJSON(content(response, "text", encoding = "UTF-8"), simplifyVector = TRUE)
+  
+  return(results)
 }
