@@ -80,7 +80,7 @@ jobs:
       name: Set notebook matrix
       run: |
         echo "notebooks=[ \
-        {\"name\": \"metaGTomic\", \"path\": \"metaG_metaT_integration/python/metaG_metaT_omics_analysis.ipynb\"}, \
+        {\"name\": \"metaGTomic\", \"path\": \"metaG_metaT_integration/R/metaG_metaT_omics_analysis.ipynb\"}, \
         {\"name\": \"integration\", \"path\": \"omics_types_integration/R/integration_notebook.ipynb\"}, \
         {\"name\": \"aggregation\", \"path\": \"proteomic_aggregation/R/proteomic_aggregation.ipynb\"}, \
         {\"name\": \"bioscales\", \"path\": \"bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb\"}, \

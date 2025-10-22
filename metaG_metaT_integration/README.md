@@ -1,6 +1,6 @@
 # Integrating Different Types of Omics Data
 
-TThis folder includes two notebooks (in R and Python) that illustrate how metagenomic and metatranscriptomic data from the same sample can be retrieved from the [NMDC-runtime API](https://api.microbiomedata.org/docs) and integrated using KEGG annotations and taxonomy.
+This folder includes two notebooks (in R and Python) that illustrate how metagenomic and metatranscriptomic data from the same sample can be retrieved from the [NMDC-runtime API](https://api.microbiomedata.org/docs) and integrated using KEGG annotations and taxonomy.
 
 ## R 
 - [Static rendered Jupyter notebook](https://nbviewer.org/github/microbiomedata/nmdc_notebooks/blob/1316-create-multi-omics-notebook---metagenome-and-metatranscriptome/metaG_metaT_integration/R/metaG_metaT_omics_analysis.ipynb). This is the recommended way to interact with the notebook. _Viewing only, not editable_
