@@ -1,0 +1,496 @@
+name: Deploy All Notebooks to GitHub Pages
+
+on:
+  workflow_dispatch:
+  push:
+
+# Sets permissions for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  setup-python:
+    runs-on: ubuntu-latest
+    outputs:
+      notebooks: ${{ steps.set-notebooks.outputs.notebooks }}
+    steps:
+    - id: checkout
+      uses: actions/checkout@v3
+
+    - id: python-setup
+      name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+
+    - id: python-dependencies
+      name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install jupyter nbconvert
+
+    - name: Cache Python dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - id: set-notebooks
+      name: Set Python notebook matrix
+      run: |
+        echo 'notebooks=[{"name": "bioscales", "path": "bioscales_biogeochemical_metadata/python/bioscales.ipynb"}]' >> $GITHUB_OUTPUT
+        # Full list for later:
+        # [{"name": "integration", "path": "omics_types_integration/python/integration_notebook.ipynb"}, {"name": "over_representation", "path": "over_representation/python/overrepresentation_notebook.ipynb"}, {"name": "aggregation", "path": "proteomic_aggregation/python/proteomic_aggregation.ipynb"}, {"name": "bioscales", "path": "bioscales_biogeochemical_metadata/python/bioscales.ipynb"}, {"name": "neon", "path": "NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb"}, {"name": "taxonomic", "path": "taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb"}, {"name": "NOM", "path": "NOM_visualizations/python/nom_data.ipynb"}]
+
+  setup-r:
+    runs-on: ubuntu-latest
+    outputs:
+      notebooks: ${{ steps.set-notebooks.outputs.notebooks }}
+      os-version: ${{ steps.get-version.outputs.os-version }}
+      r-version: ${{ steps.get-version.outputs.r-version }}
+    steps:
+    - id: checkout
+      uses: actions/checkout@v4
+
+    - name: Set RENV_PATHS_ROOT
+      shell: bash
+      run: |
+        echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
+
+    - id: python-setup
+      name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - id: install-jupyter
+      name: Install Jupyter
+      run: |
+        python -m pip install --upgrade pip
+        pip install jupyter
+
+    - id: r-setup
+      name: Set up R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        r-version: '4.4.3'
+
+    - name: Install system dependencies on Linux
+      if: runner.os == 'Linux'
+      run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
+
+    - name: Install and activate renv
+      shell: Rscript {0}
+      run: |
+        install.packages("renv")
+        renv::activate()
+
+    - name: Get R and OS version
+      id: get-version
+      shell: Rscript {0}
+      run: |
+        cat("##[set-output name=os-version;]", sessionInfo()$running, "\n", sep = "")
+        cat("##[set-output name=r-version;]", R.Version()$version.string, sep = "")
+
+    - name: Restore Renv package cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.RENV_PATHS_ROOT }}
+        key: ${{ needs.setup.outputs.os-version }}-${{ needs.setup.outputs.r-version }}-8a6894215af13-${{ hashFiles('renv.lock') }}
+        restore-keys: |
+          ${{ needs.setup.outputs.os-version }}-${{ needs.setup.outputs.r-version }}-8a6894215af13-
+
+    - id: r-dependencies
+      name: Install R dependencies
+      shell: Rscript {0}
+      run: |
+        tryCatch({
+          install.packages("renv", repos = "https://cloud.r-project.org/")
+          renv::restore()
+          # IRkernel is specifically excluded from renv.lock but installed here for execution
+          install.packages("IRkernel", repos = "https://cloud.r-project.org/")
+          IRkernel::installspec(name = "ir", displayname = "R")
+        }, error = function(err) {
+          cat("ERROR during R dependency installation:\n", err$message)
+          stop(err)
+        })
+
+    - id: set-notebooks
+      name: Set R notebook matrix
+      run: |
+        echo "notebooks=[ \
+        {\"name\": \"bioscales-r\", \"path\": \"bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb\"}]" >> $GITHUB_OUTPUT
+        # Full list for later:
+        # [{"name": "integration-r", "path": "omics_types_integration/R/integration_notebook.ipynb"}, {"name": "aggregation-r", "path": "proteomic_aggregation/R/proteomic_aggregation.ipynb"}, {"name": "bioscales-r", "path": "bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb"}, {"name": "neon-r", "path": "NEON_soil_metadata/R/NEON_data_exploration.ipynb"}, {"name": "taxonomic-r", "path": "taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb"}, {"name": "nom-r", "path": "NOM_visualizations/R/NOM_R_notebook.ipynb"}]
+
+  convert-python-notebooks:
+    runs-on: ubuntu-latest
+    needs: setup-python
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.setup-python.outputs.notebooks) }}
+      
+    steps:
+    - id: checkout
+      uses: actions/checkout@v3
+
+    - id: python-setup
+      name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+
+    - name: Restore Python dependencies cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - id: python-dependencies
+      name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install jupyter nbconvert
+
+    - id: convert
+      name: Convert ${{ matrix.notebook.name }} notebook to HTML
+      run: |
+        echo "Converting notebook: ${{ matrix.notebook.path }}"
+        set +e
+        jupyter nbconvert --execute --to html "${{ matrix.notebook.path }}" --output-dir=html_output
+        EXIT_CODE=$?
+        set -e
+
+        if [ $EXIT_CODE -ne 0 ]; then
+          echo "Notebook ${{ matrix.notebook.name }} conversion failed."
+          echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+          exit 1
+        else
+          echo "Notebook ${{ matrix.notebook.name }} converted successfully."
+          echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
+        fi
+
+    - name: Upload HTML artifact
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: html-python-${{ matrix.notebook.name }}
+        path: html_output/*.html
+
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: notebook-results-python-${{ matrix.notebook.name }}
+        path: results-${{ matrix.notebook.name }}.txt
+
+  convert-r-notebooks:
+    runs-on: ubuntu-latest
+    needs: setup-r
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.setup-r.outputs.notebooks) }}
+    
+    steps:
+    - id: checkout
+      uses: actions/checkout@v4
+
+    - name: Set RENV_PATHS_ROOT
+      shell: bash
+      run: |
+        echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
+
+    - id: python-setup
+      name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - id: install-jupyter
+      name: Install Jupyter
+      run: |
+        python -m pip install --upgrade pip
+        pip install jupyter
+
+    - id: r-setup
+      name: Set up R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        r-version: '4.4.3'
+
+    - name: Install system dependencies on Linux
+      if: runner.os == 'Linux'
+      run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
+
+    - name: Restore Renv package cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.RENV_PATHS_ROOT }}
+        key: ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-8a6894215af13-${{ hashFiles('renv.lock') }}
+        restore-keys: |
+          ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-8a6894215af13-
+
+    - name: Install and restore R environment
+      shell: Rscript {0}
+      run: |
+        tryCatch({
+          install.packages("renv", repos = "https://cloud.r-project.org/")
+          renv::activate()
+          renv::restore()
+          # IRkernel is specifically excluded from renv.lock but installed here for execution
+          install.packages("IRkernel", repos = "https://cloud.r-project.org/")
+          IRkernel::installspec(name = "ir", displayname = "R")
+        }, error = function(err) {
+          cat("ERROR during R environment setup:\n", err$message)
+          stop(err)
+        })
+
+    - id: convert
+      name: Convert ${{ matrix.notebook.name }} notebook to HTML
+      run: |
+        echo "Converting notebook: ${{ matrix.notebook.path }}"
+        
+        if [ ! -f "${{ matrix.notebook.path }}" ]; then
+          echo "ERROR: Notebook file not found: ${{ matrix.notebook.path }}"
+          echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+          exit 1
+        fi
+        
+        if jupyter nbconvert --execute --to html "${{ matrix.notebook.path }}" --output-dir=html_output; then
+          echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
+          echo "Notebook ${{ matrix.notebook.name }} converted successfully."
+        else
+          echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+          echo "Notebook ${{ matrix.notebook.name }} conversion failed."
+          exit 1
+        fi
+
+    - name: Upload HTML artifact
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: html-r-${{ matrix.notebook.name }}
+        path: html_output/*.html
+
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: notebook-results-r-${{ matrix.notebook.name }}
+        path: results-${{ matrix.notebook.name }}.txt
+
+  check-results:
+    runs-on: ubuntu-latest
+    needs: [convert-python-notebooks, convert-r-notebooks]
+    if: always()
+    outputs:
+      all-successful: ${{ steps.check.outputs.all-successful }}
+    steps:
+    - name: Gather all notebook results
+      uses: actions/download-artifact@v4
+      with:
+        path: results/
+
+    - id: check
+      name: Check notebook results
+      run: |
+        echo "Checking notebook conversion results..."
+        
+        find results/ -name "results-*.txt" -exec cat {} \;
+        
+        FAILED_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; | wc -l)
+        TOTAL_COUNT=$(find results/ -name "results-*.txt" | wc -l)
+        
+        echo "Total notebooks: $TOTAL_COUNT"
+        echo "Failed notebooks: $FAILED_COUNT"
+        
+        if [ "$FAILED_COUNT" -gt 0 ]; then
+          echo "❌ $FAILED_COUNT out of $TOTAL_COUNT notebooks failed conversion."
+          find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; | while read file; do
+            notebook_name=$(basename "$file" | sed 's/results-\(.*\)\.txt/\1/')
+            echo "Failed notebook: $notebook_name"
+          done
+          echo "all-successful=false" >> $GITHUB_OUTPUT
+          exit 1
+        else
+          echo "✅ All $TOTAL_COUNT notebooks converted successfully!"
+          echo "all-successful=true" >> $GITHUB_OUTPUT
+        fi
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [check-results]
+    if: needs.check-results.outputs.all-successful == 'true'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Download all HTML artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: html-artifacts/
+
+    - name: Prepare Pages content
+      run: |
+        mkdir -p _site
+        
+        # Move all HTML files to _site directory
+        find html-artifacts/ -name "*.html" -exec cp {} _site/ \;
+        
+        # Create an index.html with links to all notebooks
+        cat > _site/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Jupyter Notebooks</title>
+            <style>
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                    max-width: 900px;
+                    margin: 0 auto;
+                    padding: 40px 20px;
+                    line-height: 1.6;
+                    background: #f5f5f5;
+                }
+                .container {
+                    background: white;
+                    padding: 40px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                h1 {
+                    color: #333;
+                    border-bottom: 3px solid #007acc;
+                    padding-bottom: 15px;
+                    margin-bottom: 30px;
+                }
+                h2 {
+                    color: #555;
+                    margin-top: 40px;
+                    margin-bottom: 20px;
+                    font-size: 24px;
+                }
+                ul {
+                    list-style: none;
+                    padding: 0;
+                }
+                li {
+                    margin: 12px 0;
+                }
+                a {
+                    color: #007acc;
+                    text-decoration: none;
+                    font-size: 16px;
+                    display: inline-block;
+                    padding: 12px 20px;
+                    border: 1px solid #ddd;
+                    border-radius: 6px;
+                    transition: all 0.3s;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+                a:hover {
+                    background-color: #007acc;
+                    color: white;
+                    border-color: #007acc;
+                    transform: translateX(5px);
+                }
+                .language-badge {
+                    display: inline-block;
+                    padding: 4px 10px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: bold;
+                    margin-left: 10px;
+                }
+                .python {
+                    background: #3776ab;
+                    color: white;
+                }
+                .r {
+                    background: #276DC3;
+                    color: white;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>📓 Jupyter Notebooks</h1>
+                
+                <h2>Python Notebooks</h2>
+                <ul>
+        EOF
+        
+        # Add Python notebook links
+        for html_file in _site/*.html; do
+          if [ "$html_file" != "_site/index.html" ]; then
+            filename=$(basename "$html_file")
+            # Skip R notebooks (those with -r suffix before .html)
+            if [[ ! "$filename" =~ -r\.html$ ]]; then
+              name="${filename%.*}"
+              display_name=$(echo "$name" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
+              echo "                <li><a href=\"$filename\">$display_name <span class=\"language-badge python\">Python</span></a></li>" >> _site/index.html
+            fi
+          fi
+        done
+        
+        cat >> _site/index.html << 'EOF'
+                </ul>
+                
+                <h2>R Notebooks</h2>
+                <ul>
+        EOF
+        
+        # Add R notebook links
+        for html_file in _site/*.html; do
+          if [ "$html_file" != "_site/index.html" ]; then
+            filename=$(basename "$html_file")
+            # Only include R notebooks (those with -r suffix before .html)
+            if [[ "$filename" =~ -r\.html$ ]]; then
+              name="${filename%.*}"
+              display_name=$(echo "$name" | sed 's/-r$//' | sed 's/_/ /g' | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+              echo "                <li><a href=\"$filename\">$display_name <span class=\"language-badge r\">R</span></a></li>" >> _site/index.html
+            fi
+          fi
+        done
+        
+        cat >> _site/index.html << 'EOF'
+                </ul>
+            </div>
+        </body>
+        </html>
+        EOF
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: '_site'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
