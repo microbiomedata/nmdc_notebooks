@@ -3,6 +3,8 @@ name: Deploy All Notebooks to GitHub Pages
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
 
 # Sets permissions for GitHub Pages deployment
 permissions:
@@ -448,9 +450,27 @@ jobs:
         find html-artifacts/html-python-* -name "*.html" 2>/dev/null -exec cp {} _site/ \; || true
         find html-artifacts/html-r-* -name "*.html" 2>/dev/null -exec cp {} _site/ \; || true
         
-        # Create lists of notebooks by language based on artifact directories
-        python_notebooks=$(find html-artifacts/html-python-* -name "*.html" 2>/dev/null | xargs -n1 basename | sort || true)
-        r_notebooks=$(find html-artifacts/html-r-* -name "*.html" 2>/dev/null | xargs -n1 basename | sort || true)
+        # Create lists of notebooks by language in config file order (bioscales, then neon)
+        python_notebooks=""
+        r_notebooks=""
+        
+        # Get Python notebooks in config order
+        for notebook_name in "bioscales" "neon"; do
+          html_file=$(find html-artifacts/html-python-* -name "*${notebook_name}*.html" 2>/dev/null | head -1)
+          if [ -n "$html_file" ]; then
+            basename_file=$(basename "$html_file")
+            python_notebooks="$python_notebooks$basename_file"$'\n'
+          fi
+        done
+        
+        # Get R notebooks in config order  
+        for notebook_name in "bioscales" "neon"; do
+          html_file=$(find html-artifacts/html-r-* -name "*${notebook_name}*.html" 2>/dev/null | head -1)
+          if [ -n "$html_file" ]; then
+            basename_file=$(basename "$html_file")
+            r_notebooks="$r_notebooks$basename_file"$'\n'
+          fi
+        done
         
         echo "DEBUG: Python notebook HTML files found:"
         echo "$python_notebooks"
