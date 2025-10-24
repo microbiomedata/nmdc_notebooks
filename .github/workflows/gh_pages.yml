@@ -452,6 +452,11 @@ jobs:
         python_notebooks=$(find html-artifacts/html-python-* -name "*.html" 2>/dev/null | xargs -n1 basename | sort || true)
         r_notebooks=$(find html-artifacts/html-r-* -name "*.html" 2>/dev/null | xargs -n1 basename | sort || true)
         
+        echo "DEBUG: Python notebook HTML files found:"
+        echo "$python_notebooks"
+        echo "DEBUG: R notebook HTML files found:"
+        echo "$r_notebooks"
+        
         # Create an index.html with links to all notebooks
         cat > _site/index.html << 'EOF'
         <!DOCTYPE html>
