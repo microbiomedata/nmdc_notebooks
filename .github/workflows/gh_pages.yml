@@ -1,5 +1,5 @@
 name: Deploy All Notebooks to GitHub Pages
-
+#TODO resintate protection to main branch pushes only
 on:
   workflow_dispatch:
   push:
