@@ -31,7 +31,24 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: ${{ inputs.notebook_selection == 'changed' && 0 || 1 }}
+        fetch-depth: 0
+
+    - name: Fetch PR refs if needed
+      if: inputs.notebook_selection == 'changed' && inputs.base_sha != '' && inputs.head_sha != ''
+      run: |
+        # Ensure we have access to both commits
+        echo "Fetching commits for comparison..."
+        git fetch origin +${{ inputs.base_sha }}:refs/remotes/origin/base || echo "Base SHA fetch failed, continuing..."
+        git fetch origin +${{ inputs.head_sha }}:refs/remotes/origin/head || echo "Head SHA fetch failed, continuing..."
+        
+        # Verify commits are available
+        if git cat-file -e "${{ inputs.base_sha }}" && git cat-file -e "${{ inputs.head_sha }}"; then
+          echo "Both commits are now available"
+        else
+          echo "Trying alternative fetch strategy..."
+          git fetch --unshallow || echo "Unshallow failed"
+          git fetch origin || echo "Origin fetch failed"
+        fi
 
     - name: Set notebooks to test
       id: set-notebooks
