@@ -208,8 +208,8 @@ jobs:
 
   check-results:
     runs-on: ubuntu-latest
-    needs: execute-notebooks
-    if: always()
+    needs: [detect-changes, execute-notebooks]
+    if: always() && needs.detect-changes.outputs.has-changes == 'true'
     steps:
     - name: Gather all notebook results
       uses: actions/download-artifact@v4
@@ -238,3 +238,12 @@ jobs:
         else
           echo "✅ All $TOTAL_COUNT notebooks executed successfully!"
         fi
+
+  no-changes:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-changes == 'false'
+    steps:
+    - name: No changes detected
+      run: |
+        echo "✅ No R notebooks were changed in this PR. Skipping execution."
