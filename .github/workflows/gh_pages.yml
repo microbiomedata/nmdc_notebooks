@@ -1,8 +1,10 @@
 name: Deploy All Notebooks to GitHub Pages
-#TODO resintate protection to main branch pushes only
+
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
 
 # Sets permissions for GitHub Pages deployment
 permissions:
@@ -357,8 +359,18 @@ jobs:
       run: |
         mkdir -p _site
         
-        # Move all HTML files to _site directory
-        find html-artifacts/ -name "*.html" -exec cp {} _site/ \;
+        # Copy the NMDC logo to the site directory
+        cp .github/workflows/nmdc_logo.png _site/
+        
+        # Move all HTML files to _site directory, organizing by source
+        # Python notebooks come from html-python-* artifacts
+        # R notebooks come from html-r-* artifacts
+        find html-artifacts/html-python-* -name "*.html" 2>/dev/null -exec cp {} _site/ \; || true
+        find html-artifacts/html-r-* -name "*.html" 2>/dev/null -exec cp {} _site/ \; || true
+        
+        # Create lists of notebooks by language based on artifact directories
+        python_notebooks=$(find html-artifacts/html-python-* -name "*.html" 2>/dev/null | xargs -n1 basename | sort || true)
+        r_notebooks=$(find html-artifacts/html-r-* -name "*.html" 2>/dev/null | xargs -n1 basename | sort || true)
         
         # Create an index.html with links to all notebooks
         cat > _site/index.html << 'EOF'
@@ -367,7 +379,7 @@ jobs:
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Jupyter Notebooks</title>
+            <title>NMDC Metadata Exploration</title>
             <style>
                 body {
                     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -383,11 +395,42 @@ jobs:
                     border-radius: 8px;
                     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 }
+                .header {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
+                .logo {
+                    width: 80px;
+                    height: 80px;
+                    margin-right: 20px;
+                }
+                .title-section {
+                    flex: 1;
+                }
                 h1 {
                     color: #333;
+                    margin: 0;
+                    padding-bottom: 10px;
+                    font-size: 32px;
+                }
+                .subtitle {
+                    color: #666;
+                    font-size: 18px;
+                    margin-top: 8px;
+                }
+                .subtitle a {
+                    color: #007acc;
+                    text-decoration: none;
+                    border-bottom: 1px solid transparent;
+                    transition: border-color 0.3s;
+                }
+                .subtitle a:hover {
+                    border-bottom-color: #007acc;
+                }
+                .divider {
                     border-bottom: 3px solid #007acc;
-                    padding-bottom: 15px;
-                    margin-bottom: 30px;
+                    margin: 20px 0 30px 0;
                 }
                 h2 {
                     color: #555;
@@ -402,7 +445,7 @@ jobs:
                 li {
                     margin: 12px 0;
                 }
-                a {
+                a.notebook-link {
                     color: #007acc;
                     text-decoration: none;
                     font-size: 16px;
@@ -414,7 +457,7 @@ jobs:
                     width: 100%;
                     box-sizing: border-box;
                 }
-                a:hover {
+                a.notebook-link:hover {
                     background-color: #007acc;
                     color: white;
                     border-color: #007acc;
@@ -440,22 +483,25 @@ jobs:
         </head>
         <body>
             <div class="container">
-                <h1>📓 Jupyter Notebooks</h1>
+                <div class="header">
+                    <img src="nmdc_logo.png" alt="NMDC Logo" class="logo">
+                    <div class="title-section">
+                        <h1>NMDC Metadata Exploration</h1>
+                        <div class="subtitle">Using Jupyter Notebooks and the <a href="https://api.microbiomedata.org/docs" target="_blank" rel="noopener noreferrer">NMDC Runtime API</a></div>
+                    </div>
+                </div>
+                <div class="divider"></div>
                 
                 <h2>Python Notebooks</h2>
                 <ul>
         EOF
         
         # Add Python notebook links
-        for html_file in _site/*.html; do
-          if [ "$html_file" != "_site/index.html" ]; then
-            filename=$(basename "$html_file")
-            # Skip R notebooks (those with -r suffix before .html)
-            if [[ ! "$filename" =~ -r\.html$ ]]; then
-              name="${filename%.*}"
-              display_name=$(echo "$name" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
-              echo "                <li><a href=\"$filename\">$display_name <span class=\"language-badge python\">Python</span></a></li>" >> _site/index.html
-            fi
+        echo "$python_notebooks" | while read -r filename; do
+          if [ -n "$filename" ]; then
+            name="${filename%.*}"
+            display_name=$(echo "$name" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
+            echo "                <li><a href=\"$filename\" class=\"notebook-link\">$display_name <span class=\"language-badge python\">Python</span></a></li>" >> _site/index.html
           fi
         done
         
@@ -467,15 +513,11 @@ jobs:
         EOF
         
         # Add R notebook links
-        for html_file in _site/*.html; do
-          if [ "$html_file" != "_site/index.html" ]; then
-            filename=$(basename "$html_file")
-            # Only include R notebooks (those with -r suffix before .html)
-            if [[ "$filename" =~ -r\.html$ ]]; then
-              name="${filename%.*}"
-              display_name=$(echo "$name" | sed 's/-r$//' | sed 's/_/ /g' | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
-              echo "                <li><a href=\"$filename\">$display_name <span class=\"language-badge r\">R</span></a></li>" >> _site/index.html
-            fi
+        echo "$r_notebooks" | while read -r filename; do
+          if [ -n "$filename" ]; then
+            name="${filename%.*}"
+            display_name=$(echo "$name" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
+            echo "                <li><a href=\"$filename\" class=\"notebook-link\">$display_name <span class=\"language-badge r\">R</span></a></li>" >> _site/index.html
           fi
         done
         
