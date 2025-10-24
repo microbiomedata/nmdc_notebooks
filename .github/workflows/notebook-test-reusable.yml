@@ -155,7 +155,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        # Ensure local bin is in PATH for user-installed packages
+        # Ensure local bin is in PATH for user-installed packages (current step and future steps)
+        export PATH="$HOME/.local/bin:$PATH"
         echo "$HOME/.local/bin" >> $GITHUB_PATH
         
         python -m pip install --upgrade pip
@@ -202,7 +203,8 @@ jobs:
 
     - name: Quick dependencies restore
       run: |
-        # Ensure local bin is in PATH for user-installed packages
+        # Ensure local bin is in PATH for user-installed packages (current step and future steps)
+        export PATH="$HOME/.local/bin:$PATH"
         echo "$HOME/.local/bin" >> $GITHUB_PATH
         
         # Fast setup - packages should be cached from setup job
