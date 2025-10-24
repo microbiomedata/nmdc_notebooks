@@ -42,6 +42,20 @@ jobs:
     - id: set-notebooks
       name: Set notebook matrix
       run: |
+        # Check if config file exists and debug
+        if [ ! -f ".github/notebooks-config.json" ]; then
+          echo "ERROR: Configuration file .github/notebooks-config.json not found"
+          ls -la .github/
+          exit 1
+        fi
+        
+        # Validate JSON syntax
+        if ! jq empty .github/notebooks-config.json; then
+          echo "ERROR: Invalid JSON in configuration file"
+          cat .github/notebooks-config.json
+          exit 1
+        fi
+        
         # Read notebooks from centralized config file
         notebooks=$(jq -c '.python_notebooks' .github/notebooks-config.json)
         echo "notebooks=$notebooks" >> $GITHUB_OUTPUT

@@ -17,9 +17,20 @@ jobs:
     - name: Detect changed notebooks
       id: find-changes
       run: |
-        # Read notebooks from centralized config file
-        notebooks=$(jq -c '.python_notebooks' .github/notebooks-config.json)
-
+        # Check if config file exists and debug
+        if [ ! -f ".github/notebooks-config.json" ]; then
+          echo "ERROR: Configuration file .github/notebooks-config.json not found"
+          ls -la .github/
+          exit 1
+        fi
+        
+        # Validate JSON syntax
+        if ! jq empty .github/notebooks-config.json; then
+          echo "ERROR: Invalid JSON in configuration file"
+          cat .github/notebooks-config.json
+          exit 1
+        fi
+        
         # Initialize changed_notebooks as valid JSON
         changed_notebooks="[]"
         has_changes=false
@@ -27,17 +38,17 @@ jobs:
         # Get list of changed files
         changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
         
-        # Check if each notebook has been modified
-        for notebook in $(echo "$notebooks" | jq -c '.[]'); do
-          name=$(echo "$notebook" | jq -r '.name')
-          path=$(echo "$notebook" | jq -r '.path')
+        # Use jq to iterate through notebooks more safely
+        while IFS= read -r notebook_info; do
+          name=$(echo "$notebook_info" | cut -d'|' -f1)
+          path=$(echo "$notebook_info" | cut -d'|' -f2)
           
           if echo "$changed_files" | grep -q "$path"; then
-            changed_notebooks=$(echo "$changed_notebooks" | jq ". += [{\"name\": \"$name\", \"path\": \"$path\"}]")
+            changed_notebooks=$(echo "$changed_notebooks" | jq --arg name "$name" --arg path "$path" '. += [{"name": $name, "path": $path}]')
             has_changes=true
             echo "✓ Notebook $name needs testing"
           fi
-        done
+        done < <(jq -r '.python_notebooks[] | "\(.name)|\(.path)"' .github/notebooks-config.json)
 
         # Write compact JSON to outputs
         echo "changed-notebooks=$(echo "$changed_notebooks" | jq -c .)" >> $GITHUB_OUTPUT
