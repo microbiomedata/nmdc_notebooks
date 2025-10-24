@@ -122,6 +122,7 @@ jobs:
         if [ $EXIT_CODE -ne 0 ]; then
           echo "❌ Notebook execution failed with exit code $EXIT_CODE"
           echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+          exit 1  # Fail this step
         else
           echo "✅ Notebook executed successfully"
           echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt

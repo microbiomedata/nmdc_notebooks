@@ -1,0 +1,13 @@
+name: Execute modified python notebooks on PR (DEV - NEW)
+
+on:
+  pull_request:
+
+jobs:
+  test-changed-notebooks-dev:
+    uses: ./.github/workflows/notebook-test-reusable.yml
+    with:
+      environment: 'dev'
+      notebook_selection: 'changed'
+      base_sha: ${{ github.event.pull_request.base.sha }}
+      head_sha: ${{ github.event.pull_request.head.sha }}

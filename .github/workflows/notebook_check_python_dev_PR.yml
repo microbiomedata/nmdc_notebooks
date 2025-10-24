@@ -129,6 +129,7 @@ jobs:
           echo "❌ Notebook execution failed with exit code $EXIT_CODE"
           echo "This likely indicates the DEV API is not accessible or the notebook encountered an error"
           echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+          exit 1  # Fail this step
         else
           echo "✅ Notebook executed successfully"
           echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt

@@ -1,0 +1,16 @@
+name: Execute python notebooks (DEV - NEW)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0"
+  push:
+    branches:
+      - main
+
+jobs:
+  test-notebooks-dev:
+    uses: ./.github/workflows/notebook-test-reusable.yml
+    with:
+      environment: 'dev'
+      notebook_selection: 'all'
