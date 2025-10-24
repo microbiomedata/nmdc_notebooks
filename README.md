@@ -10,6 +10,7 @@ Notebooks that are available:
 - [Proteomic Data Aggregation](https://github.com/microbiomedata/nmdc_notebooks/tree/main/proteomic_aggregation)
 - [Proteomic Overrepresentation](https://github.com/microbiomedata/nmdc_notebooks/tree/main/over_representation)
 - [Omics Types Data Integration](https://github.com/microbiomedata/nmdc_notebooks/tree/main/omics_types_integration)
+- [metaG metaT Integration](https://github.com/microbiomedata/nmdc_notebooks/tree/main/metaG_metaT_integration)
 
 
 ## Overview 
