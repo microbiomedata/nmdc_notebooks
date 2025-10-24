@@ -1,0 +1,12 @@
+name: Execute modified R notebooks on PR (NEW)
+
+on:
+  pull_request:
+
+jobs:
+  test-changed-r-notebooks:
+    uses: ./.github/workflows/notebook-test-r-reusable.yml
+    with:
+      notebook_selection: 'changed'
+      base_sha: ${{ github.event.pull_request.base.sha }}
+      head_sha: ${{ github.event.pull_request.head.sha }}
