@@ -488,19 +488,13 @@ jobs:
                     border-color: #007acc;
                     transform: translateX(5px);
                 }
-                a.colab-link {
-                    color: #f9ab00;
-                    text-decoration: none;
-                    font-size: 14px;
-                    padding: 8px 12px;
-                    border: 1px solid #f9ab00;
-                    border-radius: 4px;
+                a img {
                     transition: all 0.3s;
-                    white-space: nowrap;
+                    border-radius: 4px;
                 }
-                a.colab-link:hover {
-                    background-color: #f9ab00;
-                    color: white;
+                a img:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
                 }
                 .language-badge {
                     display: inline-block;
@@ -553,7 +547,7 @@ jobs:
             
             echo "                <li>" >> _site/index.html
             echo "                    <a href=\"$filename\" class=\"notebook-link\">$display_name <span class=\"language-badge python\">Python</span></a>" >> _site/index.html
-            echo "                    <a href=\"$colab_url\" class=\"colab-link\" target=\"_blank\" rel=\"noopener noreferrer\">📓 Open in Colab</a>" >> _site/index.html
+            echo "                    <a href=\"$colab_url\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open in Colab\"></a>" >> _site/index.html
             echo "                </li>" >> _site/index.html
           fi
         done
@@ -572,7 +566,7 @@ jobs:
             # Remove "-r" suffix from name to match config
             config_name=$(echo "$name" | sed 's/-r$//')
             # Get display_name and path from config
-            notebook_data=$(jq -r --arg name "$config_name" '.r_notebooks[] | select(.name == $name) | "\(.display_name // "")|\(.path)"' .github/notebooks-config.json)
+            notebook_data=$(jq -r --arg config_name "$config_name" '.r_notebooks[] | select(.name == $config_name) | "\(.display_name // "")|\(.path)"' .github/notebooks-config.json)
             display_name=$(echo "$notebook_data" | cut -d'|' -f1)
             notebook_path=$(echo "$notebook_data" | cut -d'|' -f2)
             
@@ -585,7 +579,7 @@ jobs:
             
             echo "                <li>" >> _site/index.html
             echo "                    <a href=\"$filename\" class=\"notebook-link\">$display_name <span class=\"language-badge r\">R</span></a>" >> _site/index.html
-            echo "                    <a href=\"$colab_url\" class=\"colab-link\" target=\"_blank\" rel=\"noopener noreferrer\">📓 Open in Colab</a>" >> _site/index.html
+            echo "                    <a href=\"$colab_url\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open in Colab\"></a>" >> _site/index.html
             echo "                </li>" >> _site/index.html
           fi
         done
