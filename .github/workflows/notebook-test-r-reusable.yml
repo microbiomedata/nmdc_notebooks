@@ -192,15 +192,15 @@ jobs:
     - name: Install R dependencies
       shell: Rscript {0}
       run: |
-        # Use faster mirror and binary packages
+        # RSPM provides binary packages automatically when available
         options(repos = c(CRAN = "https://packagemanager.rstudio.com/all/latest"))
         if (!require("renv", quietly = TRUE)) {
-          install.packages("renv", type = "binary")
+          install.packages("renv")
         }
         renv::activate()
         renv::restore(prompt = FALSE)
         if (!require("IRkernel", quietly = TRUE)) {
-          install.packages("IRkernel", type = "binary")
+          install.packages("IRkernel")
         }
         IRkernel::installspec(name = "ir", displayname = "R")
 
@@ -266,10 +266,10 @@ jobs:
     - name: Quick R environment restore
       shell: Rscript {0}
       run: |
-        # Fast setup - packages should be cached
+        # Fast setup - packages should be cached, RSPM provides binaries automatically
         options(repos = c(CRAN = "https://packagemanager.rstudio.com/all/latest"))
         if (!require("renv", quietly = TRUE)) {
-          install.packages("renv", type = "binary")
+          install.packages("renv")
         }
         renv::activate()
         # Only restore if cache miss
@@ -277,7 +277,7 @@ jobs:
           renv::restore(prompt = FALSE)
         }
         if (!require("IRkernel", quietly = TRUE)) {
-          install.packages("IRkernel", type = "binary") 
+          install.packages("IRkernel") 
         }
         # Only register kernel if not already done
         if (!"ir" %in% system("jupyter kernelspec list --json", intern = TRUE)) {

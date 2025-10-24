@@ -1,4 +1,4 @@
-name: Reusable Notebook Testing Workflow
+name: Reusable Notebook Testing Workflow for Python Notebooks
 
 on:
   workflow_call:
