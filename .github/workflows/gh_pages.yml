@@ -48,9 +48,9 @@ jobs:
     - id: set-notebooks
       name: Set Python notebook matrix
       run: |
-        echo 'notebooks=[{"name": "bioscales", "path": "bioscales_biogeochemical_metadata/python/bioscales.ipynb"}]' >> $GITHUB_OUTPUT
-        # Full list for later:
-        # [{"name": "integration", "path": "omics_types_integration/python/integration_notebook.ipynb"}, {"name": "over_representation", "path": "over_representation/python/overrepresentation_notebook.ipynb"}, {"name": "aggregation", "path": "proteomic_aggregation/python/proteomic_aggregation.ipynb"}, {"name": "bioscales", "path": "bioscales_biogeochemical_metadata/python/bioscales.ipynb"}, {"name": "neon", "path": "NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb"}, {"name": "taxonomic", "path": "taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb"}, {"name": "NOM", "path": "NOM_visualizations/python/nom_data.ipynb"}]
+        # Read notebooks from centralized config file and filter for bioscales only
+        notebooks=$(jq -c '[.python_notebooks[] | select(.name == "bioscales")]' .github/notebooks-config.json)
+        echo "notebooks=$notebooks" >> $GITHUB_OUTPUT
 
   setup-r:
     runs-on: ubuntu-latest
@@ -131,10 +131,9 @@ jobs:
     - id: set-notebooks
       name: Set R notebook matrix
       run: |
-        echo "notebooks=[ \
-        {\"name\": \"bioscales-r\", \"path\": \"bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb\"}]" >> $GITHUB_OUTPUT
-        # Full list for later:
-        # [{"name": "integration-r", "path": "omics_types_integration/R/integration_notebook.ipynb"}, {"name": "aggregation-r", "path": "proteomic_aggregation/R/proteomic_aggregation.ipynb"}, {"name": "bioscales-r", "path": "bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb"}, {"name": "neon-r", "path": "NEON_soil_metadata/R/NEON_data_exploration.ipynb"}, {"name": "taxonomic-r", "path": "taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb"}, {"name": "nom-r", "path": "NOM_visualizations/R/NOM_R_notebook.ipynb"}]
+        # Read notebooks from centralized config file, filter for bioscales, and add "-r" suffix to names
+        notebooks=$(jq -c '[.r_notebooks[] | select(.name == "bioscales") | .name = (.name + "-r")]' .github/notebooks-config.json)
+        echo "notebooks=$notebooks" >> $GITHUB_OUTPUT
 
   convert-python-notebooks:
     runs-on: ubuntu-latest
