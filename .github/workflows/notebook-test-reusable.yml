@@ -224,6 +224,9 @@ jobs:
 
     - name: Execute notebook
       run: |
+        # Ensure local bin is in PATH for user-installed packages
+        export PATH="$HOME/.local/bin:$PATH"
+        
         env_prefix=""
         if [ "$ENV" = "dev" ]; then
           env_prefix="(dev) "
