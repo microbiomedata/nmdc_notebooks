@@ -1,12 +1,13 @@
-name: Execute python notebooks
+name: Execute python notebooks (DISABLED - using NEW version)
 
+# Disabled - using notebook_check_python_NEW.yml instead
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * 0"
-  push:
-    branches:
-      - main
+    inputs:
+      force_run:
+        description: 'This workflow is disabled. Use notebook_check_python_NEW.yml instead'
+        required: true
+        default: 'disabled'
 
 jobs:
   setup:

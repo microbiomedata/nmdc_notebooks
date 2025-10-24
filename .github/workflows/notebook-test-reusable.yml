@@ -36,7 +36,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: ${{ inputs.notebook_selection == 'changed' && 0 || 1 }}
+        fetch-depth: ${{ inputs.notebook_selection == 'changed' && inputs.notebooks_json == '[]' && 0 || 1 }}
 
     - name: Set notebooks to test
       id: set-notebooks
@@ -71,7 +71,14 @@ jobs:
             notebooks="[]"
             has_notebooks=false
 
+            # Validate that we have the required SHAs for change detection
+            if [ -z "${{ inputs.base_sha }}" ] || [ -z "${{ inputs.head_sha }}" ]; then
+              echo "ERROR: base_sha and head_sha are required for change detection"
+              exit 1
+            fi
+
             # Get list of changed files
+            echo "Comparing ${{ inputs.base_sha }} to ${{ inputs.head_sha }}"
             changed_files=$(git diff --name-only ${{ inputs.base_sha }} ${{ inputs.head_sha }})
             
             # Check each notebook to see if it changed

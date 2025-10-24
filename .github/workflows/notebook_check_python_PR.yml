@@ -1,7 +1,13 @@
-name: Execute modified python notebooks on PR
+name: Execute modified python notebooks on PR (DISABLED - using NEW version)
 
+# Disabled - using notebook_check_python_PR_NEW.yml instead
 on:
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      force_run:
+        description: 'This workflow is disabled. Use notebook_check_python_PR_NEW.yml instead'
+        required: true
+        default: 'disabled'
 
 jobs:
   detect-changes:
