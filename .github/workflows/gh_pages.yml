@@ -596,9 +596,9 @@ jobs:
         echo "$python_notebooks" | while read -r filename; do
           if [ -n "$filename" ]; then
             name="${filename%.*}"
-            # Get display_name and path from config
-            echo "DEBUG: Looking for Python notebook with name: $name"
-            notebook_data=$(jq -r --arg name "$name" '.python_notebooks[] | select(.name == $name) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
+            echo "DEBUG: Looking for Python notebook with filename: $name"
+            # Match by the actual notebook filename in the path, not the config name
+            notebook_data=$(jq -r --arg filename "$name" '.python_notebooks[] | select(.path | test($filename)) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
             echo "DEBUG: notebook_data result: '$notebook_data'"
             display_name=$(echo "$notebook_data" | cut -d'|' -f1)
             notebook_path=$(echo "$notebook_data" | cut -d'|' -f2)
@@ -625,11 +625,9 @@ jobs:
         echo "$r_notebooks" | while read -r filename; do
           if [ -n "$filename" ]; then
             name="${filename%.*}"
-            # Remove "-r" suffix from name to match config
-            config_name=$(echo "$name" | sed 's/-r$//')
-            echo "DEBUG: Looking for R notebook with config_name: $config_name"
-            # Get display_name and path from config
-            notebook_data=$(jq -r --arg config_name "$config_name" '.r_notebooks[] | select(.name == $config_name) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
+            echo "DEBUG: Looking for R notebook with filename: $name"
+            # Match by the actual notebook filename in the path, not the config name
+            notebook_data=$(jq -r --arg filename "$name" '.r_notebooks[] | select(.path | test($filename)) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
             echo "DEBUG: notebook_data result: '$notebook_data'"
             display_name=$(echo "$notebook_data" | cut -d'|' -f1)
             notebook_path=$(echo "$notebook_data" | cut -d'|' -f2)
