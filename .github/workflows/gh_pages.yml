@@ -284,12 +284,18 @@ jobs:
         fi
         
         # Step 1: Execute the notebook (including all cells)
-        if jupyter nbconvert --execute --to notebook "${{ matrix.notebook.path }}" --output-dir=executed_notebooks; then
+        jupyter nbconvert --execute --to notebook "${{ matrix.notebook.path }}" --output-dir=executed_notebooks
+        EXEC_EXIT_CODE=$?
+        
+        if [ $EXEC_EXIT_CODE -eq 0 ]; then
           # Step 2: Convert executed notebook to HTML with tag removal
           executed_notebook="executed_notebooks/$(basename ${{ matrix.notebook.path }})"
-          if jupyter nbconvert --to html "$executed_notebook" \
+          jupyter nbconvert --to html "$executed_notebook" \
              --TagRemovePreprocessor.remove_cell_tags='["hide-cell", "env-setup", "development-only"]' \
-             --output-dir=html_output; then
+             --output-dir=html_output
+          HTML_EXIT_CODE=$?
+          
+          if [ $HTML_EXIT_CODE -eq 0 ]; then
             echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
             echo "Notebook ${{ matrix.notebook.name }} converted successfully."
           else
@@ -457,9 +463,13 @@ jobs:
                 ul {
                     list-style: none;
                     padding: 0;
+                    max-width: 800px;
                 }
                 li {
                     margin: 12px 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
                 }
                 a.notebook-link {
                     color: #007acc;
@@ -470,14 +480,27 @@ jobs:
                     border: 1px solid #ddd;
                     border-radius: 6px;
                     transition: all 0.3s;
-                    width: 100%;
-                    box-sizing: border-box;
+                    flex: 1;
                 }
                 a.notebook-link:hover {
                     background-color: #007acc;
                     color: white;
                     border-color: #007acc;
                     transform: translateX(5px);
+                }
+                a.colab-link {
+                    color: #f9ab00;
+                    text-decoration: none;
+                    font-size: 14px;
+                    padding: 8px 12px;
+                    border: 1px solid #f9ab00;
+                    border-radius: 4px;
+                    transition: all 0.3s;
+                    white-space: nowrap;
+                }
+                a.colab-link:hover {
+                    background-color: #f9ab00;
+                    color: white;
                 }
                 .language-badge {
                     display: inline-block;
@@ -516,12 +539,22 @@ jobs:
         echo "$python_notebooks" | while read -r filename; do
           if [ -n "$filename" ]; then
             name="${filename%.*}"
-            # Get display_name from config, fallback to generated name if not found
-            display_name=$(jq -r --arg name "$name" '.python_notebooks[] | select(.name == $name) | .display_name // empty' .github/notebooks-config.json)
+            # Get display_name and path from config
+            notebook_data=$(jq -r --arg name "$name" '.python_notebooks[] | select(.name == $name) | "\(.display_name // "")|\(.path)"' .github/notebooks-config.json)
+            display_name=$(echo "$notebook_data" | cut -d'|' -f1)
+            notebook_path=$(echo "$notebook_data" | cut -d'|' -f2)
+            
             if [ -z "$display_name" ]; then
               display_name=$(echo "$name" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
             fi
-            echo "                <li><a href=\"$filename\" class=\"notebook-link\">$display_name <span class=\"language-badge python\">Python</span></a></li>" >> _site/index.html
+            
+            # Create Colab link
+            colab_url="https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/${notebook_path}"
+            
+            echo "                <li>" >> _site/index.html
+            echo "                    <a href=\"$filename\" class=\"notebook-link\">$display_name <span class=\"language-badge python\">Python</span></a>" >> _site/index.html
+            echo "                    <a href=\"$colab_url\" class=\"colab-link\" target=\"_blank\" rel=\"noopener noreferrer\">📓 Open in Colab</a>" >> _site/index.html
+            echo "                </li>" >> _site/index.html
           fi
         done
         
@@ -538,12 +571,22 @@ jobs:
             name="${filename%.*}"
             # Remove "-r" suffix from name to match config
             config_name=$(echo "$name" | sed 's/-r$//')
-            # Get display_name from config, fallback to generated name if not found
-            display_name=$(jq -r --arg name "$config_name" '.r_notebooks[] | select(.name == $name) | .display_name // empty' .github/notebooks-config.json)
+            # Get display_name and path from config
+            notebook_data=$(jq -r --arg name "$config_name" '.r_notebooks[] | select(.name == $name) | "\(.display_name // "")|\(.path)"' .github/notebooks-config.json)
+            display_name=$(echo "$notebook_data" | cut -d'|' -f1)
+            notebook_path=$(echo "$notebook_data" | cut -d'|' -f2)
+            
             if [ -z "$display_name" ]; then
               display_name=$(echo "$name" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
             fi
-            echo "                <li><a href=\"$filename\" class=\"notebook-link\">$display_name <span class=\"language-badge r\">R</span></a></li>" >> _site/index.html
+            
+            # Create Colab link
+            colab_url="https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/${notebook_path}"
+            
+            echo "                <li>" >> _site/index.html
+            echo "                    <a href=\"$filename\" class=\"notebook-link\">$display_name <span class=\"language-badge r\">R</span></a>" >> _site/index.html
+            echo "                    <a href=\"$colab_url\" class=\"colab-link\" target=\"_blank\" rel=\"noopener noreferrer\">📓 Open in Colab</a>" >> _site/index.html
+            echo "                </li>" >> _site/index.html
           fi
         done
         
