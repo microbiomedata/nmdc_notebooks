@@ -48,8 +48,8 @@ jobs:
     - id: set-notebooks
       name: Set Python notebook matrix
       run: |
-        # Read notebooks from centralized config file and filter for bioscales only
-        notebooks=$(jq -c '[.python_notebooks[] | select(.name == "bioscales")]' .github/notebooks-config.json)
+        # Read notebooks from centralized config file and filter for bioscales and neon
+        notebooks=$(jq -c '[.python_notebooks[] | select(.name == "bioscales" or .name == "neon")]' .github/notebooks-config.json)
         echo "notebooks=$notebooks" >> $GITHUB_OUTPUT
 
   setup-r:
@@ -131,8 +131,8 @@ jobs:
     - id: set-notebooks
       name: Set R notebook matrix
       run: |
-        # Read notebooks from centralized config file, filter for bioscales, and add "-r" suffix to names
-        notebooks=$(jq -c '[.r_notebooks[] | select(.name == "bioscales") | .name = (.name + "-r")]' .github/notebooks-config.json)
+        # Read notebooks from centralized config file, filter for bioscales and neon, and add "-r" suffix to names
+        notebooks=$(jq -c '[.r_notebooks[] | select(.name == "bioscales" or .name == "neon") | .name = (.name + "-r")]' .github/notebooks-config.json)
         echo "notebooks=$notebooks" >> $GITHUB_OUTPUT
 
   convert-python-notebooks:
@@ -534,13 +534,9 @@ jobs:
           if [ -n "$filename" ]; then
             name="${filename%.*}"
             # Get display_name and path from config
-            notebook_data=$(jq -r --arg name "$name" '.python_notebooks[] | select(.name == $name) | "\(.display_name // "")|\(.path)"' .github/notebooks-config.json)
+            notebook_data=$(jq -r --arg name "$name" '.python_notebooks[] | select(.name == $name) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
             display_name=$(echo "$notebook_data" | cut -d'|' -f1)
             notebook_path=$(echo "$notebook_data" | cut -d'|' -f2)
-            
-            if [ -z "$display_name" ]; then
-              display_name=$(echo "$name" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
-            fi
             
             # Create Colab link
             colab_url="https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/${notebook_path}"
@@ -566,13 +562,9 @@ jobs:
             # Remove "-r" suffix from name to match config
             config_name=$(echo "$name" | sed 's/-r$//')
             # Get display_name and path from config
-            notebook_data=$(jq -r --arg config_name "$config_name" '.r_notebooks[] | select(.name == $config_name) | "\(.display_name // "")|\(.path)"' .github/notebooks-config.json)
+            notebook_data=$(jq -r --arg config_name "$config_name" '.r_notebooks[] | select(.name == $config_name) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
             display_name=$(echo "$notebook_data" | cut -d'|' -f1)
             notebook_path=$(echo "$notebook_data" | cut -d'|' -f2)
-            
-            if [ -z "$display_name" ]; then
-              display_name=$(echo "$name" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
-            fi
             
             # Create Colab link
             colab_url="https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/${notebook_path}"
