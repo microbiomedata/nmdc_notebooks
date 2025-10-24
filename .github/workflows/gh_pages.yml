@@ -372,6 +372,32 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Debug notebook config lookups
+      run: |
+        echo "=== Testing jq queries for display names ==="
+        echo "Config file contents:"
+        cat .github/notebooks-config.json | jq .
+        echo ""
+        echo "Testing Python notebook lookups:"
+        for name in "bioscales" "neon"; do
+          echo "Looking for Python notebook: $name"
+          notebook_data=$(jq -r --arg name "$name" '.python_notebooks[] | select(.name == $name) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
+          echo "Result: '$notebook_data'"
+          display_name=$(echo "$notebook_data" | cut -d'|' -f1)
+          echo "Display name: '$display_name'"
+          echo "---"
+        done
+        echo ""
+        echo "Testing R notebook lookups:"
+        for config_name in "bioscales" "neon"; do
+          echo "Looking for R notebook: $config_name"
+          notebook_data=$(jq -r --arg config_name "$config_name" '.r_notebooks[] | select(.name == $config_name) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
+          echo "Result: '$notebook_data'"
+          display_name=$(echo "$notebook_data" | cut -d'|' -f1)
+          echo "Display name: '$display_name'"
+          echo "---"
+        done
+
     - name: Download all HTML artifacts
       uses: actions/download-artifact@v4
       with:
@@ -534,9 +560,12 @@ jobs:
           if [ -n "$filename" ]; then
             name="${filename%.*}"
             # Get display_name and path from config
+            echo "DEBUG: Looking for Python notebook with name: $name"
             notebook_data=$(jq -r --arg name "$name" '.python_notebooks[] | select(.name == $name) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
+            echo "DEBUG: notebook_data result: '$notebook_data'"
             display_name=$(echo "$notebook_data" | cut -d'|' -f1)
             notebook_path=$(echo "$notebook_data" | cut -d'|' -f2)
+            echo "DEBUG: display_name: '$display_name', notebook_path: '$notebook_path'"
             
             # Create Colab link
             colab_url="https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/${notebook_path}"
@@ -561,10 +590,13 @@ jobs:
             name="${filename%.*}"
             # Remove "-r" suffix from name to match config
             config_name=$(echo "$name" | sed 's/-r$//')
+            echo "DEBUG: Looking for R notebook with config_name: $config_name"
             # Get display_name and path from config
             notebook_data=$(jq -r --arg config_name "$config_name" '.r_notebooks[] | select(.name == $config_name) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
+            echo "DEBUG: notebook_data result: '$notebook_data'"
             display_name=$(echo "$notebook_data" | cut -d'|' -f1)
             notebook_path=$(echo "$notebook_data" | cut -d'|' -f2)
+            echo "DEBUG: display_name: '$display_name', notebook_path: '$notebook_path'"
             
             # Create Colab link
             colab_url="https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/${notebook_path}"
