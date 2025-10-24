@@ -147,14 +147,27 @@ jobs:
         python -m pip install --upgrade pip
         pip install jupyter
 
+    - name: Cache system packages
+      uses: actions/cache@v4
+      with:
+        path: /var/cache/apt
+        key: ${{ runner.os }}-apt-packages-r
+        restore-keys: |
+          ${{ runner.os }}-apt-packages-
+
     - name: Set up R
       uses: r-lib/actions/setup-r@v2
       with:
         r-version: '4.4.3'
+        use-public-rspm: true
 
     - name: Install system dependencies on Linux
       if: runner.os == 'Linux'
-      run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y --no-install-recommends \
+          make libicu-dev libxml2-dev libssl-dev pandoc \
+          librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
 
     - name: Get R and OS version
       id: get-version
@@ -167,9 +180,11 @@ jobs:
         cat(paste0("r-version=", r_version), file = Sys.getenv("GITHUB_OUTPUT"), append = TRUE)
 
     - name: Cache R packages
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
-        path: ${{ env.RENV_PATHS_ROOT }}
+        path: |
+          ${{ env.RENV_PATHS_ROOT }}
+          ~/.local/share/renv
         key: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-${{ hashFiles('renv.lock') }}
         restore-keys: |
           ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-
@@ -177,10 +192,16 @@ jobs:
     - name: Install R dependencies
       shell: Rscript {0}
       run: |
-        install.packages("renv", repos = "https://cloud.r-project.org/")
+        # Use faster mirror and binary packages
+        options(repos = c(CRAN = "https://packagemanager.rstudio.com/all/latest"))
+        if (!require("renv", quietly = TRUE)) {
+          install.packages("renv", type = "binary")
+        }
         renv::activate()
-        renv::restore()
-        install.packages("IRkernel", repos = "https://cloud.r-project.org/")
+        renv::restore(prompt = FALSE)
+        if (!require("IRkernel", quietly = TRUE)) {
+          install.packages("IRkernel", type = "binary")
+        }
         IRkernel::installspec(name = "ir", displayname = "R")
 
   execute-notebooks:
@@ -200,41 +221,68 @@ jobs:
       run: |
         echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
 
-    - name: Set up Python
+    - name: Set up Python (fast)
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
-    - name: Install Jupyter
+    - name: Install Jupyter (cached)
       run: |
         python -m pip install --upgrade pip
         pip install jupyter
 
-    - name: Set up R
+    - name: Cache system packages
+      uses: actions/cache@v4
+      with:
+        path: /var/cache/apt
+        key: ${{ runner.os }}-apt-packages-r
+        restore-keys: |
+          ${{ runner.os }}-apt-packages-
+
+    - name: Set up R (fast)
       uses: r-lib/actions/setup-r@v2
       with:
         r-version: '4.4.3'
+        use-public-rspm: true
 
-    - name: Install system dependencies on Linux
+    - name: Install system dependencies (cached)
       if: runner.os == 'Linux'
-      run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y --no-install-recommends \
+          make libicu-dev libxml2-dev libssl-dev pandoc \
+          librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
 
-    - name: Restore R package cache
-      uses: actions/cache@v3
+    - name: Restore R package cache (fast)
+      uses: actions/cache@v4
       with:
-        path: ${{ env.RENV_PATHS_ROOT }}
+        path: |
+          ${{ env.RENV_PATHS_ROOT }}
+          ~/.local/share/renv
         key: ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-renv-${{ hashFiles('renv.lock') }}
         restore-keys: |
           ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-renv-
 
-    - name: Install R dependencies
+    - name: Quick R environment restore
       shell: Rscript {0}
       run: |
-        install.packages("renv", repos = "https://cloud.r-project.org/")
+        # Fast setup - packages should be cached
+        options(repos = c(CRAN = "https://packagemanager.rstudio.com/all/latest"))
+        if (!require("renv", quietly = TRUE)) {
+          install.packages("renv", type = "binary")
+        }
         renv::activate()
-        renv::restore()
-        install.packages("IRkernel", repos = "https://cloud.r-project.org/")
-        IRkernel::installspec(name = "ir", displayname = "R")
+        # Only restore if cache miss
+        if (!file.exists("renv/library")) {
+          renv::restore(prompt = FALSE)
+        }
+        if (!require("IRkernel", quietly = TRUE)) {
+          install.packages("IRkernel", type = "binary") 
+        }
+        # Only register kernel if not already done
+        if (!"ir" %in% system("jupyter kernelspec list --json", intern = TRUE)) {
+          IRkernel::installspec(name = "ir", displayname = "R")
+        }
 
     - name: Execute notebook
       run: |
