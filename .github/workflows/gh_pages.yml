@@ -497,7 +497,11 @@ jobs:
         echo "$python_notebooks" | while read -r filename; do
           if [ -n "$filename" ]; then
             name="${filename%.*}"
-            display_name=$(echo "$name" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
+            # Get display_name from config, fallback to generated name if not found
+            display_name=$(jq -r --arg name "$name" '.python_notebooks[] | select(.name == $name) | .display_name // empty' .github/notebooks-config.json)
+            if [ -z "$display_name" ]; then
+              display_name=$(echo "$name" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
+            fi
             echo "                <li><a href=\"$filename\" class=\"notebook-link\">$display_name <span class=\"language-badge python\">Python</span></a></li>" >> _site/index.html
           fi
         done
@@ -513,7 +517,13 @@ jobs:
         echo "$r_notebooks" | while read -r filename; do
           if [ -n "$filename" ]; then
             name="${filename%.*}"
-            display_name=$(echo "$name" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
+            # Remove "-r" suffix from name to match config
+            config_name=$(echo "$name" | sed 's/-r$//')
+            # Get display_name from config, fallback to generated name if not found
+            display_name=$(jq -r --arg name "$config_name" '.r_notebooks[] | select(.name == $name) | .display_name // empty' .github/notebooks-config.json)
+            if [ -z "$display_name" ]; then
+              display_name=$(echo "$name" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
+            fi
             echo "                <li><a href=\"$filename\" class=\"notebook-link\">$display_name <span class=\"language-badge r\">R</span></a></li>" >> _site/index.html
           fi
         done
