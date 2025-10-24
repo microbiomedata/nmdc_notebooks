@@ -50,6 +50,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     continue-on-error: true
+    env:
+      ENV: "dev"
     strategy:
       fail-fast: false
       matrix:
@@ -65,11 +67,9 @@ jobs:
       with:
         python-version: '3.11'
 
-    - id: env-vars
-      name: Set up environment variables
-      run: echo "Environment variables set up"
-      env:
-        ENV: "dev"
+    - name: Set up environment variables
+      run: |
+        echo "ENV variable is set to: $ENV"
 
     - name: Restore Python dependencies cache
       uses: actions/cache@v3
