@@ -175,7 +175,12 @@ jobs:
         echo "Converting notebook: ${{ matrix.notebook.path }}"
         
         set +e
-        jupyter nbconvert --execute --to html "${{ matrix.notebook.path }}" \
+        # Step 1: Execute the notebook (including all cells)
+        jupyter nbconvert --execute --to notebook "${{ matrix.notebook.path }}" --output-dir=executed_notebooks
+        
+        # Step 2: Convert executed notebook to HTML with tag removal
+        executed_notebook="executed_notebooks/$(basename ${{ matrix.notebook.path }})"
+        jupyter nbconvert --to html "$executed_notebook" \
           --TagRemovePreprocessor.remove_cell_tags='["hide-cell", "env-setup", "development-only"]' \
           --output-dir=html_output
         EXIT_CODE=$?
@@ -278,14 +283,23 @@ jobs:
           exit 1
         fi
         
-        if jupyter nbconvert --execute --to html "${{ matrix.notebook.path }}" \
-           --TagRemovePreprocessor.remove_cell_tags='["hide-cell", "env-setup", "development-only"]' \
-           --output-dir=html_output; then
-          echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
-          echo "Notebook ${{ matrix.notebook.name }} converted successfully."
+        # Step 1: Execute the notebook (including all cells)
+        if jupyter nbconvert --execute --to notebook "${{ matrix.notebook.path }}" --output-dir=executed_notebooks; then
+          # Step 2: Convert executed notebook to HTML with tag removal
+          executed_notebook="executed_notebooks/$(basename ${{ matrix.notebook.path }})"
+          if jupyter nbconvert --to html "$executed_notebook" \
+             --TagRemovePreprocessor.remove_cell_tags='["hide-cell", "env-setup", "development-only"]' \
+             --output-dir=html_output; then
+            echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
+            echo "Notebook ${{ matrix.notebook.name }} converted successfully."
+          else
+            echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+            echo "Notebook ${{ matrix.notebook.name }} HTML conversion failed."
+            exit 1
+          fi
         else
           echo "FAILED" > results-${{ matrix.notebook.name }}.txt
-          echo "Notebook ${{ matrix.notebook.name }} conversion failed."
+          echo "Notebook ${{ matrix.notebook.name }} execution failed."
           exit 1
         fi
 
