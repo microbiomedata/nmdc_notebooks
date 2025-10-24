@@ -3,6 +3,7 @@ name: Deploy All Notebooks to GitHub Pages
 on:
   workflow_dispatch:
   push:
+#TODO KRH: add so only triggers on pushes to main
 
 # Sets permissions for GitHub Pages deployment
 permissions:
