@@ -192,16 +192,10 @@ jobs:
     - name: Install R dependencies
       shell: Rscript {0}
       run: |
-        # RSPM provides binary packages automatically when available
-        options(repos = c(CRAN = "https://packagemanager.rstudio.com/all/latest"))
-        if (!require("renv", quietly = TRUE)) {
-          install.packages("renv")
-        }
+        install.packages("renv", repos = "https://cloud.r-project.org/")
         renv::activate()
-        renv::restore(prompt = FALSE)
-        if (!require("IRkernel", quietly = TRUE)) {
-          install.packages("IRkernel")
-        }
+        renv::restore()
+        install.packages("IRkernel", repos = "https://cloud.r-project.org/")
         IRkernel::installspec(name = "ir", displayname = "R")
 
   execute-notebooks:
@@ -266,23 +260,11 @@ jobs:
     - name: Quick R environment restore
       shell: Rscript {0}
       run: |
-        # Fast setup - packages should be cached, RSPM provides binaries automatically
-        options(repos = c(CRAN = "https://packagemanager.rstudio.com/all/latest"))
-        if (!require("renv", quietly = TRUE)) {
-          install.packages("renv")
-        }
+        install.packages("renv", repos = "https://cloud.r-project.org/")
         renv::activate()
-        # Only restore if cache miss
-        if (!file.exists("renv/library")) {
-          renv::restore(prompt = FALSE)
-        }
-        if (!require("IRkernel", quietly = TRUE)) {
-          install.packages("IRkernel") 
-        }
-        # Only register kernel if not already done
-        if (!"ir" %in% system("jupyter kernelspec list --json", intern = TRUE)) {
-          IRkernel::installspec(name = "ir", displayname = "R")
-        }
+        renv::restore()
+        install.packages("IRkernel", repos = "https://cloud.r-project.org/")
+        IRkernel::installspec(name = "ir", displayname = "R")
 
     - name: Execute notebook
       run: |
