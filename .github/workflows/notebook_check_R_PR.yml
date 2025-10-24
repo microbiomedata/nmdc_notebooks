@@ -17,15 +17,8 @@ jobs:
     - name: Detect changed notebooks
       id: find-changes
       run: |
-        # List of all R notebooks
-        notebooks='[
-          {"name": "integration", "path": "omics_types_integration/R/integration_notebook.ipynb"},
-          {"name": "aggregation", "path": "proteomic_aggregation/R/proteomic_aggregation.ipynb"},
-          {"name": "bioscales", "path": "bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb"},
-          {"name": "neon", "path": "NEON_soil_metadata/R/NEON_data_exploration.ipynb"},
-          {"name": "taxonomic", "path": "taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb"},
-          {"name": "nom", "path": "NOM_visualizations/R/NOM_R_notebook.ipynb"}
-        ]'
+        # Read notebooks from centralized config file
+        notebooks=$(jq -c '.r_notebooks' .github/notebooks-config.json)
 
         # Initialize changed_notebooks as valid JSON
         changed_notebooks="[]"

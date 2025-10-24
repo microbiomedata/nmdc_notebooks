@@ -42,7 +42,9 @@ jobs:
     - id: set-notebooks
       name: Set notebook matrix
       run: |
-        echo 'notebooks=[{"name": "integration", "path": "omics_types_integration/python/integration_notebook.ipynb"}, {"name": "over_representation", "path": "over_representation/python/overrepresentation_notebook.ipynb"}, {"name": "aggregation", "path": "proteomic_aggregation/python/proteomic_aggregation.ipynb"}, {"name": "bioscales", "path": "bioscales_biogeochemical_metadata/python/bioscales.ipynb"}, {"name": "neon", "path": "NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb"}, {"name": "taxonomic", "path": "taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb"}, {"name": "NOM", "path": "NOM_visualizations/python/nom_data.ipynb"}]' >> $GITHUB_OUTPUT
+        # Read notebooks from centralized config file
+        notebooks=$(jq -c '.python_notebooks' .github/notebooks-config.json)
+        echo "notebooks=$notebooks" >> $GITHUB_OUTPUT
 
   execute-notebooks:
     runs-on: ubuntu-latest
