@@ -146,22 +146,16 @@ jobs:
     - name: Cache Python packages
       uses: actions/cache@v4
       with:
-        path: |
-          ~/.cache/pip
-          ~/.local/lib/python3.11/site-packages
-        key: ${{ runner.os }}-python-3.11-${{ hashFiles('**/requirements.txt') }}
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
-          ${{ runner.os }}-python-3.11-
+          ${{ runner.os }}-pip-
 
     - name: Install dependencies
       run: |
-        # Ensure local bin is in PATH for user-installed packages (current step and future steps)
-        export PATH="$HOME/.local/bin:$PATH"
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
-        
         python -m pip install --upgrade pip
-        pip install --user -r requirements.txt
-        pip install --user jupyter
+        pip install -r requirements.txt
+        pip install jupyter
 
   execute-notebooks:
     runs-on: ubuntu-latest
@@ -194,39 +188,30 @@ jobs:
     - name: Restore Python packages cache (fast)
       uses: actions/cache@v4
       with:
-        path: |
-          ~/.cache/pip
-          ~/.local/lib/python3.11/site-packages
-        key: ${{ runner.os }}-python-3.11-${{ hashFiles('**/requirements.txt') }}
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
-          ${{ runner.os }}-python-3.11-
+          ${{ runner.os }}-pip-
 
     - name: Quick dependencies restore
       run: |
-        # Ensure local bin is in PATH for user-installed packages (current step and future steps)
-        export PATH="$HOME/.local/bin:$PATH"
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
-        
         # Fast setup - packages should be cached from setup job
         python -m pip install --upgrade pip
         # Only install if not cached (check for a key package)
         if ! python -c "import pandas" 2>/dev/null; then
           echo "Cache miss - installing dependencies..."
-          pip install --user -r requirements.txt
-          pip install --user jupyter
+          pip install -r requirements.txt
+          pip install jupyter
         else
           echo "Cache hit - dependencies already available"
           # Just ensure jupyter is available
           if ! command -v jupyter &> /dev/null; then
-            pip install --user jupyter
+            pip install jupyter
           fi
         fi
 
     - name: Execute notebook
       run: |
-        # Ensure local bin is in PATH for user-installed packages
-        export PATH="$HOME/.local/bin:$PATH"
-        
         env_prefix=""
         if [ "$ENV" = "dev" ]; then
           env_prefix="(dev) "
