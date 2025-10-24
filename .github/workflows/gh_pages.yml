@@ -173,8 +173,11 @@ jobs:
       name: Convert ${{ matrix.notebook.name }} notebook to HTML
       run: |
         echo "Converting notebook: ${{ matrix.notebook.path }}"
+        
         set +e
-        jupyter nbconvert --execute --to html "${{ matrix.notebook.path }}" --output-dir=html_output
+        jupyter nbconvert --execute --to html "${{ matrix.notebook.path }}" \
+          --TagRemovePreprocessor.remove_cell_tags='["hide-cell", "env-setup", "development-only"]' \
+          --output-dir=html_output
         EXIT_CODE=$?
         set -e
 
@@ -275,7 +278,9 @@ jobs:
           exit 1
         fi
         
-        if jupyter nbconvert --execute --to html "${{ matrix.notebook.path }}" --output-dir=html_output; then
+        if jupyter nbconvert --execute --to html "${{ matrix.notebook.path }}" \
+           --TagRemovePreprocessor.remove_cell_tags='["hide-cell", "env-setup", "development-only"]' \
+           --output-dir=html_output; then
           echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
           echo "Notebook ${{ matrix.notebook.name }} converted successfully."
         else
