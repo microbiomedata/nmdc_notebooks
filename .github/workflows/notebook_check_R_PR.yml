@@ -2,6 +2,13 @@ name: Execute modified R notebooks on PR (NEW)
 
 on:
   pull_request:
+    paths:
+      - '**.ipynb'
+      - '**.R'
+      - 'renv.lock'
+      - '.github/notebooks-config.json'
+      - '.github/workflows/notebook-test-r-reusable.yml'
+      - '.github/workflows/notebook_check_R_PR.yml'
 
 jobs:
   test-changed-r-notebooks:

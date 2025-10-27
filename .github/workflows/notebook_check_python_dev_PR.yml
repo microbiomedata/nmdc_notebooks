@@ -3,6 +3,7 @@ name: (dev) Execute modified python notebooks on PR
 on:
   workflow_dispatch:
   #TODO: enable PR trigger after dev API is re-implemented
+  # When re-enabling, add path filtering like notebook_check_python_PR.yml
 
 jobs:
   test-changed-notebooks-dev:

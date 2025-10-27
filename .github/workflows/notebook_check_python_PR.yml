@@ -2,6 +2,13 @@ name: Execute modified python notebooks on PR
 
 on:
   pull_request:
+    paths:
+      - '**.ipynb'
+      - '**.py'
+      - 'requirements.txt'
+      - '.github/notebooks-config.json'
+      - '.github/workflows/notebook-test-reusable.yml'
+      - '.github/workflows/notebook_check_python_PR.yml'
 
 jobs:
   test-changed-notebooks:
