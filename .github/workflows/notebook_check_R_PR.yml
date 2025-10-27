@@ -3,9 +3,13 @@ name: Execute modified R notebooks on PR (NEW)
 on:
   pull_request:
     paths:
-      - '**.ipynb'
+      # R notebooks and scripts (only .ipynb and .R files in /R/ subdirectories)
+      - '**/R/*.ipynb'
+      - '**/R/*.R'
+      # R dependencies and utilities (anywhere in repo)
       - '**.R'
       - 'renv.lock'
+      # Configuration and workflow files
       - '.github/notebooks-config.json'
       - '.github/workflows/notebook-test-r-reusable.yml'
       - '.github/workflows/notebook_check_R_PR.yml'

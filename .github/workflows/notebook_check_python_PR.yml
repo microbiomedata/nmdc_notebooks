@@ -3,9 +3,12 @@ name: Execute modified python notebooks on PR
 on:
   pull_request:
     paths:
-      - '**.ipynb'
-      - '**.py'
+      # Python notebooks and scripts (only .ipynb and .py files in /python/ subdirectories)
+      - '**/python/*.ipynb'
+      - '**/python/*.py'
+      # Python dependencies and utilities (anywhere in repo)
       - 'requirements.txt'
+      # Configuration and workflow files
       - '.github/notebooks-config.json'
       - '.github/workflows/notebook-test-reusable.yml'
       - '.github/workflows/notebook_check_python_PR.yml'
