@@ -3,8 +3,8 @@ name: Deploy All Notebooks to GitHub Pages
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    #branches:
+    #  - main
 
 # Sets permissions for GitHub Pages deployment
 permissions:
@@ -18,38 +18,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  debug-config:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Debug notebook config lookups
-      run: |
-        echo "=== Testing jq queries for display names ==="
-        echo "Config file contents:"
-        cat .github/notebooks-config.json | jq .
-        echo ""
-        echo "Testing Python notebook lookups:"
-        for name in "bioscales" "neon"; do
-          echo "Looking for Python notebook: $name"
-          notebook_data=$(jq -r --arg name "$name" '.python_notebooks[] | select(.name == $name) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
-          echo "Result: '$notebook_data'"
-          display_name=$(echo "$notebook_data" | cut -d'|' -f1)
-          echo "Display name: '$display_name'"
-          echo "---"
-        done
-        echo ""
-        echo "Testing R notebook lookups:"
-        for config_name in "bioscales" "neon"; do
-          echo "Looking for R notebook: $config_name"
-          notebook_data=$(jq -r --arg config_name "$config_name" '.r_notebooks[] | select(.name == $config_name) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
-          echo "Result: '$notebook_data'"
-          display_name=$(echo "$notebook_data" | cut -d'|' -f1)
-          echo "Display name: '$display_name'"
-          echo "---"
-        done
-
   setup-python:
     runs-on: ubuntu-latest
     outputs:
@@ -82,8 +50,8 @@ jobs:
     - id: set-notebooks
       name: Set Python notebook matrix
       run: |
-        # Read notebooks from centralized config file and filter for bioscales and neon
-        notebooks=$(jq -c '[.python_notebooks[] | select(.name == "bioscales" or .name == "neon")]' .github/notebooks-config.json)
+        # Read all Python notebooks from centralized config file
+        notebooks=$(jq -c '.python_notebooks' .github/notebooks-config.json)
         echo "notebooks=$notebooks" >> $GITHUB_OUTPUT
 
   setup-r:
@@ -165,8 +133,8 @@ jobs:
     - id: set-notebooks
       name: Set R notebook matrix
       run: |
-        # Read notebooks from centralized config file, filter for bioscales and neon, and add "-r" suffix to names
-        notebooks=$(jq -c '[.r_notebooks[] | select(.name == "bioscales" or .name == "neon") | .name = (.name + "-r")]' .github/notebooks-config.json)
+        # Read all R notebooks from centralized config file and add "-r" suffix to names
+        notebooks=$(jq -c '[.r_notebooks[] | .name = (.name + "-r")]' .github/notebooks-config.json)
         echo "notebooks=$notebooks" >> $GITHUB_OUTPUT
 
   convert-python-notebooks:
@@ -406,32 +374,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Debug notebook config lookups
-      run: |
-        echo "=== Testing jq queries for display names ==="
-        echo "Config file contents:"
-        cat .github/notebooks-config.json | jq .
-        echo ""
-        echo "Testing Python notebook lookups:"
-        for name in "bioscales" "neon"; do
-          echo "Looking for Python notebook: $name"
-          notebook_data=$(jq -r --arg name "$name" '.python_notebooks[] | select(.name == $name) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
-          echo "Result: '$notebook_data'"
-          display_name=$(echo "$notebook_data" | cut -d'|' -f1)
-          echo "Display name: '$display_name'"
-          echo "---"
-        done
-        echo ""
-        echo "Testing R notebook lookups:"
-        for config_name in "bioscales" "neon"; do
-          echo "Looking for R notebook: $config_name"
-          notebook_data=$(jq -r --arg config_name "$config_name" '.r_notebooks[] | select(.name == $config_name) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
-          echo "Result: '$notebook_data'"
-          display_name=$(echo "$notebook_data" | cut -d'|' -f1)
-          echo "Display name: '$display_name'"
-          echo "---"
-        done
-
     - name: Download all HTML artifacts
       uses: actions/download-artifact@v4
       with:
@@ -450,12 +392,12 @@ jobs:
         find html-artifacts/html-python-* -name "*.html" 2>/dev/null -exec cp {} _site/ \; || true
         find html-artifacts/html-r-* -name "*.html" 2>/dev/null -exec cp {} _site/ \; || true
         
-        # Create lists of notebooks by language in config file order (bioscales, then neon)
+        # Create lists of notebooks by language in config file order
         python_notebooks=""
         r_notebooks=""
         
         # Get Python notebooks in config order
-        for notebook_name in "bioscales" "neon"; do
+        for notebook_name in $(jq -r '.python_notebooks[].name' .github/notebooks-config.json); do
           html_file=$(find html-artifacts/html-python-* -name "*${notebook_name}*.html" 2>/dev/null | head -1)
           if [ -n "$html_file" ]; then
             basename_file=$(basename "$html_file")
@@ -464,7 +406,7 @@ jobs:
         done
         
         # Get R notebooks in config order  
-        for notebook_name in "bioscales" "neon"; do
+        for notebook_name in $(jq -r '.r_notebooks[].name' .github/notebooks-config.json); do
           html_file=$(find html-artifacts/html-r-* -name "*${notebook_name}*.html" 2>/dev/null | head -1)
           if [ -n "$html_file" ]; then
             basename_file=$(basename "$html_file")

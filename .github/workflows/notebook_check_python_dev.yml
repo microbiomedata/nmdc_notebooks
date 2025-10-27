@@ -2,6 +2,7 @@ name: (dev) Execute python notebooks
 
 on:
   workflow_dispatch:
+  #TODO: enable scheduled and push triggers after dev API is re-implemented
   #schedule:
   #  - cron: "0 0 * * 0"
   #push:
