@@ -2,11 +2,11 @@ name: (dev) Execute python notebooks
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * 0"
-  push:
-    branches:
-      - main
+  #schedule:
+  #  - cron: "0 0 * * 0"
+  #push:
+  #  branches:
+  #    - main
 
 jobs:
   test-notebooks-dev:

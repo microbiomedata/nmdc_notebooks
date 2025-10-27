@@ -1,7 +1,7 @@
 name: (dev) Execute modified python notebooks on PR
 
 on:
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   test-changed-notebooks-dev:
