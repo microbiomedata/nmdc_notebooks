@@ -85,17 +85,19 @@ _or_
 4. Create a .Rmd and convert it to a Jupyter Notebook. Several methods for this exist and none are perfect, but [this open source method](https://github.com/mkearney/rmd2jupyter) currently works.
 5. Run the entire notebook to ensure it is working as expected and save the *rendered* notebook in the folder.
 6. Update the `README.md` in the folder to include links to the rendered notebook (using [nbviewer](https://nbviewer.org/) and [google colab](https://colab.research.google.com/)).
-7. Add the notebooks to the appropriate github workflows to ensure they are included in the continuous integration process.
-    - For python notebooks
-        1. Add the notebook short name and path to the `notebooks` matrix in the `set-notebooks` step of the `setup` job in the `.github/workflows/notebook_check_python.yml` file.
-        2. Add the notebook short name and path to the `notebooks` matrix in the `find-changes` step of the `detect-changes` job in the `.github/workflows/notebook_check_python_PR.yml` file
-        3. Add the notebook short name and path to the `notebooks` matrix in the `set-notebooks` step of the `setup` job in the `.github/workflows/notebook_check_python_dev.yml` file.
-        4. Add the notebook short name and path to the `notebooks` matrix in the `find-changes` step of the `detect-changes` job in the `.github/workflows/notebook_check_python_dev_PR.yml` file
-    - For R notebooks
-        1. Add the notebook short name and path to the `notebooks` matrix in the `set-notebooks` step in the `.github/workflows/notebook_check_r.yml` file
-        2. Add the notebook short name and path to the `notebooks` matrix in the `find-changes` step of the `detect-changes` job in the `.github/workflows/notebook_check_r_PR.yml` file
+7. **Add the notebook to the centralized configuration** by editing `.github/notebooks-config.json` and adding an entry to either `python_notebooks` or `r_notebooks`:
 
-See the `.github/workflows` folder for existing workflows (one for the R notebooks and one for the python notebooks). Add the new notebook to the end of the list of notebooks in the workflow file.
+```json
+{
+  "name": "unique_name",
+  "path": "folder/language/notebook.ipynb",
+  "display_name": "Human Readable Title for Website"
+}
+```
+
+The `display_name` field is optional but recommended - it controls how the notebook appears on the GitHub Pages site. If omitted, the title will be auto-generated from the notebook name.
+
+All GitHub Actions workflows (testing, PR checks, and GitHub Pages deployment) automatically use this centralized config, so no manual workflow updates are needed.
 
 
 ## Dependency Management
