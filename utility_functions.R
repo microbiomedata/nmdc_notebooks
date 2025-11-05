@@ -198,3 +198,31 @@ get_bsm_source_for_procsm <- function(data_df, procsm_column) {
 
   return(source_biosample_vec)
 }
+
+# This function retrieves a biosample record from the NMDC API given a
+# biosample ID. It allows for optional specification of maximum page size
+# and fields to be returned. It returns the parsed JSON content as a list.
+get_biosample_record_by_id <- function(biosample_id,
+                                       max_page_size = 100,
+                                       fields = "") {
+  url <- paste0(
+    "https://api.microbiomedata.org/nmdcschema/biosample_set/",
+    biosample_id,
+    "?max_page_size=", max_page_size,
+    "&projection=", fields
+  )
+  
+  # Perform request
+  response <- GET(url)
+  
+  # Check response
+  if (http_error(response)) {
+    stop("Failed to get collection by id from NMDC API: ",
+         status_code(response))
+  }
+  
+  # Parse and return JSON content
+  results <- jsonlite::fromJSON(content(response, "text", encoding = "UTF-8"), simplifyVector = TRUE)
+  
+  return(results)
+}

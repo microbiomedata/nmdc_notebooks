@@ -19,6 +19,7 @@ jobs:
       run: |
         # List of all notebooks
         notebooks='[
+          {"name": "metaGTomic", "path": "metaG_metaT_integration/python/metaG_metaT_omics_analysis.ipynb"},
           {"name": "integration", "path": "omics_types_integration/python/integration_notebook.ipynb"},
           {"name": "over_representation", "path": "over_representation/python/overrepresentation_notebook.ipynb"},
           {"name": "aggregation", "path": "proteomic_aggregation/python/proteomic_aggregation.ipynb"},
