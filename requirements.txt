@@ -13,3 +13,4 @@ nbformat>=4.2.0
 ## NMDC python package
 nmdc_api_utilities==0.4.1
 python-dotenv
+kaleido
