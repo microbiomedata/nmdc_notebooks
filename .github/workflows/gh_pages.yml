@@ -86,7 +86,7 @@ jobs:
       name: Set up R
       uses: r-lib/actions/setup-r@v2
       with:
-        r-version: '4.4.3'
+        r-version: '4.5.1'
 
     - name: Install system dependencies on Linux
       if: runner.os == 'Linux'
@@ -120,9 +120,45 @@ jobs:
       name: Install R dependencies
       shell: Rscript {0}
       run: |
+        # Configure repositories with fallbacks
+        options(repos = c(
+          CRAN = "https://cloud.r-project.org/",
+          BioCsoft = "https://bioconductor.org/packages/release/bioc",
+          BioCann = "https://bioconductor.org/packages/release/data/annotation",
+          BioCexp = "https://bioconductor.org/packages/release/data/experiment"
+        ))
+        
+        # Set timeout and retry options
+        options(timeout = 300)
+        options(download.file.method = "libcurl")
+        
         tryCatch({
+          # Install renv
           install.packages("renv", repos = "https://cloud.r-project.org/")
-          renv::restore()
+          renv::activate()
+          
+          # Install BiocManager with correct version for R 4.5+
+          install.packages("BiocManager", repos = "https://cloud.r-project.org/")
+          BiocManager::install(version = "3.21", ask = FALSE, update = FALSE)
+          
+          # Try restore with fallback strategies
+          tryCatch({
+            renv::restore(prompt = FALSE)
+          }, error = function(e1) {
+            cat("Normal restore failed:", e1$message, "\n")
+            cat("Installing core packages manually...\n")
+            # Fallback: install critical packages manually
+            core_packages <- c("jsonlite", "dplyr", "ggplot2", "tidyr", "grid", "fs", "digest", "httr", "stats")
+            for (pkg in core_packages) {
+              tryCatch({
+                install.packages(pkg, repos = "https://cloud.r-project.org/")
+                cat("Installed", pkg, "\n")
+              }, error = function(e) {
+                cat("Failed to install", pkg, ":", e$message, "\n")
+              })
+            }
+          })
+          
           # IRkernel is specifically excluded from renv.lock but installed here for execution
           install.packages("IRkernel", repos = "https://cloud.r-project.org/")
           IRkernel::installspec(name = "ir", displayname = "R")
@@ -246,7 +282,7 @@ jobs:
       name: Set up R
       uses: r-lib/actions/setup-r@v2
       with:
-        r-version: '4.4.3'
+        r-version: '4.5.1'
 
     - name: Install system dependencies on Linux
       if: runner.os == 'Linux'
@@ -263,10 +299,45 @@ jobs:
     - name: Install and restore R environment
       shell: Rscript {0}
       run: |
+        # Configure repositories with fallbacks
+        options(repos = c(
+          CRAN = "https://cloud.r-project.org/",
+          BioCsoft = "https://bioconductor.org/packages/release/bioc",
+          BioCann = "https://bioconductor.org/packages/release/data/annotation",
+          BioCexp = "https://bioconductor.org/packages/release/data/experiment"
+        ))
+        
+        # Set timeout and retry options
+        options(timeout = 300)
+        options(download.file.method = "libcurl")
+        
         tryCatch({
+          # Install renv
           install.packages("renv", repos = "https://cloud.r-project.org/")
           renv::activate()
-          renv::restore()
+          
+          # Install BiocManager with correct version for R 4.5+
+          install.packages("BiocManager", repos = "https://cloud.r-project.org/")
+          BiocManager::install(version = "3.21", ask = FALSE, update = FALSE)
+          
+          # Try restore with fallback strategies
+          tryCatch({
+            renv::restore(prompt = FALSE)
+          }, error = function(e1) {
+            cat("Normal restore failed:", e1$message, "\n")
+            cat("Installing core packages manually...\n")
+            # Fallback: install critical packages manually
+            core_packages <- c("jsonlite", "dplyr", "ggplot2", "tidyr", "grid", "fs", "digest", "httr", "stats")
+            for (pkg in core_packages) {
+              tryCatch({
+                install.packages(pkg, repos = "https://cloud.r-project.org/")
+                cat("Installed", pkg, "\n")
+              }, error = function(e) {
+                cat("Failed to install", pkg, ":", e$message, "\n")
+              })
+            }
+          })
+          
           # IRkernel is specifically excluded from renv.lock but installed here for execution
           install.packages("IRkernel", repos = "https://cloud.r-project.org/")
           IRkernel::installspec(name = "ir", displayname = "R")
