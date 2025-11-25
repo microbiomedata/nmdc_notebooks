@@ -69,7 +69,6 @@ jobs:
       name: Set up R environment
       uses: ./.github/actions/setup-r-environment
       with:
-        r-version: '4.5.2'
         mode: 'full'
 
     - id: set-notebooks
