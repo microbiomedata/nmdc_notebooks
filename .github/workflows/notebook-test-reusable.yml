@@ -223,13 +223,14 @@ jobs:
         EXIT_CODE=$?
         set -e  # Re-enable exit on error
         
+        # Always create a result file for the check-results job to find
         if [ $EXIT_CODE -ne 0 ]; then
           echo "❌ Notebook execution failed with exit code $EXIT_CODE"
           if [ "$ENV" = "dev" ]; then
             echo "This likely indicates the DEV API is not accessible or the notebook encountered an error"
           fi
           echo "FAILED" > results-${{ matrix.notebook.name }}.txt
-          exit 1  # Fail this step
+          # Don't exit here - let the check-results job handle the failure
         else
           echo "✅ Notebook executed successfully"
           echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt

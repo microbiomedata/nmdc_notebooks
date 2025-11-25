@@ -430,10 +430,11 @@ jobs:
         EXIT_CODE=$?
         set -e  # Re-enable exit on error
         
+        # Always create a result file for the check-results job to find
         if [ $EXIT_CODE -ne 0 ]; then
           echo "❌ R Notebook execution failed with exit code $EXIT_CODE"
           echo "FAILED" > results-${{ matrix.notebook.name }}.txt
-          exit 1  # Fail this step
+          # Don't exit here - let the check-results job handle the failure
         else
           echo "✅ R Notebook executed successfully"
           echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
