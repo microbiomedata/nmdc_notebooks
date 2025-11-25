@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      #- gh_pages
+      - gh_pages
 
 # Sets permissions for GitHub Pages deployment
 permissions:
@@ -111,10 +111,12 @@ jobs:
     - name: Restore Renv package cache
       uses: actions/cache@v4
       with:
-        path: ${{ env.RENV_PATHS_ROOT }}
-        key: ${{ needs.setup.outputs.os-version }}-${{ needs.setup.outputs.r-version }}-8a6894215af13-${{ hashFiles('renv.lock') }}
+        path: |
+          ${{ env.RENV_PATHS_ROOT }}
+          ~/.local/share/renv
+        key: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-${{ hashFiles('renv.lock') }}
         restore-keys: |
-          ${{ needs.setup.outputs.os-version }}-${{ needs.setup.outputs.r-version }}-8a6894215af13-
+          ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-
 
     - id: r-dependencies
       name: Install R dependencies
@@ -132,40 +134,27 @@ jobs:
         options(timeout = 300)
         options(download.file.method = "libcurl")
         
-        tryCatch({
-          # Install renv
-          install.packages("renv", repos = "https://cloud.r-project.org/")
-          renv::activate()
-          
-          # Install BiocManager with correct version for R 4.5+
-          install.packages("BiocManager", repos = "https://cloud.r-project.org/")
-          BiocManager::install(version = "3.21", ask = FALSE, update = FALSE)
-          
-          # Try restore with fallback strategies
-          tryCatch({
-            renv::restore(prompt = FALSE)
-          }, error = function(e1) {
-            cat("Normal restore failed:", e1$message, "\n")
-            cat("Installing core packages manually...\n")
-            # Fallback: install critical packages manually
-            core_packages <- c("jsonlite", "dplyr", "ggplot2", "tidyr", "grid", "fs", "digest", "httr", "stats")
-            for (pkg in core_packages) {
-              tryCatch({
-                install.packages(pkg, repos = "https://cloud.r-project.org/")
-                cat("Installed", pkg, "\n")
-              }, error = function(e) {
-                cat("Failed to install", pkg, ":", e$message, "\n")
-              })
-            }
-          })
-          
-          # IRkernel is specifically excluded from renv.lock but installed here for execution
-          install.packages("IRkernel", repos = "https://cloud.r-project.org/")
-          IRkernel::installspec(name = "ir", displayname = "R")
-        }, error = function(err) {
-          cat("ERROR during R dependency installation:\n", err$message)
-          stop(err)
-        })
+        # Install and activate renv
+        install.packages("renv", repos = "https://cloud.r-project.org/")
+        renv::activate()
+        
+        # Configure renv for flexible package resolution
+        Sys.setenv(RENV_CONFIG_PAK_ENABLED = "TRUE")
+        Sys.setenv(RENV_CONFIG_INSTALL_VERBOSE = "FALSE")  # Reduce verbose output for speed
+        
+        # Install BiocManager with correct version for R 4.5+
+        install.packages("BiocManager", repos = "https://cloud.r-project.org/")
+        BiocManager::install(version = "3.21", ask = FALSE, update = FALSE)
+        
+        # Perform renv restore (should be fast with cache)
+        cat("Restoring R environment from renv.lock...\n")
+        renv::restore(prompt = FALSE)
+        
+        # Install IRkernel for Jupyter execution
+        install.packages("IRkernel", repos = "https://cloud.r-project.org/")
+        IRkernel::installspec(name = "ir", displayname = "R")
+        
+        cat("✓ R environment setup complete\n")
 
     - id: set-notebooks
       name: Set R notebook matrix
@@ -254,7 +243,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup-r
     continue-on-error: true
-    timeout-minutes: 30
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -294,15 +283,17 @@ jobs:
     - name: Restore R environment from cache (fast)
       uses: actions/cache@v4
       with:
-        path: ${{ env.RENV_PATHS_ROOT }}
-        key: ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-8a6894215af13-${{ hashFiles('renv.lock') }}
+        path: |
+          ${{ env.RENV_PATHS_ROOT }}
+          ~/.local/share/renv
+        key: ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-renv-${{ hashFiles('renv.lock') }}
         restore-keys: |
-          ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-8a6894215af13-
+          ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-renv-
 
-    - name: Restore R environment and activate packages
+    - name: Activate R environment from cache
       shell: Rscript {0}
       run: |
-        # Configure repositories
+        # Configure repositories (minimal setup)
         options(repos = c(
           CRAN = "https://cloud.r-project.org/",
           BioCsoft = "https://bioconductor.org/packages/release/bioc",
@@ -310,79 +301,43 @@ jobs:
           BioCexp = "https://bioconductor.org/packages/release/data/experiment"
         ))
         
-        cat("Setting up R environment for notebook execution...\n")
+        cat("Activating cached R environment...\n")
         
-        # Install renv if needed (should be cached)
+        # Quick renv activation (packages should be cached from setup-r job)
         if (!requireNamespace("renv", quietly = TRUE)) {
           install.packages("renv", repos = "https://cloud.r-project.org/")
         }
-        
-        # Activate renv environment
         renv::activate()
         
-        # Try to restore from cache, but don't fail if it doesn't work
-        tryCatch({
-          renv::restore(prompt = FALSE)
-          cat("✓ renv restore successful\n")
-        }, error = function(e) {
-          cat("⚠ renv restore failed, installing core packages manually...\n")
-          # Install essential packages that most R notebooks need
-          core_packages <- c("jsonlite", "dplyr", "ggplot2", "tidyr", "readr", "stringr", "purrr", "tibble")
-          for (pkg in core_packages) {
-            if (!requireNamespace(pkg, quietly = TRUE)) {
-              tryCatch({
-                install.packages(pkg, repos = "https://cloud.r-project.org/")
-                cat("✓ Installed", pkg, "\n")
-              }, error = function(e2) {
-                cat("✗ Failed to install", pkg, "\n")
-              })
-            }
-          }
-          
-          # Install Bioconductor packages if needed
-          tryCatch({
-            if (!requireNamespace("BiocManager", quietly = TRUE)) {
-              install.packages("BiocManager", repos = "https://cloud.r-project.org/")
-            }
-            BiocManager::install(version = "3.21", ask = FALSE, update = FALSE)
-            
-            # Install common Bioconductor packages
-            bioc_packages <- c("KEGGREST")
-            for (pkg in bioc_packages) {
-              if (!requireNamespace(pkg, quietly = TRUE)) {
-                tryCatch({
-                  BiocManager::install(pkg, ask = FALSE, update = FALSE)
-                  cat("✓ Installed Bioconductor package", pkg, "\n")
-                }, error = function(e3) {
-                  cat("✗ Failed to install Bioconductor package", pkg, "\n")
-                })
-              }
-            }
-          }, error = function(e3) {
-            cat("⚠ BiocManager setup had issues\n")
-          })
-          
-          # Install other packages commonly used in notebooks
-          other_packages <- c("circlize", "pathview", "grid", "fs", "digest", "httr", "stats", "forcats", "lubridate", "GGally", "ggExtra")
-          for (pkg in other_packages) {
-            if (!requireNamespace(pkg, quietly = TRUE)) {
-              tryCatch({
-                install.packages(pkg, repos = "https://cloud.r-project.org/")
-                cat("✓ Installed", pkg, "\n")
-              }, error = function(e4) {
-                cat("⚠ Could not install", pkg, "\n")
-              })
-            }
-          }
-        })
+        # Quick environment check - should be fast with cache
+        cat("Checking package availability...\n")
+        essential_packages <- c("jsonlite", "dplyr", "ggplot2", "IRkernel")
+        missing_packages <- c()
         
-        # Setup IRkernel
-        if (!requireNamespace("IRkernel", quietly = TRUE)) {
-          install.packages("IRkernel", repos = "https://cloud.r-project.org/")
+        for (pkg in essential_packages) {
+          if (!requireNamespace(pkg, quietly = TRUE)) {
+            missing_packages <- c(missing_packages, pkg)
+          }
         }
-        IRkernel::installspec(name = "ir", displayname = "R")
         
-        cat("✓ R environment setup complete\n")
+        if (length(missing_packages) > 0) {
+          cat("Installing missing essential packages:", paste(missing_packages, collapse = ", "), "\n")
+          for (pkg in missing_packages) {
+            if (pkg == "IRkernel") {
+              install.packages(pkg, repos = "https://cloud.r-project.org/")
+              IRkernel::installspec(name = "ir", displayname = "R")
+            } else {
+              install.packages(pkg, repos = "https://cloud.r-project.org/")
+            }
+          }
+        } else {
+          # Just ensure IRkernel is registered
+          if (requireNamespace("IRkernel", quietly = TRUE)) {
+            IRkernel::installspec(name = "ir", displayname = "R")
+          }
+        }
+        
+        cat("✓ R environment ready for notebook execution\n")
 
     - id: convert
       name: Convert ${{ matrix.notebook.name }} notebook to HTML
