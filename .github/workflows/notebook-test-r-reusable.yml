@@ -192,9 +192,34 @@ jobs:
     - name: Install R dependencies
       shell: Rscript {0}
       run: |
-        install.packages("renv", repos = "https://cloud.r-project.org/")
+        # Configure repositories with fallbacks
+        options(repos = c(
+          CRAN = "https://cloud.r-project.org/",
+          BioCsoft = "https://bioconductor.org/packages/3.21/bioc",
+          BioCann = "https://bioconductor.org/packages/3.21/data/annotation",
+          BioCexp = "https://bioconductor.org/packages/3.21/data/experiment"
+        ))
+        
+        # Set timeout and retry options
+        options(timeout = 300)
+        options(download.file.method = "libcurl")
+        
+        # Install renv with retries
+        for(i in 1:3) {
+          tryCatch({
+            install.packages("renv", repos = "https://cloud.r-project.org/")
+            break
+          }, error = function(e) {
+            cat("Attempt", i, "failed:", e$message, "\n")
+            if(i == 3) stop(e)
+            Sys.sleep(5)
+          })
+        }
+        
         renv::activate()
         renv::restore()
+        
+        # Install IRkernel
         install.packages("IRkernel", repos = "https://cloud.r-project.org/")
         IRkernel::installspec(name = "ir", displayname = "R")
 
@@ -260,9 +285,34 @@ jobs:
     - name: Quick R environment restore
       shell: Rscript {0}
       run: |
-        install.packages("renv", repos = "https://cloud.r-project.org/")
+        # Configure repositories with fallbacks
+        options(repos = c(
+          CRAN = "https://cloud.r-project.org/",
+          BioCsoft = "https://bioconductor.org/packages/3.21/bioc",
+          BioCann = "https://bioconductor.org/packages/3.21/data/annotation",
+          BioCexp = "https://bioconductor.org/packages/3.21/data/experiment"
+        ))
+        
+        # Set timeout and retry options
+        options(timeout = 300)
+        options(download.file.method = "libcurl")
+        
+        # Install renv with retries (should be fast from cache)
+        for(i in 1:3) {
+          tryCatch({
+            install.packages("renv", repos = "https://cloud.r-project.org/")
+            break
+          }, error = function(e) {
+            cat("Attempt", i, "failed:", e$message, "\n")
+            if(i == 3) stop(e)
+            Sys.sleep(5)
+          })
+        }
+        
         renv::activate()
         renv::restore()
+        
+        # Install IRkernel
         install.packages("IRkernel", repos = "https://cloud.r-project.org/")
         IRkernel::installspec(name = "ir", displayname = "R")
 
