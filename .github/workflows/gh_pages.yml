@@ -59,102 +59,18 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       notebooks: ${{ steps.set-notebooks.outputs.notebooks }}
-      os-version: ${{ steps.get-version.outputs.os-version }}
-      r-version: ${{ steps.get-version.outputs.r-version }}
+      os-version: ${{ steps.setup-r-env.outputs.os-version }}
+      r-version: ${{ steps.setup-r-env.outputs.r-version }}
     steps:
     - id: checkout
       uses: actions/checkout@v4
 
-    - name: Set RENV_PATHS_ROOT
-      shell: bash
-      run: |
-        echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
-
-    - id: python-setup
-      name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-
-    - id: install-jupyter
-      name: Install Jupyter
-      run: |
-        python -m pip install --upgrade pip
-        pip install jupyter
-
-    - id: r-setup
-      name: Set up R
-      uses: r-lib/actions/setup-r@v2
+    - id: setup-r-env
+      name: Set up R environment
+      uses: ./.github/actions/setup-r-environment
       with:
         r-version: '4.5.2'
-
-    - name: Install system dependencies on Linux
-      if: runner.os == 'Linux'
-      run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
-
-    - name: Install and activate renv
-      shell: Rscript {0}
-      run: |
-        install.packages("renv")
-        renv::activate()
-
-    - name: Get R and OS version
-      id: get-version
-      shell: Rscript {0}
-      run: |
-        os_version <- sessionInfo()$running
-        r_version <- R.Version()$version.string
-        cat(paste0("os-version=", os_version), file = Sys.getenv("GITHUB_OUTPUT"), append = TRUE)
-        cat("\n", file = Sys.getenv("GITHUB_OUTPUT"), append = TRUE)
-        cat(paste0("r-version=", r_version), file = Sys.getenv("GITHUB_OUTPUT"), append = TRUE)
-
-    - name: Restore Renv package cache
-      uses: actions/cache@v4
-      with:
-        path: |
-          ${{ env.RENV_PATHS_ROOT }}
-          ~/.local/share/renv
-        key: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-${{ hashFiles('renv.lock') }}
-        restore-keys: |
-          ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-
-
-    - id: r-dependencies
-      name: Install R dependencies
-      shell: Rscript {0}
-      run: |
-        # Configure repositories with fallbacks
-        options(repos = c(
-          CRAN = "https://cloud.r-project.org/",
-          BioCsoft = "https://bioconductor.org/packages/release/bioc",
-          BioCann = "https://bioconductor.org/packages/release/data/annotation",
-          BioCexp = "https://bioconductor.org/packages/release/data/experiment"
-        ))
-        
-        # Set timeout and retry options
-        options(timeout = 300)
-        options(download.file.method = "libcurl")
-        
-        # Install and activate renv
-        install.packages("renv", repos = "https://cloud.r-project.org/")
-        renv::activate()
-        
-        # Configure renv for flexible package resolution
-        Sys.setenv(RENV_CONFIG_PAK_ENABLED = "TRUE")
-        Sys.setenv(RENV_CONFIG_INSTALL_VERBOSE = "FALSE")  # Reduce verbose output for speed
-        
-        # Install BiocManager with correct version for R 4.5+
-        install.packages("BiocManager", repos = "https://cloud.r-project.org/")
-        BiocManager::install(version = "3.21", ask = FALSE, update = FALSE)
-        
-        # Perform renv restore (should be fast with cache)
-        cat("Restoring R environment from renv.lock...\n")
-        renv::restore(prompt = FALSE)
-        
-        # Install IRkernel for Jupyter execution
-        install.packages("IRkernel", repos = "https://cloud.r-project.org/")
-        IRkernel::installspec(name = "ir", displayname = "R")
-        
-        cat("✓ R environment setup complete\n")
+        setup-type: 'full'
 
     - id: set-notebooks
       name: Set R notebook matrix
@@ -258,86 +174,13 @@ jobs:
       run: |
         echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
 
-    - id: python-setup
-      name: Set up Python (fast)
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-
-    - id: install-jupyter
-      name: Install Jupyter (cached)
-      run: |
-        python -m pip install --upgrade pip
-        pip install jupyter
-
-    - id: r-setup
-      name: Set up R (fast)
-      uses: r-lib/actions/setup-r@v2
+    - name: Activate R environment
+      uses: ./.github/actions/setup-r-environment
       with:
         r-version: '4.5.2'
-
-    - name: Install system dependencies (cached)
-      if: runner.os == 'Linux'
-      run: sudo apt-get install -y make libicu-dev libxml2-dev libssl-dev pandoc librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
-
-    - name: Restore R environment from cache (fast)
-      uses: actions/cache@v4
-      with:
-        path: |
-          ${{ env.RENV_PATHS_ROOT }}
-          ~/.local/share/renv
-        key: ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-renv-${{ hashFiles('renv.lock') }}
-        restore-keys: |
-          ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-renv-
-
-    - name: Activate R environment from cache
-      shell: Rscript {0}
-      run: |
-        # Configure repositories (minimal setup)
-        options(repos = c(
-          CRAN = "https://cloud.r-project.org/",
-          BioCsoft = "https://bioconductor.org/packages/release/bioc",
-          BioCann = "https://bioconductor.org/packages/release/data/annotation",
-          BioCexp = "https://bioconductor.org/packages/release/data/experiment"
-        ))
-        
-        cat("Activating cached R environment...\n")
-        
-        # Quick renv activation (packages should be cached from setup-r job)
-        if (!requireNamespace("renv", quietly = TRUE)) {
-          install.packages("renv", repos = "https://cloud.r-project.org/")
-        }
-        renv::activate()
-        
-        # Quick environment check - should be fast with cache
-        cat("Checking package availability...\n")
-        essential_packages <- c("jsonlite", "dplyr", "ggplot2", "IRkernel")
-        missing_packages <- c()
-        
-        for (pkg in essential_packages) {
-          if (!requireNamespace(pkg, quietly = TRUE)) {
-            missing_packages <- c(missing_packages, pkg)
-          }
-        }
-        
-        if (length(missing_packages) > 0) {
-          cat("Installing missing essential packages:", paste(missing_packages, collapse = ", "), "\n")
-          for (pkg in missing_packages) {
-            if (pkg == "IRkernel") {
-              install.packages(pkg, repos = "https://cloud.r-project.org/")
-              IRkernel::installspec(name = "ir", displayname = "R")
-            } else {
-              install.packages(pkg, repos = "https://cloud.r-project.org/")
-            }
-          }
-        } else {
-          # Just ensure IRkernel is registered
-          if (requireNamespace("IRkernel", quietly = TRUE)) {
-            IRkernel::installspec(name = "ir", displayname = "R")
-          }
-        }
-        
-        cat("✓ R environment ready for notebook execution\n")
+        setup-type: 'activate'
+        os-version: ${{ needs.setup-r.outputs.os-version }}
+        r-version-string: ${{ needs.setup-r.outputs.r-version }}
 
     - id: convert
       name: Convert ${{ matrix.notebook.name }} notebook to HTML
