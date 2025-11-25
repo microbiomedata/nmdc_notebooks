@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      #- gh_pages
+      - gh_pages
 
 # Sets permissions for GitHub Pages deployment
 permissions:
