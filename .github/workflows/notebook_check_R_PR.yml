@@ -1,4 +1,4 @@
-name: Execute modified R notebooks on PR (NEW)
+name: Execute modified R notebooks on PR
 
 on:
   pull_request:

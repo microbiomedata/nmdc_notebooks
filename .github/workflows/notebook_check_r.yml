@@ -1,4 +1,4 @@
-name: Execute R notebooks (NEW)
+name: Execute R notebooks
 
 on:
   workflow_dispatch:
