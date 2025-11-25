@@ -210,6 +210,11 @@ jobs:
           fi
         fi
 
+    - name: Create result placeholder
+      run: |
+        # Always create a result file at the start to ensure artifact exists
+        echo "RUNNING" > results-${{ matrix.notebook.name }}.txt
+
     - name: Execute notebook
       run: |
         env_prefix=""
@@ -223,14 +228,14 @@ jobs:
         EXIT_CODE=$?
         set -e  # Re-enable exit on error
         
-        # Always create a result file for the check-results job to find
+        # Update result file based on execution outcome
         if [ $EXIT_CODE -ne 0 ]; then
           echo "❌ Notebook execution failed with exit code $EXIT_CODE"
           if [ "$ENV" = "dev" ]; then
             echo "This likely indicates the DEV API is not accessible or the notebook encountered an error"
           fi
           echo "FAILED" > results-${{ matrix.notebook.name }}.txt
-          # Don't exit here - let the check-results job handle the failure
+          # Don't exit here - let other notebooks continue and check-results handle the failure
         else
           echo "✅ Notebook executed successfully"
           echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
@@ -260,32 +265,61 @@ jobs:
       with:
         path: results/
 
-    - name: Check notebook results
+    - name: Check notebook results from artifacts
       run: |
         env_prefix=""
         if [ "${{ inputs.environment }}" = "dev" ]; then
           env_prefix="(dev) "
         fi
         
-        echo "${env_prefix}Checking notebook execution results..."
+        echo "${env_prefix}Checking notebook execution results from artifacts..."
         
-        find results/ -name "results-*.txt" -exec cat {} \;
+        # Count expected notebooks
+        expected_count=$(echo '${{ needs.detect-notebooks.outputs.notebooks }}' | jq length)
+        echo "Expected notebooks: $expected_count"
         
-        FAILED_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; | wc -l)
-        TOTAL_COUNT=$(find results/ -name "results-*.txt" | wc -l)
+        # Find all result files
+        result_files=$(find results/ -name "results-*.txt" 2>/dev/null || echo "")
+        actual_count=$(echo "$result_files" | grep -c "results-" || echo "0")
+        echo "Found result files: $actual_count"
         
-        echo "Total notebooks: $TOTAL_COUNT"
-        echo "Failed notebooks: $FAILED_COUNT"
-        
-        if [ "$FAILED_COUNT" -gt 0 ]; then
-          echo "❌ $FAILED_COUNT out of $TOTAL_COUNT notebooks failed execution."
-          find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; | while read file; do
-            notebook_name=$(basename "$file" | sed 's/results-\(.*\)\.txt/\1/')
-            echo "Failed notebook: $notebook_name"
-          done
+        if [ "$actual_count" -lt "$expected_count" ]; then
+          echo "❌ Missing result artifacts! Expected $expected_count, found $actual_count"
+          echo "Some notebooks may have failed before creating result files."
+          # List expected vs found
+          echo "Expected notebooks:"
+          echo '${{ needs.detect-notebooks.outputs.notebooks }}' | jq -r '.[].name'
+          echo "Found result files:"
+          find results/ -name "results-*.txt" | sed 's/.*results-\(.*\)\.txt/\1/' || echo "None"
           exit 1
+        fi
+        
+        # Check content of result files
+        if [ -n "$result_files" ]; then
+          echo "Result file contents:"
+          find results/ -name "results-*.txt" -exec echo "File: {}" \; -exec cat {} \; -exec echo "" \;
+          
+          FAILED_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "FAILED\|RUNNING" {} \; | wc -l)
+          SUCCESS_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "SUCCESS" {} \; | wc -l)
+          
+          echo "Total notebooks: $actual_count"
+          echo "Failed notebooks: $FAILED_COUNT"
+          echo "Successful notebooks: $SUCCESS_COUNT"
+          
+          if [ "$FAILED_COUNT" -gt 0 ]; then
+            echo "❌ $FAILED_COUNT out of $actual_count notebooks failed execution."
+            find results/ -name "results-*.txt" -exec grep -l "FAILED\|RUNNING" {} \; | while read file; do
+              notebook_name=$(basename "$file" | sed 's/results-\(.*\)\.txt/\1/')
+              content=$(cat "$file")
+              echo "Failed notebook: $notebook_name (status: $content)"
+            done
+            exit 1
+          else
+            echo "✅ All $actual_count notebooks executed successfully!"
+          fi
         else
-          echo "✅ All $TOTAL_COUNT notebooks executed successfully!"
+          echo "❌ No result files found at all!"
+          exit 1
         fi
 
   no-notebooks:
