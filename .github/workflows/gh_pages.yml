@@ -178,6 +178,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup-python
     continue-on-error: true
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -210,6 +211,7 @@ jobs:
 
     - id: convert
       name: Convert ${{ matrix.notebook.name }} notebook to HTML
+      timeout-minutes: 45
       run: |
         echo "Converting notebook: ${{ matrix.notebook.path }}"
         
@@ -252,6 +254,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup-r
     continue-on-error: true
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -348,6 +351,7 @@ jobs:
 
     - id: convert
       name: Convert ${{ matrix.notebook.name }} notebook to HTML
+      timeout-minutes: 45
       run: |
         echo "Converting notebook: ${{ matrix.notebook.path }}"
         
