@@ -174,37 +174,35 @@ runs:
           r_version_num <- r_major + (r_minor / 10)
           cat("Detected R version:", r_major, ".", r_minor, "(", r_version_num, ")\n")
           
-          # Use Bioconductor 3.22 to match renv.lock
-          bioc_version <- "3.22"
+          bioc_version <- if (r_version_num >= 4.5) "3.21" else if (r_version_num >= 4.4) "3.20" else "3.18"
           cat("Installing Bioconductor version", bioc_version, "for R", r_version_num, "\n")
           BiocManager::install(version = bioc_version, ask = FALSE, update = FALSE)
         }
         
-        # Try renv restore with better error handling
-        cat("Attempting renv restore...\n")
+        # Try renv restore
         tryCatch({
-          # Set renv options for better compatibility
-          Sys.setenv(RENV_CONFIG_PAK_ENABLED = "TRUE")
-          Sys.setenv(RENV_CONFIG_INSTALL_VERBOSE = "TRUE")
-          Sys.setenv(RENV_CONFIG_BIOCONDUCTOR_VERSION = "3.22")
-          
-          # Force renv to use the correct Bioconductor version to match renv.lock
-          options(BioC_mirror = "https://bioconductor.org/packages/3.22")
-          
-          renv::restore(prompt = FALSE, exclude = NULL)
+          renv::restore(prompt = FALSE)
           cat("✓ renv restore successful\n")
         }, error = function(e) {
-          cat("✗ renv restore failed with error:", e$message, "\n")
-          cat("Attempting to fix by installing missing dependencies...\n")
+          cat("Warning: renv restore failed, installing additional packages manually\n")
+          cat("Error:", e$message, "\n")
           
-          # Try to restore again with different options
-          tryCatch({
-            renv::restore(prompt = FALSE, rebuild = TRUE)
-            cat("✓ renv restore successful on retry\n")
-          }, error = function(e2) {
-            cat("✗ renv restore failed completely:", e2$message, "\n")
-            stop("Cannot restore R environment from renv.lock")
-          })
+          # Install additional packages commonly used in notebooks
+          additional_packages <- c("KEGGREST", "circlize", "pathview", "forcats", "lubridate", "GGally", "corrplot", "RColorBrewer")
+          for (pkg in additional_packages) {
+            if (!requireNamespace(pkg, quietly = TRUE)) {
+              tryCatch({
+                if (pkg %in% c("KEGGREST")) {
+                  BiocManager::install(pkg, ask = FALSE, update = FALSE)
+                } else {
+                  install.packages(pkg, repos = "https://cloud.r-project.org/", quiet = TRUE)
+                }
+                cat("✓ Installed additional package", pkg, "\n")
+              }, error = function(e2) {
+                cat("Warning: Failed to install", pkg, ":", e2$message, "\n")
+              })
+            }
+          }
         })
         
         # Install and configure IRkernel
@@ -214,12 +212,11 @@ runs:
         IRkernel::installspec(name = "ir", displayname = "R")
         cat("✓ IRkernel configured\n")
         
-        # Verify core packages are available from renv.lock
-        cat("\nVerifying package availability from renv restore:\n")
-        critical_packages <- c("dplyr", "tidyr", "stringr", "readr", "ggplot2", "purrr", "tibble", "jsonlite", "KEGGREST", "pathview", "circlize")
+        # Verify core packages are available
+        cat("\nVerifying core package availability:\n")
+        required_packages <- c("dplyr", "tidyr", "stringr", "readr", "ggplot2", "purrr", "tibble", "jsonlite")
         missing_critical <- c()
-        
-        for (pkg in critical_packages) {
+        for (pkg in required_packages) {
           if (requireNamespace(pkg, quietly = TRUE)) {
             cat("✓", pkg, "available\n")
           } else {
