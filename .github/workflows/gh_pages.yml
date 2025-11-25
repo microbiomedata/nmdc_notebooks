@@ -299,28 +299,90 @@ jobs:
         restore-keys: |
           ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-8a6894215af13-
 
-    - name: Quick R environment activation
+    - name: Restore R environment and activate packages
       shell: Rscript {0}
       run: |
-        # Quick activation of pre-installed R environment
-        cat("Activating R environment...\n")
+        # Configure repositories
+        options(repos = c(
+          CRAN = "https://cloud.r-project.org/",
+          BioCsoft = "https://bioconductor.org/packages/release/bioc",
+          BioCann = "https://bioconductor.org/packages/release/data/annotation",
+          BioCexp = "https://bioconductor.org/packages/release/data/experiment"
+        ))
+        
+        cat("Setting up R environment for notebook execution...\n")
+        
+        # Install renv if needed (should be cached)
+        if (!requireNamespace("renv", quietly = TRUE)) {
+          install.packages("renv", repos = "https://cloud.r-project.org/")
+        }
+        
+        # Activate renv environment
+        renv::activate()
+        
+        # Try to restore from cache, but don't fail if it doesn't work
         tryCatch({
-          # Install renv if not cached
-          if (!requireNamespace("renv", quietly = TRUE)) {
-            install.packages("renv", repos = "https://cloud.r-project.org/")
+          renv::restore(prompt = FALSE)
+          cat("✓ renv restore successful\n")
+        }, error = function(e) {
+          cat("⚠ renv restore failed, installing core packages manually...\n")
+          # Install essential packages that most R notebooks need
+          core_packages <- c("jsonlite", "dplyr", "ggplot2", "tidyr", "readr", "stringr", "purrr", "tibble")
+          for (pkg in core_packages) {
+            if (!requireNamespace(pkg, quietly = TRUE)) {
+              tryCatch({
+                install.packages(pkg, repos = "https://cloud.r-project.org/")
+                cat("✓ Installed", pkg, "\n")
+              }, error = function(e2) {
+                cat("✗ Failed to install", pkg, "\n")
+              })
+            }
           }
-          renv::activate()
           
-          # Quick check that IRkernel is available
-          if (!requireNamespace("IRkernel", quietly = TRUE)) {
-            install.packages("IRkernel", repos = "https://cloud.r-project.org/")
-            IRkernel::installspec(name = "ir", displayname = "R")
+          # Install Bioconductor packages if needed
+          tryCatch({
+            if (!requireNamespace("BiocManager", quietly = TRUE)) {
+              install.packages("BiocManager", repos = "https://cloud.r-project.org/")
+            }
+            BiocManager::install(version = "3.21", ask = FALSE, update = FALSE)
+            
+            # Install common Bioconductor packages
+            bioc_packages <- c("KEGGREST")
+            for (pkg in bioc_packages) {
+              if (!requireNamespace(pkg, quietly = TRUE)) {
+                tryCatch({
+                  BiocManager::install(pkg, ask = FALSE, update = FALSE)
+                  cat("✓ Installed Bioconductor package", pkg, "\n")
+                }, error = function(e3) {
+                  cat("✗ Failed to install Bioconductor package", pkg, "\n")
+                })
+              }
+            }
+          }, error = function(e3) {
+            cat("⚠ BiocManager setup had issues\n")
+          })
+          
+          # Install other packages commonly used in notebooks
+          other_packages <- c("circlize", "pathview", "grid", "fs", "digest", "httr", "stats", "forcats", "lubridate", "GGally", "ggExtra")
+          for (pkg in other_packages) {
+            if (!requireNamespace(pkg, quietly = TRUE)) {
+              tryCatch({
+                install.packages(pkg, repos = "https://cloud.r-project.org/")
+                cat("✓ Installed", pkg, "\n")
+              }, error = function(e4) {
+                cat("⚠ Could not install", pkg, "\n")
+              })
+            }
           }
-          
-          cat("✓ R environment activated successfully\n")
-        }, error = function(err) {
-          cat("Warning: R environment activation issue:", err$message, "\n")
         })
+        
+        # Setup IRkernel
+        if (!requireNamespace("IRkernel", quietly = TRUE)) {
+          install.packages("IRkernel", repos = "https://cloud.r-project.org/")
+        }
+        IRkernel::installspec(name = "ir", displayname = "R")
+        
+        cat("✓ R environment setup complete\n")
 
     - id: convert
       name: Convert ${{ matrix.notebook.name }} notebook to HTML
