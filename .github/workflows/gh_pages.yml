@@ -70,7 +70,7 @@ jobs:
       uses: ./.github/actions/setup-r-environment
       with:
         r-version: '4.5.2'
-        setup-type: 'full'
+        mode: 'full'
 
     - id: set-notebooks
       name: Set R notebook matrix
@@ -178,9 +178,8 @@ jobs:
       uses: ./.github/actions/setup-r-environment
       with:
         r-version: '4.5.2'
-        setup-type: 'activate'
-        os-version: ${{ needs.setup-r.outputs.os-version }}
-        r-version-string: ${{ needs.setup-r.outputs.r-version }}
+        mode: 'activate'
+        cache-key: ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-renv-${{ hashFiles('renv.lock') }}
 
     - id: convert
       name: Convert ${{ matrix.notebook.name }} notebook to HTML
