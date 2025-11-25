@@ -5,15 +5,21 @@ inputs:
     description: 'R version to install'
     required: false
     default: '4.5.2'
-  setup-type:
-    description: 'Type of setup: full (initial) or activate (from cache)'
+  mode:
+    description: 'Setup mode: full (initial) or activate (from cache)'
     required: false
     default: 'full'
+  setup-type:
+    description: 'Alias for mode parameter for backwards compatibility'
+    required: false
+  cache-key:
+    description: 'Full cache key for activate mode (optional - will be constructed if not provided)'
+    required: false
   os-version:
-    description: 'OS version for cache key (required for activate mode)'
+    description: 'OS version for cache key (required for activate mode if cache-key not provided)'
     required: false
   r-version-string:
-    description: 'R version string for cache key (required for activate mode)'
+    description: 'R version string for cache key (required for activate mode if cache-key not provided)'
     required: false
 
 outputs:
@@ -27,6 +33,19 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Normalize mode parameter
+      shell: bash
+      run: |
+        # Handle both 'mode' and 'setup-type' parameter names for backwards compatibility
+        if [ -n "${{ inputs.mode }}" ]; then
+          echo "SETUP_MODE=${{ inputs.mode }}" >> $GITHUB_ENV
+        elif [ -n "${{ inputs.setup-type }}" ]; then
+          echo "SETUP_MODE=${{ inputs.setup-type }}" >> $GITHUB_ENV
+        else
+          echo "SETUP_MODE=full" >> $GITHUB_ENV
+        fi
+        echo "Using setup mode: $SETUP_MODE"
+
     - name: Set RENV_PATHS_ROOT
       shell: bash
       run: |
@@ -67,7 +86,7 @@ runs:
           librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
 
     - name: Get R and OS version (full setup only)
-      if: inputs.setup-type == 'full'
+      if: env.SETUP_MODE == 'full'
       id: get-version
       shell: Rscript {0}
       run: |
@@ -83,9 +102,9 @@ runs:
         path: |
           ${{ env.RENV_PATHS_ROOT }}
           ~/.local/share/renv
-        key: ${{ inputs.setup-type == 'full' && format('{0}-{1}-renv-{2}', steps.get-version.outputs.os-version, steps.get-version.outputs.r-version, hashFiles('renv.lock')) || format('{0}-{1}-renv-{2}', inputs.os-version, inputs.r-version-string, hashFiles('renv.lock')) }}
+        key: ${{ inputs.cache-key || (env.SETUP_MODE == 'full' && format('{0}-{1}-renv-{2}', steps.get-version.outputs.os-version, steps.get-version.outputs.r-version, hashFiles('renv.lock')) || format('{0}-{1}-renv-{2}', inputs.os-version, inputs.r-version-string, hashFiles('renv.lock'))) }}
         restore-keys: |
-          ${{ inputs.setup-type == 'full' && format('{0}-{1}-renv-', steps.get-version.outputs.os-version, steps.get-version.outputs.r-version) || format('{0}-{1}-renv-', inputs.os-version, inputs.r-version-string) }}
+          ${{ env.SETUP_MODE == 'full' && format('{0}-{1}-renv-', steps.get-version.outputs.os-version, steps.get-version.outputs.r-version) || format('{0}-{1}-renv-', inputs.os-version, inputs.r-version-string) }}
 
     - name: Install and configure R environment
       shell: Rscript {0}
@@ -149,9 +168,14 @@ runs:
         # Install BiocManager with correct version
         if (!requireNamespace("BiocManager", quietly = TRUE)) {
           install.packages("BiocManager", repos = "https://cloud.r-project.org/", quiet = TRUE)
-          r_version <- as.numeric(paste(R.version$major, R.version$minor, sep = "."))
-          bioc_version <- if (r_version >= 4.5) "3.21" else if (r_version >= 4.4) "3.20" else "3.18"
-          cat("Installing Bioconductor version", bioc_version, "for R", r_version, "\n")
+          # Parse R version more safely
+          r_major <- as.numeric(R.version$major)
+          r_minor <- as.numeric(R.version$minor)
+          r_version_num <- r_major + (r_minor / 10)
+          cat("Detected R version:", r_major, ".", r_minor, "(", r_version_num, ")\n")
+          
+          bioc_version <- if (r_version_num >= 4.5) "3.21" else if (r_version_num >= 4.4) "3.20" else "3.18"
+          cat("Installing Bioconductor version", bioc_version, "for R", r_version_num, "\n")
           BiocManager::install(version = bioc_version, ask = FALSE, update = FALSE)
         }
         
