@@ -34,11 +34,6 @@
       "name": "NOM",
       "path": "NOM_visualizations/python/nom_data.ipynb",
       "display_name": "Natural Organic Matter Visualizations"
-    },
-    {
-      "name": "metaGTomic",
-      "path": "metaG_metaT_integration/python/metaG_metaT_omics_analysis.ipynb",
-      "display_name": "Metagenomic and Metatranscriptomic Integration"
     }
   ],
   "r_notebooks": [
@@ -71,11 +66,6 @@
       "name": "nom",
       "path": "NOM_visualizations/R/NOM_R_notebook.ipynb",
       "display_name": "Natural Organic Matter Visualizations"
-    },
-    {
-      "name": "metaGTomic",
-      "path": "metaG_metaT_integration/R/metaG_metaT_omics_analysis.ipynb",
-      "display_name": "Metagenomic and Metatranscriptomic Integration"
     }
   ]
 }
