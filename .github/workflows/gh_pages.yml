@@ -169,15 +169,9 @@ jobs:
     - id: checkout
       uses: actions/checkout@v4
 
-    - name: Set RENV_PATHS_ROOT
-      shell: bash
-      run: |
-        echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
-
-    - name: Activate R environment
+    - name: Activate R environment (fast)
       uses: ./.github/actions/setup-r-environment
       with:
-        r-version: '4.5.2'
         mode: 'activate'
         cache-key: ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-renv-${{ hashFiles('renv.lock') }}
 
