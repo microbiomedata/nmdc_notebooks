@@ -13,9 +13,9 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
+# Allow only one concurrent deployment, and prevent conflicts with R notebook workflows
 concurrency:
-  group: "pages"
+  group: r-environment-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:

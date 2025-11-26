@@ -1,5 +1,10 @@
 name: Reusable R Notebook Testing Workflow
 
+# Prevent conflicts with other R environment workflows
+concurrency:
+  group: r-environment-${{ github.repository }}
+  cancel-in-progress: false
+
 on:
   workflow_call:
     inputs:
