@@ -129,12 +129,13 @@ jobs:
     outputs:
       os-version: ${{ steps.setup-r.outputs.os-version }}
       r-version: ${{ steps.setup-r.outputs.r-version }}
+      cache-key: ${{ steps.setup-r.outputs.cache-key }}
     steps:
     - uses: actions/checkout@v4
 
     - name: Set up R environment (full)
       id: setup-r
-      uses: ./.github/actions/setup-r-environment
+      uses: ./.github/actions/setup-r-environment-v2
       with:
         mode: 'full'
 
@@ -156,10 +157,10 @@ jobs:
         echo "RUNNING" > results-${{ matrix.notebook.name }}.txt
 
     - name: Activate R environment (fast)
-      uses: ./.github/actions/setup-r-environment
+      uses: ./.github/actions/setup-r-environment-v2
       with:
         mode: 'activate'
-        cache-key: ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-renv-${{ hashFiles('renv.lock') }}
+        cache-key: ${{ needs.setup-r.outputs.cache-key }}
 
     - name: Execute notebook
       run: |

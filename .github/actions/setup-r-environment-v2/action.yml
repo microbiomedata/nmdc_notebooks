@@ -1,0 +1,276 @@
+name: 'Setup R Environment v2'
+description: 'Set up R environment with improved cache key handling for NMDC notebooks'
+inputs:
+  r-version:
+    description: 'R version to install'
+    required: false
+    default: '4.5.2'
+  mode:
+    description: 'Setup mode: full (initial) or activate (from cache)'
+    required: false
+    default: 'full'
+  cache-key:
+    description: 'Full cache key for activate mode (optional - will be constructed if not provided)'
+    required: false
+
+outputs:
+  os-version:
+    description: 'Operating system version (sanitized for cache keys)'
+    value: ${{ steps.get-version.outputs.os-version }}
+  r-version:
+    description: 'R version string (sanitized for cache keys)'
+    value: ${{ steps.get-version.outputs.r-version }}
+  cache-key:
+    description: 'Generated cache key for R packages'
+    value: ${{ steps.generate-cache-key.outputs.cache-key }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set RENV_PATHS_ROOT
+      shell: bash
+      run: |
+        echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Jupyter
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        pip install jupyter
+
+    - name: Cache system packages
+      uses: actions/cache@v4
+      with:
+        path: /var/cache/apt
+        key: ${{ runner.os }}-apt-packages-r
+        restore-keys: |
+          ${{ runner.os }}-apt-packages-
+
+    - name: Set up R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        r-version: ${{ inputs.r-version }}
+        use-public-rspm: true
+
+    - name: Install system dependencies on Linux
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y --no-install-recommends \
+          make libicu-dev libxml2-dev libssl-dev pandoc \
+          librdf0-dev libnode-dev libcurl4-gnutls-dev libpng-dev
+
+    - name: Get R and OS version with sanitization
+      id: get-version
+      shell: bash
+      run: |
+        # Get OS version to match existing cache format
+        if [ "${{ runner.os }}" = "Linux" ]; then
+          # Get full OS description to match existing caches
+          os_version=$(cat /etc/os-release | grep "PRETTY_NAME" | cut -d'"' -f2)
+          os_sanitized="$os_version"
+        else
+          os_sanitized="${{ runner.os }}"
+        fi
+        
+        # Get R version to match existing cache format
+        r_version_full=$(R --version | head -1)
+        r_sanitized="$r_version_full"
+        
+        echo "OS version: $os_sanitized"
+        echo "R version: $r_sanitized"
+        
+        echo "os-version=$os_sanitized" >> $GITHUB_OUTPUT
+        echo "r-version=$r_sanitized" >> $GITHUB_OUTPUT
+
+    - name: Generate cache key
+      id: generate-cache-key
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.cache-key }}" ]; then
+          # Use provided cache key
+          cache_key="${{ inputs.cache-key }}"
+          echo "Using provided cache key: $cache_key"
+        else
+          # Generate cache key from sanitized versions
+          renv_hash="${{ hashFiles('renv.lock') }}"
+          cache_key="${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-${renv_hash}"
+          echo "Generated cache key: $cache_key"
+        fi
+        
+        echo "cache-key=$cache_key" >> $GITHUB_OUTPUT
+
+    - name: Cache R packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ${{ env.RENV_PATHS_ROOT }}
+          ~/.local/share/renv
+        key: ${{ steps.generate-cache-key.outputs.cache-key }}
+        restore-keys: |
+          ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-
+
+    - name: Install and configure R environment
+      if: inputs.mode == 'full'
+      shell: Rscript {0}
+      run: |
+        # Configure repositories with fallbacks
+        options(repos = c(
+          CRAN = "https://cloud.r-project.org/",
+          BioCsoft = "https://bioconductor.org/packages/release/bioc",
+          BioCann = "https://bioconductor.org/packages/release/data/annotation",
+          BioCexp = "https://bioconductor.org/packages/release/data/experiment"
+        ))
+        
+        # Set timeout and retry options
+        options(timeout = 300)
+        options(download.file.method = "libcurl")
+        
+        cat("Setting up R environment...\n")
+        
+        # Install renv if needed
+        if (!requireNamespace("renv", quietly = TRUE)) {
+          for(i in 1:3) {
+            tryCatch({
+              install.packages("renv", repos = "https://cloud.r-project.org/")
+              break
+            }, error = function(e) {
+              cat("Attempt", i, "failed:", e$message, "\n")
+              if(i == 3) stop(e)
+              Sys.sleep(5)
+            })
+          }
+        }
+        
+        renv::activate()
+        
+        # Configure renv for flexible package resolution
+        Sys.setenv(RENV_CONFIG_PAK_ENABLED = "TRUE")
+        Sys.setenv(RENV_CONFIG_INSTALL_VERBOSE = "FALSE")
+        
+        # Install core packages that most notebooks need
+        core_packages <- c("jsonlite", "dplyr", "ggplot2", "tidyr", "readr", "stringr", "purrr", "tibble")
+        missing_core <- c()
+        
+        for (pkg in core_packages) {
+          if (!requireNamespace(pkg, quietly = TRUE)) {
+            missing_core <- c(missing_core, pkg)
+          }
+        }
+        
+        if (length(missing_core) > 0) {
+          cat("Installing missing core packages:", paste(missing_core, collapse = ", "), "\n")
+          for (pkg in missing_core) {
+            tryCatch({
+              install.packages(pkg, repos = "https://cloud.r-project.org/", quiet = TRUE)
+              cat("✓ Installed", pkg, "\n")
+            }, error = function(e) {
+              cat("✗ Failed to install", pkg, ":", e$message, "\n")
+            })
+          }
+        }
+        
+        # Install BiocManager with correct version
+        if (!requireNamespace("BiocManager", quietly = TRUE)) {
+          install.packages("BiocManager", repos = "https://cloud.r-project.org/", quiet = TRUE)
+          # Parse R version more safely
+          r_major <- as.numeric(R.version$major)
+          r_minor <- as.numeric(R.version$minor)
+          r_version_num <- r_major + (r_minor / 10)
+          cat("Detected R version:", r_major, ".", r_minor, "(", r_version_num, ")\n")
+          
+          bioc_version <- if (r_version_num >= 4.5) "3.21" else if (r_version_num >= 4.4) "3.20" else "3.18"
+          cat("Installing Bioconductor version", bioc_version, "for R", r_version_num, "\n")
+          BiocManager::install(version = bioc_version, ask = FALSE, update = FALSE)
+        }
+        
+        # Try renv restore
+        tryCatch({
+          renv::restore(prompt = FALSE)
+          cat("✓ renv restore successful\n")
+        }, error = function(e) {
+          cat("Warning: renv restore failed, installing additional packages manually\n")
+          cat("Error:", e$message, "\n")
+          
+          # Install additional packages commonly used in notebooks
+          additional_packages <- c("KEGGREST", "circlize", "pathview", "forcats", "lubridate", "GGally", "corrplot", "RColorBrewer")
+          for (pkg in additional_packages) {
+            if (!requireNamespace(pkg, quietly = TRUE)) {
+              tryCatch({
+                if (pkg %in% c("KEGGREST")) {
+                  BiocManager::install(pkg, ask = FALSE, update = FALSE)
+                } else {
+                  install.packages(pkg, repos = "https://cloud.r-project.org/", quiet = TRUE)
+                }
+                cat("✓ Installed additional package", pkg, "\n")
+              }, error = function(e2) {
+                cat("Warning: Failed to install", pkg, ":", e2$message, "\n")
+              })
+            }
+          }
+        })
+        
+        # Install and configure IRkernel
+        if (!requireNamespace("IRkernel", quietly = TRUE)) {
+          install.packages("IRkernel", repos = "https://cloud.r-project.org/", quiet = TRUE)
+        }
+        IRkernel::installspec(name = "ir", displayname = "R")
+        cat("✓ IRkernel configured\n")
+        
+        # Verify core packages are available
+        cat("\nVerifying core package availability:\n")
+        required_packages <- c("dplyr", "tidyr", "stringr", "readr", "ggplot2", "purrr", "tibble", "jsonlite")
+        missing_critical <- c()
+        for (pkg in required_packages) {
+          if (requireNamespace(pkg, quietly = TRUE)) {
+            cat("✓", pkg, "available\n")
+          } else {
+            cat("✗", pkg, "NOT available\n")
+            missing_critical <- c(missing_critical, pkg)
+          }
+        }
+        
+        if (length(missing_critical) > 0) {
+          cat("ERROR: Critical packages missing:", paste(missing_critical, collapse = ", "), "\n")
+          stop("Cannot proceed without critical packages")
+        }
+        
+        cat("✓ R environment setup complete\n")
+
+    - name: Verify R environment in activate mode
+      if: inputs.mode == 'activate'
+      shell: Rscript {0}
+      run: |
+        cat("Verifying R environment from cache...\n")
+        
+        # Activate renv
+        if (file.exists("renv.lock")) {
+          renv::activate()
+          cat("✓ renv activated\n")
+        }
+        
+        # Quick verification of critical packages
+        required_packages <- c("dplyr", "ggplot2", "jsonlite", "pathview")
+        missing_packages <- c()
+        
+        for (pkg in required_packages) {
+          if (requireNamespace(pkg, quietly = TRUE)) {
+            cat("✓", pkg, "available\n")
+          } else {
+            cat("✗", pkg, "NOT available\n")
+            missing_packages <- c(missing_packages, pkg)
+          }
+        }
+        
+        if (length(missing_packages) > 0) {
+          cat("WARNING: Missing packages in cache:", paste(missing_packages, collapse = ", "), "\n")
+          cat("This may indicate a cache key mismatch.\n")
+        } else {
+          cat("✓ All required packages available from cache\n")
+        }

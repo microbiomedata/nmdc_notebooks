@@ -61,13 +61,14 @@ jobs:
       notebooks: ${{ steps.set-notebooks.outputs.notebooks }}
       os-version: ${{ steps.setup-r-env.outputs.os-version }}
       r-version: ${{ steps.setup-r-env.outputs.r-version }}
+      cache-key: ${{ steps.setup-r-env.outputs.cache-key }}
     steps:
     - id: checkout
       uses: actions/checkout@v4
 
     - id: setup-r-env
       name: Set up R environment
-      uses: ./.github/actions/setup-r-environment
+      uses: ./.github/actions/setup-r-environment-v2
       with:
         mode: 'full'
 
@@ -169,10 +170,10 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Activate R environment (fast)
-      uses: ./.github/actions/setup-r-environment
+      uses: ./.github/actions/setup-r-environment-v2
       with:
         mode: 'activate'
-        cache-key: ${{ needs.setup-r.outputs.os-version }}-${{ needs.setup-r.outputs.r-version }}-renv-${{ hashFiles('renv.lock') }}
+        cache-key: ${{ needs.setup-r.outputs.cache-key }}
 
     - id: convert
       name: Convert ${{ matrix.notebook.name }} notebook to HTML
