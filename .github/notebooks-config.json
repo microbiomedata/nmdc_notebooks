@@ -36,12 +36,7 @@
       "display_name": "Natural Organic Matter Visualizations"
     }
   ],
-  "r_notebooks": [
-    {
-      "name": "integration",
-      "path": "omics_types_integration/R/integration_notebook.ipynb",
-      "display_name": "Omics Types Integration"
-    },
+  "r_notebooks": [    
     {
       "name": "aggregation",
       "path": "proteomic_aggregation/R/proteomic_aggregation.ipynb",
