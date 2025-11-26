@@ -137,6 +137,10 @@ runs:
         options(timeout = 300)
         options(download.file.method = "libcurl")
         
+        # Prevent parallel installations that can cause "subprocess busy" errors
+        options(Ncpus = 1)
+        Sys.setenv(MAKEFLAGS = "-j1")
+        
         cat("Setting up R environment...\n")
         
         # Install renv if needed
@@ -144,6 +148,7 @@ runs:
           for(i in 1:3) {
             tryCatch({
               install.packages("renv", repos = "https://cloud.r-project.org/")
+              Sys.sleep(2)
               break
             }, error = function(e) {
               cat("Attempt", i, "failed:", e$message, "\n")
@@ -159,49 +164,52 @@ runs:
         Sys.setenv(RENV_CONFIG_PAK_ENABLED = "TRUE")
         Sys.setenv(RENV_CONFIG_INSTALL_VERBOSE = "FALSE")
         
-        # Install core packages that most notebooks need
-        core_packages <- c("jsonlite", "dplyr", "ggplot2", "tidyr", "readr", "stringr", "purrr", "tibble")
-        missing_core <- c()
-        
-        for (pkg in core_packages) {
-          if (!requireNamespace(pkg, quietly = TRUE)) {
-            missing_core <- c(missing_core, pkg)
-          }
-        }
-        
-        if (length(missing_core) > 0) {
-          cat("Installing missing core packages:", paste(missing_core, collapse = ", "), "\n")
-          for (pkg in missing_core) {
-            tryCatch({
-              install.packages(pkg, repos = "https://cloud.r-project.org/", quiet = TRUE)
-              cat("✓ Installed", pkg, "\n")
-            }, error = function(e) {
-              cat("✗ Failed to install", pkg, ":", e$message, "\n")
-            })
-          }
-        }
-        
-        # Install BiocManager with correct version
-        if (!requireNamespace("BiocManager", quietly = TRUE)) {
-          install.packages("BiocManager", repos = "https://cloud.r-project.org/", quiet = TRUE)
-          # Parse R version more safely
-          r_major <- as.numeric(R.version$major)
-          r_minor <- as.numeric(R.version$minor)
-          r_version_num <- r_major + (r_minor / 10)
-          cat("Detected R version:", r_major, ".", r_minor, "(", r_version_num, ")\n")
-          
-          bioc_version <- if (r_version_num >= 4.5) "3.21" else if (r_version_num >= 4.4) "3.20" else "3.18"
-          cat("Installing Bioconductor version", bioc_version, "for R", r_version_num, "\n")
-          BiocManager::install(version = bioc_version, ask = FALSE, update = FALSE)
-        }
-        
-        # Try renv restore
+        # Try renv restore first
         tryCatch({
           renv::restore(prompt = FALSE)
           cat("✓ renv restore successful\n")
         }, error = function(e) {
           cat("Warning: renv restore failed, installing additional packages manually\n")
           cat("Error:", e$message, "\n")
+          
+          # Install core packages that most notebooks need
+          core_packages <- c("jsonlite", "dplyr", "ggplot2", "tidyr", "readr", "stringr", "purrr", "tibble")
+          missing_core <- c()
+          
+          for (pkg in core_packages) {
+            if (!requireNamespace(pkg, quietly = TRUE)) {
+              missing_core <- c(missing_core, pkg)
+            }
+          }
+          
+          if (length(missing_core) > 0) {
+            cat("Installing missing core packages:", paste(missing_core, collapse = ", "), "\n")
+            for (pkg in missing_core) {
+              tryCatch({
+                install.packages(pkg, repos = "https://cloud.r-project.org/", quiet = TRUE)
+                Sys.sleep(1)
+                cat("✓ Installed", pkg, "\n")
+              }, error = function(e) {
+                cat("✗ Failed to install", pkg, ":", e$message, "\n")
+              })
+            }
+          }
+          
+          # Install BiocManager with correct version
+          if (!requireNamespace("BiocManager", quietly = TRUE)) {
+            install.packages("BiocManager", repos = "https://cloud.r-project.org/", quiet = TRUE)
+            Sys.sleep(2)
+            # Parse R version more safely
+            r_major <- as.numeric(R.version$major)
+            r_minor <- as.numeric(R.version$minor)
+            r_version_num <- r_major + (r_minor / 10)
+            cat("Detected R version:", r_major, ".", r_minor, "(", r_version_num, ")\n")
+            
+            bioc_version <- if (r_version_num >= 4.5) "3.21" else if (r_version_num >= 4.4) "3.20" else "3.18"
+            cat("Installing Bioconductor version", bioc_version, "for R", r_version_num, "\n")
+            BiocManager::install(version = bioc_version, ask = FALSE, update = FALSE)
+            Sys.sleep(2)
+          }
           
           # Install additional packages commonly used in notebooks
           additional_packages <- c("KEGGREST", "circlize", "pathview", "forcats", "lubridate", "GGally", "corrplot", "RColorBrewer")
@@ -213,6 +221,7 @@ runs:
                 } else {
                   install.packages(pkg, repos = "https://cloud.r-project.org/", quiet = TRUE)
                 }
+                Sys.sleep(1)
                 cat("✓ Installed additional package", pkg, "\n")
               }, error = function(e2) {
                 cat("Warning: Failed to install", pkg, ":", e2$message, "\n")
