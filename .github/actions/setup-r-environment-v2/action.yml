@@ -266,6 +266,12 @@ runs:
       run: |
         cat("Verifying R environment from cache...\n")
         
+        # Install renv if needed (not included in package cache)
+        if (!requireNamespace("renv", quietly = TRUE)) {
+          cat("Installing renv...\n")
+          install.packages("renv", repos = "https://cloud.r-project.org/", quiet = TRUE)
+        }
+        
         # Activate renv
         if (file.exists("renv.lock")) {
           renv::activate()
