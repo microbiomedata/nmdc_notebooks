@@ -100,7 +100,10 @@ runs:
         else
           # Generate cache key from sanitized versions
           renv_hash="${{ hashFiles('renv.lock') }}"
-          cache_key="${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-renv-${renv_hash}"
+          # Properly quote the version strings to handle special characters
+          os_version="${{ steps.get-version.outputs.os-version }}"
+          r_version="${{ steps.get-version.outputs.r-version }}"
+          cache_key="${os_version}-${r_version}-renv-${renv_hash}"
           echo "Generated cache key: $cache_key"
         fi
         
