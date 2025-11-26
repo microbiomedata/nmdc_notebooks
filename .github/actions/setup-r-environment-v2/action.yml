@@ -279,6 +279,14 @@ runs:
           cat("✓ renv activated\n")
         }
         
+        # Install and configure IRkernel (required for Jupyter)
+        if (!requireNamespace("IRkernel", quietly = TRUE)) {
+          cat("Installing IRkernel...\n")
+          install.packages("IRkernel", repos = "https://cloud.r-project.org/", quiet = TRUE)
+        }
+        IRkernel::installspec(name = "ir", displayname = "R")
+        cat("✓ IRkernel configured\n")
+        
         # Quick verification of critical packages
         required_packages <- c("dplyr", "ggplot2", "jsonlite", "pathview")
         missing_packages <- c()
