@@ -74,20 +74,22 @@ runs:
         if [ "${{ runner.os }}" = "Linux" ]; then
           # Get full OS description to match existing caches
           os_version=$(cat /etc/os-release | grep "PRETTY_NAME" | cut -d'"' -f2)
-          os_sanitized="$os_version"
         else
-          os_sanitized="${{ runner.os }}"
+          os_version="${{ runner.os }}"
         fi
         
-        # Get R version to match existing cache format
-        r_version_full=$(R --version | head -1)
-        r_sanitized="$r_version_full"
+        # Get R version to match existing cache format, but escape special characters
+        r_version_raw=$(R --version | head -1)
+        # Remove problematic characters that cause shell issues
+        r_version_clean=$(echo "$r_version_raw" | sed 's/\[//g; s/\]//g; s/"//g')
         
-        echo "OS version: $os_sanitized"
-        echo "R version: $r_sanitized"
+        echo "OS version: $os_version"
+        echo "R version (raw): $r_version_raw"
+        echo "R version (clean): $r_version_clean"
         
-        echo "os-version=$os_sanitized" >> $GITHUB_OUTPUT
-        echo "r-version=$r_sanitized" >> $GITHUB_OUTPUT
+        # Use printf to safely write to GITHUB_OUTPUT to avoid shell expansion
+        printf "os-version=%s\n" "$os_version" >> "$GITHUB_OUTPUT"
+        printf "r-version=%s\n" "$r_version_clean" >> "$GITHUB_OUTPUT"
 
     - name: Generate cache key
       id: generate-cache-key
