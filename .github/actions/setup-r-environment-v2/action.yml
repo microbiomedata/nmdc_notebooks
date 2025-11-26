@@ -161,8 +161,11 @@ runs:
         renv::activate()
         
         # Configure renv for flexible package resolution
-        Sys.setenv(RENV_CONFIG_PAK_ENABLED = "TRUE")
+        Sys.setenv(RENV_CONFIG_PAK_ENABLED = "FALSE")
         Sys.setenv(RENV_CONFIG_INSTALL_VERBOSE = "FALSE")
+
+        # Force renv to use standard install.packages instead of pak
+        options(renv.config.pak.enabled = FALSE)
         
         # Try renv restore first
         tryCatch({
