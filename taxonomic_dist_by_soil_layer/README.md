@@ -5,11 +5,11 @@ This folder includes two notebooks, in R and Python that explore how the taxonom
 ## Notebooks
 
 ### Python
-- [**Taxonomic Distribution by Soil Layer**](https://microbiomedata.github.io/nmdc_notebooks/taxonomic_dist_soil_layer.html) - Static rendered notebook for viewing
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb) - Interactive notebook
+- [**Taxonomic Distribution by Soil Layer**](https://microbiomedata.github.io/nmdc_notebooks/taxonomic_python.html) - Static rendered notebook for viewing
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/taxonomic_dist_by_soil_layer/python/taxonomic_python.ipynb) - Interactive notebook
 
 ### R
-- [**Taxonomic Distribution by Soil Layer**](https://microbiomedata.github.io/nmdc_notebooks/taxonomic_dist_soil_layer_R-r.html) - Static rendered notebook for viewing
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb) - Interactive notebook
+- [**Taxonomic Distribution by Soil Layer**](https://microbiomedata.github.io/nmdc_notebooks/taxonomic_r.html) - Static rendered notebook for viewing
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/taxonomic_dist_by_soil_layer/R/taxonomic_r.ipynb) - Interactive notebook
 
 Or view all notebooks on our [**GitHub Pages site**](https://microbiomedata.github.io/nmdc_notebooks/). 

@@ -5,12 +5,12 @@ This folder includes two notebooks, in R and Python, that explore various ways o
 ## Notebooks
 
 ### Python
-- [**NEON Soil Metadata Exploration**](https://microbiomedata.github.io/nmdc_notebooks/neon_soil_metadata_visual_exploration.html) - Static rendered notebook for viewing
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb) - Interactive notebook
+- [**NEON Soil Metadata Exploration**](https://microbiomedata.github.io/nmdc_notebooks/neon_python.html) - Static rendered notebook for viewing
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/NEON_soil_metadata/python/neon_python.ipynb) - Interactive notebook
 
 ### R  
-- [**NEON Data Exploration**](https://microbiomedata.github.io/nmdc_notebooks/NEON_data_exploration-r.html) - Static rendered notebook for viewing
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/NEON_soil_metadata/R/NEON_data_exploration.ipynb) - Interactive notebook
+- [**NEON Data Exploration**](https://microbiomedata.github.io/nmdc_notebooks/neon_r.html) - Static rendered notebook for viewing
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/NEON_soil_metadata/R/neon_r.ipynb) - Interactive notebook
 
 Or view all notebooks on our [**GitHub Pages site**](https://microbiomedata.github.io/nmdc_notebooks/).
 

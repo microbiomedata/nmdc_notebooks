@@ -5,11 +5,11 @@ This folder includes two notebooks (in R and Python) that demonstrate how metada
 ## Notebooks
 
 ### Python
-- [**Natural Organic Matter Visualizations**](https://microbiomedata.github.io/nmdc_notebooks/nom_data.html) - Static rendered notebook for viewing
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/NOM_visualizations/python/nom_data.ipynb) - Interactive notebook
+- [**Natural Organic Matter Visualizations**](https://microbiomedata.github.io/nmdc_notebooks/nom_python.html) - Static rendered notebook for viewing
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/NOM_visualizations/python/nom_python.ipynb) - Interactive notebook
 
 ### R
-- [**Natural Organic Matter Visualizations**](https://microbiomedata.github.io/nmdc_notebooks/NOM_R_notebook-r.html) - Static rendered notebook for viewing
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/NOM_visualizations/R/NOM_R_notebook.ipynb) - Interactive notebook
+- [**Natural Organic Matter Visualizations**](https://microbiomedata.github.io/nmdc_notebooks/nom_r.html) - Static rendered notebook for viewing
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/NOM_visualizations/R/nom_r.ipynb) - Interactive notebook
 
 Or view all notebooks on our [**GitHub Pages site**](https://microbiomedata.github.io/nmdc_notebooks/).

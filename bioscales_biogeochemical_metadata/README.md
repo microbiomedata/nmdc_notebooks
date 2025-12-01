@@ -7,11 +7,11 @@ More documentation on the NMDC-runtime API can be found [here](https://github.co
 ## Notebooks
 
 ### Python
-- [**Bioscales Biogeochemical Metadata**](https://microbiomedata.github.io/nmdc_notebooks/bioscales.html) - Static rendered notebook for viewing
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/bioscales_biogeochemical_metadata/python/bioscales.ipynb) - Interactive notebook
+- [**Bioscales Biogeochemical Metadata**](https://microbiomedata.github.io/nmdc_notebooks/bioscales_python.html) - Static rendered notebook for viewing
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/bioscales_biogeochemical_metadata/python/bioscales_python.ipynb) - Interactive notebook
 
 ### R  
-- [**Bioscales Biogeochemical Metadata**](https://microbiomedata.github.io/nmdc_notebooks/bioscales_metadata-r.html) - Static rendered notebook for viewing
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb) - Interactive notebook
+- [**Bioscales Biogeochemical Metadata**](https://microbiomedata.github.io/nmdc_notebooks/bioscales_r.html) - Static rendered notebook for viewing
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/bioscales_biogeochemical_metadata/R/bioscales_r.ipynb) - Interactive notebook
 
 Or view all notebooks on our [**GitHub Pages site**](https://microbiomedata.github.io/nmdc_notebooks/).

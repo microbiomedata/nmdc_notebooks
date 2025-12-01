@@ -15,7 +15,7 @@ permissions:
 
 # Allow only one concurrent deployment, and prevent conflicts with R notebook workflows
 concurrency:
-  group: r-environment-${{ github.repository }}
+  group: "pages"
   cancel-in-progress: false
 
 jobs:

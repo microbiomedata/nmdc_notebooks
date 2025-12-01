@@ -2,70 +2,80 @@
   "python_notebooks": [
     {
       "name": "integration",
-      "path": "omics_types_integration/python/integration_notebook.ipynb",
+      "path": "omics_types_integration/python/integration_python.ipynb",
       "display_name": "Omics Types Integration"
     },
     {
-      "name": "over_representation", 
-      "path": "over_representation/python/overrepresentation_notebook.ipynb",
+      "name": "overrepresentation", 
+      "path": "over_representation/python/overrepresentation_python.ipynb",
       "display_name": "Over-representation Analysis"
     },
     {
       "name": "aggregation",
-      "path": "proteomic_aggregation/python/proteomic_aggregation.ipynb",
+      "path": "proteomic_aggregation/python/aggregation_python.ipynb",
       "display_name": "Proteomic Data Aggregation"
     },
     {
       "name": "bioscales",
-      "path": "bioscales_biogeochemical_metadata/python/bioscales.ipynb",
+      "path": "bioscales_biogeochemical_metadata/python/bioscales_python.ipynb",
       "display_name": "Bioscales Biogeochemical Metadata"
     },
     {
       "name": "neon",
-      "path": "NEON_soil_metadata/python/neon_soil_metadata_visual_exploration.ipynb",
+      "path": "NEON_soil_metadata/python/neon_python.ipynb",
       "display_name": "NEON Soil Metadata Exploration"
     },
     {
       "name": "taxonomic",
-      "path": "taxonomic_dist_by_soil_layer/python/taxonomic_dist_soil_layer.ipynb",
+      "path": "taxonomic_dist_by_soil_layer/python/taxonomic_python.ipynb",
       "display_name": "Taxonomic Distribution by Soil Layer"
     },
     {
-      "name": "NOM",
-      "path": "NOM_visualizations/python/nom_data.ipynb",
+      "name": "nom",
+      "path": "NOM_visualizations/python/nom_python.ipynb",
       "display_name": "Natural Organic Matter Visualizations"
+    },
+    {
+      "name": "metagmetat",
+      "path": "metaG_metaT_integration/python/metagmetat_python.ipynb",
+      "display_name": "MetaG MetaT Integration"
     }
   ],
   "r_notebooks": [    
     {
       "name": "integration",
-      "path": "omics_types_integration/R/integration_notebook.ipynb",
+      "path": "omics_types_integration/R/integration_r.ipynb",
       "display_name": "Omics Types Integration"
     },
     {
       "name": "aggregation",
-      "path": "proteomic_aggregation/R/proteomic_aggregation.ipynb",
+      "path": "proteomic_aggregation/R/aggregation_r.ipynb",
       "display_name": "Proteomic Data Aggregation"
     },
     {
       "name": "bioscales",
-      "path": "bioscales_biogeochemical_metadata/R/bioscales_metadata.ipynb",
+      "path": "bioscales_biogeochemical_metadata/R/bioscales_r.ipynb",
       "display_name": "Bioscales Biogeochemical Metadata"
     },
     {
       "name": "neon",
-      "path": "NEON_soil_metadata/R/NEON_data_exploration.ipynb",
+      "path": "NEON_soil_metadata/R/neon_r.ipynb",
       "display_name": "NEON Data Exploration"
     },
     {
       "name": "taxonomic",
-      "path": "taxonomic_dist_by_soil_layer/R/taxonomic_dist_soil_layer_R.ipynb",
+      "path": "taxonomic_dist_by_soil_layer/R/taxonomic_r.ipynb",
       "display_name": "Taxonomic Distribution by Soil Layer"
     },
     {
       "name": "nom",
-      "path": "NOM_visualizations/R/NOM_R_notebook.ipynb",
+      "path": "NOM_visualizations/R/nom_r.ipynb",
       "display_name": "Natural Organic Matter Visualizations"
+    },
+    {
+      "name": "metagmetat",
+      "path": "metaG_metaT_integration/R/metagmetat_r.ipynb",
+      "display_name": "MetaG MetaT Integration"
     }
   ]
 }
