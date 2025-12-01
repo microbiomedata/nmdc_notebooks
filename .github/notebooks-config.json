@@ -39,7 +39,7 @@
   "r_notebooks": [    
     {
       "name": "integration",
-      "path": "omics_types_integration/R/integration_notebook_R.ipynb",
+      "path": "omics_types_integration/R/integration_notebook.ipynb",
       "display_name": "Omics Types Integration"
     },
     {
