@@ -177,7 +177,7 @@ jobs:
 
     - id: convert
       name: Convert ${{ matrix.notebook.name }} notebook to HTML
-      timeout-minutes: 20
+      timeout-minutes: 45
       run: |
         echo "Converting notebook: ${{ matrix.notebook.path }}"
         
