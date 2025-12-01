@@ -177,7 +177,7 @@ jobs:
 
     - id: convert
       name: Convert ${{ matrix.notebook.name }} notebook to HTML
-      timeout-minutes: 45
+      timeout-minutes: 75
       run: |
         echo "Converting notebook: ${{ matrix.notebook.path }}"
         
@@ -227,13 +227,17 @@ jobs:
         name: notebook-results-r-${{ matrix.notebook.name }}
         path: results-${{ matrix.notebook.name }}.txt
 
+
   check-results:
     runs-on: ubuntu-latest
-    needs: [convert-python-notebooks, convert-r-notebooks]
+    needs: [setup-python, setup-r, convert-python-notebooks, convert-r-notebooks]
     if: always()
     outputs:
       all-successful: ${{ steps.check.outputs.all-successful }}
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
     - name: Gather all notebook results
       uses: actions/download-artifact@v4
       with:
@@ -244,31 +248,37 @@ jobs:
       run: |
         echo "Checking notebook conversion results..."
         
-        find results/ -name "results-*.txt" -exec cat {} \;
+        # Count expected notebooks
+        EXPECTED_PYTHON=$(echo '${{ needs.setup-python.outputs.notebooks }}' | jq '. | length')
+        EXPECTED_R=$(echo '${{ needs.setup-r.outputs.notebooks }}' | jq '. | length')
+        EXPECTED_TOTAL=$((EXPECTED_PYTHON + EXPECTED_R))
         
-        FAILED_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; | wc -l)
-        TOTAL_COUNT=$(find results/ -name "results-*.txt" | wc -l)
+        # Count actual results
+        ACTUAL_COUNT=$(find results/ -name "results-*.txt" 2>/dev/null | wc -l)
+        FAILED_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; 2>/dev/null | wc -l)
+        MISSING_COUNT=$((EXPECTED_TOTAL - ACTUAL_COUNT))
         
-        echo "Total notebooks: $TOTAL_COUNT"
+        echo "Total notebooks: $ACTUAL_COUNT (expected: $EXPECTED_TOTAL)"
         echo "Failed notebooks: $FAILED_COUNT"
+        echo "Missing results: $MISSING_COUNT"
         
-        if [ "$FAILED_COUNT" -gt 0 ]; then
-          echo "❌ $FAILED_COUNT out of $TOTAL_COUNT notebooks failed conversion."
-          find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; | while read file; do
+        if [ "$MISSING_COUNT" -gt 0 ] || [ "$FAILED_COUNT" -gt 0 ]; then
+          echo "❌ Deployment blocked: $MISSING_COUNT missing, $FAILED_COUNT failed"
+          find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; 2>/dev/null | while read file; do
             notebook_name=$(basename "$file" | sed 's/results-\(.*\)\.txt/\1/')
             echo "Failed notebook: $notebook_name"
           done
           echo "all-successful=false" >> $GITHUB_OUTPUT
           exit 1
         else
-          echo "✅ All $TOTAL_COUNT notebooks converted successfully!"
+          echo "✅ All $EXPECTED_TOTAL notebooks converted successfully!"
           echo "all-successful=true" >> $GITHUB_OUTPUT
         fi
 
   deploy:
     runs-on: ubuntu-latest
     needs: [check-results]
-    if: needs.check-results.outputs.all-successful == 'true'
+    if: needs.check-results.result == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

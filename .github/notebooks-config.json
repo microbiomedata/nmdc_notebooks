@@ -38,6 +38,11 @@
   ],
   "r_notebooks": [    
     {
+      "name": "integration",
+      "path": "omics_types_integration/R/integration_notebook_R.ipynb",
+      "display_name": "Omics Types Integration"
+    },
+    {
       "name": "aggregation",
       "path": "proteomic_aggregation/R/proteomic_aggregation.ipynb",
       "display_name": "Proteomic Data Aggregation"
