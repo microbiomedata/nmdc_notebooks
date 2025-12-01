@@ -81,19 +81,40 @@ To add a new notebook to this repository:
 3. Create a sub-folder for each language that will be demonstrated
     - e.g. one subfolder named `R` and one subfolder named `python`
 4. Instantiate a Jupyter Notebook for each folder coded in its corresponding language
+    - **IMPORTANT: Follow the naming convention**: 
+      - Python notebooks: `{topic}_python.ipynb` (e.g., `bioscales_python.ipynb`)
+      - R notebooks: `{topic}_r.ipynb` (e.g., `bioscales_r.ipynb`)
+    - The `{topic}` should be a short, descriptive identifier for your analysis
 _or_
-4. Create a .Rmd and convert it to a Jupyter Notebook. Several methods for this exist and none are perfect, but [this open source method](https://github.com/mkearney/rmd2jupyter) currently works.
+4. Create a .Rmd and convert it to a Jupyter Notebook. Several methods for this exist and none are perfect, but [this open source method](https://github.com/mkearney/rmd2jupyter) currently works. Ensure the resulting notebook follows the naming convention above.
 5. Run the entire notebook to ensure it is working as expected and save the *rendered* notebook in the folder.
-6. Update the `README.md` in the folder to include links to the rendered notebook (using [nbviewer](https://nbviewer.org/) and [google colab](https://colab.research.google.com/)).
+6. Update the `README.md` in the folder to include links to the rendered notebook on GitHub Pages and Google Colab:
+    - GitHub Pages link format: `https://microbiomedata.github.io/nmdc_notebooks/{topic}_python.html` (or `{topic}_r.html` for R)
+    - Colab link format: `https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/{folder}/python/{topic}_python.ipynb`
 7. **Add the notebook to the centralized configuration** by editing `.github/notebooks-config.json` and adding an entry to either `python_notebooks` or `r_notebooks`:
 
 ```json
 {
   "name": "unique_name",
-  "path": "folder/language/notebook.ipynb",
+  "path": "folder/language/{topic}_python.ipynb",
   "display_name": "Human Readable Title for Website"
 }
 ```
+
+**Example entries:**
+```json
+{
+  "name": "bioscales",
+  "path": "bioscales_biogeochemical_metadata/python/bioscales_python.ipynb",
+  "display_name": "Bioscales Biogeochemical Metadata"
+}
+```
+
+**Naming conventions:**
+- The `name` field should be a short, unique identifier (used internally by workflows)
+- The `path` must follow the pattern: `folder/python/{topic}_python.ipynb` or `folder/R/{topic}_r.ipynb`
+- The `{topic}` portion of the filename should match across Python and R versions for consistency
+- The `display_name` field is optional but recommended - it controls how the notebook appears on the GitHub Pages site
 
 The `display_name` field is optional but recommended - it controls how the notebook appears on the GitHub Pages site. If omitted, the title will be auto-generated from the notebook name.
 
