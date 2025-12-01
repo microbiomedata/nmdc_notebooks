@@ -299,8 +299,6 @@ jobs:
         cp .github/workflows/nmdc_logo.png _site/
         
         # Move all HTML files to _site directory, organizing by source
-        # Python notebooks come from html-python-* artifacts
-        # R notebooks come from html-r-* artifacts
         find html-artifacts/html-python-* -name "*.html" 2>/dev/null -exec cp {} _site/ \; || true
         find html-artifacts/html-r-* -name "*.html" 2>/dev/null -exec cp {} _site/ \; || true
         
@@ -308,23 +306,25 @@ jobs:
         python_notebooks=""
         r_notebooks=""
         
-        # Get Python notebooks in config order
-        for notebook_name in $(jq -r '.python_notebooks[].name' .github/notebooks-config.json); do
-          html_file=$(find html-artifacts/html-python-* -name "*${notebook_name}*.html" 2>/dev/null | head -1)
+        # Get Python notebooks in config order - match by path basename
+        while IFS= read -r notebook_path; do
+          notebook_basename=$(basename "$notebook_path" .ipynb)
+          html_file=$(find html-artifacts/html-python-* -name "${notebook_basename}.html" 2>/dev/null | head -1)
           if [ -n "$html_file" ]; then
             basename_file=$(basename "$html_file")
             python_notebooks="$python_notebooks$basename_file"$'\n'
           fi
-        done
+        done < <(jq -r '.python_notebooks[].path' .github/notebooks-config.json)
         
-        # Get R notebooks in config order  
-        for notebook_name in $(jq -r '.r_notebooks[].name' .github/notebooks-config.json); do
-          html_file=$(find html-artifacts/html-r-* -name "*${notebook_name}*.html" 2>/dev/null | head -1)
+        # Get R notebooks in config order - match by path basename
+        while IFS= read -r notebook_path; do
+          notebook_basename=$(basename "$notebook_path" .ipynb)
+          html_file=$(find html-artifacts/html-r-* -name "${notebook_basename}.html" 2>/dev/null | head -1)
           if [ -n "$html_file" ]; then
             basename_file=$(basename "$html_file")
             r_notebooks="$r_notebooks$basename_file"$'\n'
           fi
-        done
+        done < <(jq -r '.r_notebooks[].path' .github/notebooks-config.json)
         
         echo "DEBUG: Python notebook HTML files found:"
         echo "$python_notebooks"
