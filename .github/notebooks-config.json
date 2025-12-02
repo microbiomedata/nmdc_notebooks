@@ -34,11 +34,6 @@
       "name": "nom",
       "path": "NOM_visualizations/python/nom_python.ipynb",
       "display_name": "Natural Organic Matter Visualizations"
-    },
-    {
-      "name": "metagmetat",
-      "path": "metaG_metaT_integration/python/metagmetat_python.ipynb",
-      "display_name": "MetaG MetaT Integration"
     }
   ],
   "r_notebooks": [    
@@ -71,11 +66,6 @@
       "name": "nom",
       "path": "NOM_visualizations/R/nom_r.ipynb",
       "display_name": "Natural Organic Matter Visualizations"
-    },
-    {
-      "name": "metagmetat",
-      "path": "metaG_metaT_integration/R/metagmetat_r.ipynb",
-      "display_name": "MetaG MetaT Integration"
     }
   ]
 }
