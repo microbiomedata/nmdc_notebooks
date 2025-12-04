@@ -1,0 +1,336 @@
+name: Reusable Notebook Testing Workflow for Python Notebooks
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment to test against (prod or dev)'
+        required: false
+        default: 'prod'
+        type: string
+      notebook_selection:
+        description: 'How to select notebooks (all or changed)'
+        required: false
+        default: 'all'
+        type: string
+      notebooks_json:
+        description: 'JSON array of notebooks to test (used when notebook_selection=changed)'
+        required: false
+        default: '[]'
+        type: string
+      base_sha:
+        description: 'Base SHA for change detection (used when notebook_selection=changed)'
+        required: false
+        type: string
+      head_sha:
+        description: 'Head SHA for change detection (used when notebook_selection=changed)'
+        required: false
+        type: string
+
+jobs:
+  detect-notebooks:
+    runs-on: ubuntu-latest
+    outputs:
+      notebooks: ${{ steps.set-notebooks.outputs.notebooks }}
+      has-notebooks: ${{ steps.set-notebooks.outputs.has-notebooks }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Fetch PR refs if needed
+      if: inputs.notebook_selection == 'changed' && inputs.base_sha != '' && inputs.head_sha != ''
+      run: |
+        # Ensure we have access to both commits
+        echo "Fetching commits for comparison..."
+        git fetch origin +${{ inputs.base_sha }}:refs/remotes/origin/base || echo "Base SHA fetch failed, continuing..."
+        git fetch origin +${{ inputs.head_sha }}:refs/remotes/origin/head || echo "Head SHA fetch failed, continuing..."
+        
+        # Verify commits are available
+        if git cat-file -e "${{ inputs.base_sha }}" && git cat-file -e "${{ inputs.head_sha }}"; then
+          echo "Both commits are now available"
+        else
+          echo "Trying alternative fetch strategy..."
+          git fetch --unshallow || echo "Unshallow failed"
+          git fetch origin || echo "Origin fetch failed"
+        fi
+
+    - name: Set notebooks to test
+      id: set-notebooks
+      run: |
+        # Check if config file exists
+        if [ ! -f ".github/notebooks-config.json" ]; then
+          echo "ERROR: Configuration file .github/notebooks-config.json not found"
+          ls -la .github/
+          exit 1
+        fi
+        
+        # Validate JSON syntax
+        if ! jq empty .github/notebooks-config.json; then
+          echo "ERROR: Invalid JSON in configuration file"
+          cat .github/notebooks-config.json
+          exit 1
+        fi
+        
+        if [ "${{ inputs.notebook_selection }}" = "all" ]; then
+          # Get all notebooks from config
+          notebooks=$(jq -c '.python_notebooks' .github/notebooks-config.json)
+          has_notebooks=true
+          echo "📋 Testing all notebooks"
+        else
+          # Use provided notebooks JSON or detect changes
+          if [ "${{ inputs.notebooks_json }}" != "[]" ]; then
+            notebooks='${{ inputs.notebooks_json }}'
+            has_notebooks=true
+            echo "📋 Testing provided notebooks"
+          else
+            # Detect changed notebooks
+            notebooks="[]"
+            has_notebooks=false
+
+            # Validate that we have the required SHAs for change detection
+            if [ -z "${{ inputs.base_sha }}" ] || [ -z "${{ inputs.head_sha }}" ]; then
+              echo "ERROR: base_sha and head_sha are required for change detection"
+              exit 1
+            fi
+
+            # Get list of changed files
+            echo "Comparing ${{ inputs.base_sha }} to ${{ inputs.head_sha }}"
+            changed_files=$(git diff --name-only ${{ inputs.base_sha }} ${{ inputs.head_sha }})
+            
+            # Check each notebook to see if it changed
+            while IFS= read -r notebook_info; do
+              name=$(echo "$notebook_info" | cut -d'|' -f1)
+              path=$(echo "$notebook_info" | cut -d'|' -f2)
+              
+              if echo "$changed_files" | grep -q "$path"; then
+                notebooks=$(echo "$notebooks" | jq --arg name "$name" --arg path "$path" '. += [{"name": $name, "path": $path}]')
+                has_notebooks=true
+                echo "✓ Notebook $name needs testing"
+              fi
+            done < <(jq -r '.python_notebooks[] | "\(.name)|\(.path)"' .github/notebooks-config.json)
+          fi
+        fi
+
+        # Output results
+        echo "notebooks=$(echo "$notebooks" | jq -c .)" >> $GITHUB_OUTPUT
+        echo "has-notebooks=$has_notebooks" >> $GITHUB_OUTPUT
+        
+        # Debug output
+        notebook_count=$(echo "$notebooks" | jq length)
+        echo "📊 Total notebooks to test: $notebook_count"
+
+  setup-python:
+    runs-on: ubuntu-latest
+    needs: detect-notebooks
+    if: needs.detect-notebooks.outputs.has-notebooks == 'true'
+    outputs:
+      python-version: ${{ steps.get-version.outputs.python-version }}
+      requirements-hash: ${{ steps.get-version.outputs.requirements-hash }}
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Get Python version and requirements hash
+      id: get-version
+      run: |
+        python_version=$(python --version)
+        requirements_hash=$(sha256sum requirements.txt | cut -d' ' -f1)
+        echo "python-version=$python_version" >> $GITHUB_OUTPUT
+        echo "requirements-hash=$requirements_hash" >> $GITHUB_OUTPUT
+
+    - name: Cache Python packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install jupyter
+
+  execute-notebooks:
+    runs-on: ubuntu-latest
+    needs: [detect-notebooks, setup-python]
+    if: needs.detect-notebooks.outputs.has-notebooks == 'true'
+    continue-on-error: true
+    env:
+      ENV: ${{ inputs.environment }}
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.detect-notebooks.outputs.notebooks) }}
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python (fast)
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Set up environment variables
+      run: |
+        echo "ENV variable is set to: $ENV"
+        if [ "$ENV" = "dev" ]; then
+          echo "🔧 Running in DEV environment"
+        else
+          echo "🚀 Running in PROD environment"
+        fi
+
+    - name: Restore Python packages cache (fast)
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Quick dependencies restore
+      run: |
+        # Fast setup - packages should be cached from setup job
+        python -m pip install --upgrade pip
+        # Only install if not cached (check for a key package)
+        if ! python -c "import pandas" 2>/dev/null; then
+          echo "Cache miss - installing dependencies..."
+          pip install -r requirements.txt
+          pip install jupyter
+        else
+          echo "Cache hit - dependencies already available"
+          # Just ensure jupyter is available
+          if ! command -v jupyter &> /dev/null; then
+            pip install jupyter
+          fi
+        fi
+
+    - name: Create result placeholder
+      run: |
+        # Always create a result file at the start to ensure artifact exists
+        echo "RUNNING" > results-${{ matrix.notebook.name }}.txt
+
+    - name: Execute notebook
+      run: |
+        env_prefix=""
+        if [ "$ENV" = "dev" ]; then
+          env_prefix="(dev) "
+        fi
+        
+        echo "${env_prefix}Executing notebook: ${{ matrix.notebook.path }}"
+        set +e  # Don't exit on error immediately
+        jupyter nbconvert --execute --to notebook --inplace "${{ matrix.notebook.path }}"
+        EXIT_CODE=$?
+        set -e  # Re-enable exit on error
+        
+        # Update result file based on execution outcome
+        if [ $EXIT_CODE -ne 0 ]; then
+          echo "❌ Notebook execution failed with exit code $EXIT_CODE"
+          if [ "$ENV" = "dev" ]; then
+            echo "This likely indicates the DEV API is not accessible or the notebook encountered an error"
+          fi
+          echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+          # Don't exit here - let other notebooks continue and check-results handle the failure
+        else
+          echo "✅ Notebook executed successfully"
+          echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
+        fi
+
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: notebook-results-${{ matrix.notebook.name }}
+        path: results-${{ matrix.notebook.name }}.txt
+
+    - name: Upload notebook
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: result-${{ matrix.notebook.name }}
+        path: ${{ matrix.notebook.path }}
+
+  check-results:
+    runs-on: ubuntu-latest
+    needs: [detect-notebooks, execute-notebooks]
+    if: always() && needs.detect-notebooks.outputs.has-notebooks == 'true'
+    steps:
+    - name: Gather all notebook results
+      uses: actions/download-artifact@v4
+      with:
+        path: results/
+
+    - name: Check notebook results from artifacts
+      run: |
+        env_prefix=""
+        if [ "${{ inputs.environment }}" = "dev" ]; then
+          env_prefix="(dev) "
+        fi
+        
+        echo "${env_prefix}Checking notebook execution results from artifacts..."
+        
+        # Count expected notebooks
+        expected_count=$(echo '${{ needs.detect-notebooks.outputs.notebooks }}' | jq length)
+        echo "Expected notebooks: $expected_count"
+        
+        # Find all result files
+        result_files=$(find results/ -name "results-*.txt" 2>/dev/null || echo "")
+        actual_count=$(echo "$result_files" | grep -c "results-" || echo "0")
+        echo "Found result files: $actual_count"
+        
+        if [ "$actual_count" -lt "$expected_count" ]; then
+          echo "❌ Missing result artifacts! Expected $expected_count, found $actual_count"
+          echo "Some notebooks may have failed before creating result files."
+          # List expected vs found
+          echo "Expected notebooks:"
+          echo '${{ needs.detect-notebooks.outputs.notebooks }}' | jq -r '.[].name'
+          echo "Found result files:"
+          find results/ -name "results-*.txt" | sed 's/.*results-\(.*\)\.txt/\1/' || echo "None"
+          exit 1
+        fi
+        
+        # Check content of result files
+        if [ -n "$result_files" ]; then
+          echo "Result file contents:"
+          find results/ -name "results-*.txt" -exec echo "File: {}" \; -exec cat {} \; -exec echo "" \;
+          
+          FAILED_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "FAILED\|RUNNING" {} \; | wc -l)
+          SUCCESS_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "SUCCESS" {} \; | wc -l)
+          
+          echo "Total notebooks: $actual_count"
+          echo "Failed notebooks: $FAILED_COUNT"
+          echo "Successful notebooks: $SUCCESS_COUNT"
+          
+          if [ "$FAILED_COUNT" -gt 0 ]; then
+            echo "❌ $FAILED_COUNT out of $actual_count notebooks failed execution."
+            find results/ -name "results-*.txt" -exec grep -l "FAILED\|RUNNING" {} \; | while read file; do
+              notebook_name=$(basename "$file" | sed 's/results-\(.*\)\.txt/\1/')
+              content=$(cat "$file")
+              echo "Failed notebook: $notebook_name (status: $content)"
+            done
+            exit 1
+          else
+            echo "✅ All $actual_count notebooks executed successfully!"
+          fi
+        else
+          echo "❌ No result files found at all!"
+          exit 1
+        fi
+
+  no-notebooks:
+    runs-on: ubuntu-latest
+    needs: detect-notebooks
+    if: needs.detect-notebooks.outputs.has-notebooks == 'false'
+    steps:
+    - name: No notebooks to test
+      run: |
+        if [ "${{ inputs.notebook_selection }}" = "changed" ]; then
+          echo "✅ No Python notebooks were changed. Skipping execution."
+        else
+          echo "⚠️ No notebooks found to test."
+        fi

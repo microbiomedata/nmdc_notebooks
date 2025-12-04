@@ -1,0 +1,275 @@
+name: Reusable R Notebook Testing Workflow
+
+# Prevent conflicts with other R environment workflows
+concurrency:
+  group: r-environment-${{ github.repository }}
+  cancel-in-progress: false
+
+on:
+  workflow_call:
+    inputs:
+      notebook_selection:
+        description: 'How to select notebooks (all or changed)'
+        required: false
+        default: 'all'
+        type: string
+      notebooks_json:
+        description: 'JSON array of notebooks to test (used when notebook_selection=changed)'
+        required: false
+        default: '[]'
+        type: string
+      base_sha:
+        description: 'Base SHA for change detection (used when notebook_selection=changed)'
+        required: false
+        type: string
+      head_sha:
+        description: 'Head SHA for change detection (used when notebook_selection=changed)'
+        required: false
+        type: string
+
+jobs:
+  detect-notebooks:
+    runs-on: ubuntu-latest
+    outputs:
+      notebooks: ${{ steps.set-notebooks.outputs.notebooks }}
+      has-notebooks: ${{ steps.set-notebooks.outputs.has-notebooks }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Fetch PR refs if needed
+      if: inputs.notebook_selection == 'changed' && inputs.base_sha != '' && inputs.head_sha != ''
+      run: |
+        # Ensure we have access to both commits
+        echo "Fetching commits for comparison..."
+        git fetch origin +${{ inputs.base_sha }}:refs/remotes/origin/base || echo "Base SHA fetch failed, continuing..."
+        git fetch origin +${{ inputs.head_sha }}:refs/remotes/origin/head || echo "Head SHA fetch failed, continuing..."
+        
+        # Verify commits are available
+        if git cat-file -e "${{ inputs.base_sha }}" && git cat-file -e "${{ inputs.head_sha }}"; then
+          echo "Both commits are now available"
+        else
+          echo "Trying alternative fetch strategy..."
+          git fetch --unshallow || echo "Unshallow failed"
+          git fetch origin || echo "Origin fetch failed"
+        fi
+
+    - name: Set notebooks to test
+      id: set-notebooks
+      run: |
+        # Check if config file exists
+        if [ ! -f ".github/notebooks-config.json" ]; then
+          echo "ERROR: Configuration file .github/notebooks-config.json not found"
+          ls -la .github/
+          exit 1
+        fi
+        
+        # Validate JSON syntax
+        if ! jq empty .github/notebooks-config.json; then
+          echo "ERROR: Invalid JSON in configuration file"
+          cat .github/notebooks-config.json
+          exit 1
+        fi
+        
+        if [ "${{ inputs.notebook_selection }}" = "all" ]; then
+          # Get all R notebooks from config
+          notebooks=$(jq -c '.r_notebooks' .github/notebooks-config.json)
+          has_notebooks=true
+          echo "📋 Testing all R notebooks"
+        else
+          # Use provided notebooks JSON or detect changes
+          if [ "${{ inputs.notebooks_json }}" != "[]" ]; then
+            notebooks='${{ inputs.notebooks_json }}'
+            has_notebooks=true
+            echo "📋 Testing provided R notebooks"
+          else
+            # Detect changed notebooks
+            notebooks="[]"
+            has_notebooks=false
+
+            # Validate that we have the required SHAs for change detection
+            if [ -z "${{ inputs.base_sha }}" ] || [ -z "${{ inputs.head_sha }}" ]; then
+              echo "ERROR: base_sha and head_sha are required for change detection"
+              exit 1
+            fi
+
+            # Get list of changed files
+            echo "Comparing ${{ inputs.base_sha }} to ${{ inputs.head_sha }}"
+            changed_files=$(git diff --name-only ${{ inputs.base_sha }} ${{ inputs.head_sha }})
+            
+            # Check if renv.lock changed (affects all notebooks)
+            if echo "$changed_files" | grep -q "renv.lock"; then
+              echo "✓ renv.lock changed - all R notebooks need testing"
+              notebooks=$(jq -c '.r_notebooks' .github/notebooks-config.json)
+              has_notebooks=true
+            else
+              # Check each R notebook to see if it changed
+              while IFS= read -r notebook_info; do
+                name=$(echo "$notebook_info" | cut -d'|' -f1)
+                path=$(echo "$notebook_info" | cut -d'|' -f2)
+                
+                if echo "$changed_files" | grep -q "$path"; then
+                  notebooks=$(echo "$notebooks" | jq --arg name "$name" --arg path "$path" '. += [{"name": $name, "path": $path}]')
+                  has_notebooks=true
+                  echo "✓ R Notebook $name needs testing"
+                fi
+              done < <(jq -r '.r_notebooks[] | "\(.name)|\(.path)"' .github/notebooks-config.json)
+            fi
+          fi
+        fi
+
+        # Output results
+        echo "notebooks=$(echo "$notebooks" | jq -c .)" >> $GITHUB_OUTPUT
+        echo "has-notebooks=$has_notebooks" >> $GITHUB_OUTPUT
+        
+        # Debug output
+        notebook_count=$(echo "$notebooks" | jq length)
+        echo "📊 Total R notebooks to test: $notebook_count"
+
+  setup-r:
+    runs-on: ubuntu-latest
+    needs: detect-notebooks
+    if: needs.detect-notebooks.outputs.has-notebooks == 'true'
+    outputs:
+      os-version: ${{ steps.setup-r.outputs.os-version }}
+      r-version: ${{ steps.setup-r.outputs.r-version }}
+      cache-key: ${{ steps.setup-r.outputs.cache-key }}
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up R environment (full)
+      id: setup-r
+      uses: ./.github/actions/setup-r-environment-v2
+      with:
+        mode: 'full'
+
+  execute-notebooks:
+    runs-on: ubuntu-latest
+    needs: [detect-notebooks, setup-r]
+    if: needs.detect-notebooks.outputs.has-notebooks == 'true'
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.detect-notebooks.outputs.notebooks) }}
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Create result placeholder
+      run: |
+        # Always create a result file at the start to ensure artifact exists
+        echo "RUNNING" > results-${{ matrix.notebook.name }}.txt
+
+    - name: Activate R environment (fast)
+      uses: ./.github/actions/setup-r-environment-v2
+      with:
+        mode: 'activate'
+        cache-key: ${{ needs.setup-r.outputs.cache-key }}
+
+    - name: Execute notebook
+      run: |
+        echo "Executing R notebook: ${{ matrix.notebook.path }}"
+        set +e  # Don't exit on error immediately
+        jupyter nbconvert --execute --to notebook --inplace "${{ matrix.notebook.path }}"
+        EXIT_CODE=$?
+        set -e  # Re-enable exit on error
+        
+        # Update result file based on execution outcome
+        if [ $EXIT_CODE -ne 0 ]; then
+          echo "❌ R Notebook execution failed with exit code $EXIT_CODE"
+          echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+          # Don't exit here - let other notebooks continue and check-results handle the failure
+        else
+          echo "✅ R Notebook executed successfully"
+          echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
+        fi
+
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: notebook-results-r-${{ matrix.notebook.name }}
+        path: results-${{ matrix.notebook.name }}.txt
+
+    - name: Upload notebook
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: result-r-${{ matrix.notebook.name }}
+        path: ${{ matrix.notebook.path }}
+
+  check-results:
+    runs-on: ubuntu-latest
+    needs: [detect-notebooks, execute-notebooks]
+    if: always() && needs.detect-notebooks.outputs.has-notebooks == 'true'
+    steps:
+    - name: Gather all notebook results
+      uses: actions/download-artifact@v4
+      with:
+        path: results/
+
+    - name: Check notebook results from artifacts
+      run: |
+        echo "Checking R notebook execution results from artifacts..."
+        
+        # Count expected notebooks
+        expected_count=$(echo '${{ needs.detect-notebooks.outputs.notebooks }}' | jq length)
+        echo "Expected R notebooks: $expected_count"
+        
+        # Find all result files
+        result_files=$(find results/ -name "results-*.txt" 2>/dev/null || echo "")
+        actual_count=$(echo "$result_files" | grep -c "results-" || echo "0")
+        echo "Found result files: $actual_count"
+        
+        if [ "$actual_count" -lt "$expected_count" ]; then
+          echo "❌ Missing result artifacts! Expected $expected_count, found $actual_count"
+          echo "Some R notebooks may have failed before creating result files."
+          # List expected vs found
+          echo "Expected R notebooks:"
+          echo '${{ needs.detect-notebooks.outputs.notebooks }}' | jq -r '.[].name'
+          echo "Found result files:"
+          find results/ -name "results-*.txt" | sed 's/.*results-\(.*\)\.txt/\1/' || echo "None"
+          exit 1
+        fi
+        
+        # Check content of result files
+        if [ -n "$result_files" ]; then
+          echo "Result file contents:"
+          find results/ -name "results-*.txt" -exec echo "File: {}" \; -exec cat {} \; -exec echo "" \;
+          
+          FAILED_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "FAILED\|RUNNING" {} \; | wc -l)
+          SUCCESS_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "SUCCESS" {} \; | wc -l)
+          
+          echo "Total R notebooks: $actual_count"
+          echo "Failed R notebooks: $FAILED_COUNT"
+          echo "Successful R notebooks: $SUCCESS_COUNT"
+          
+          if [ "$FAILED_COUNT" -gt 0 ]; then
+            echo "❌ $FAILED_COUNT out of $actual_count R notebooks failed execution."
+            find results/ -name "results-*.txt" -exec grep -l "FAILED\|RUNNING" {} \; | while read file; do
+              notebook_name=$(basename "$file" | sed 's/results-\(.*\)\.txt/\1/')
+              content=$(cat "$file")
+              echo "Failed R notebook: $notebook_name (status: $content)"
+            done
+            exit 1
+          else
+            echo "✅ All $actual_count R notebooks executed successfully!"
+          fi
+        else
+          echo "❌ No result files found at all!"
+          exit 1
+        fi
+
+  no-notebooks:
+    runs-on: ubuntu-latest
+    needs: detect-notebooks
+    if: needs.detect-notebooks.outputs.has-notebooks == 'false'
+    steps:
+    - name: No notebooks to test
+      run: |
+        if [ "${{ inputs.notebook_selection }}" = "changed" ]; then
+          echo "✅ No R notebooks were changed. Skipping execution."
+        else
+          echo "⚠️ No R notebooks found to test."
+        fi

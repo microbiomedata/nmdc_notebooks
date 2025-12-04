@@ -1,0 +1,537 @@
+name: Deploy All Notebooks to GitHub Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - gh_pages
+
+# Sets permissions for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, and prevent conflicts with R notebook workflows
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  setup-python:
+    runs-on: ubuntu-latest
+    outputs:
+      notebooks: ${{ steps.set-notebooks.outputs.notebooks }}
+    steps:
+    - id: checkout
+      uses: actions/checkout@v4
+
+    - id: python-setup
+      name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - id: python-dependencies
+      name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install jupyter nbconvert
+
+    - name: Cache Python dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - id: set-notebooks
+      name: Set Python notebook matrix
+      run: |
+        # Read all Python notebooks from centralized config file
+        notebooks=$(jq -c '.python_notebooks' .github/notebooks-config.json)
+        echo "notebooks=$notebooks" >> $GITHUB_OUTPUT
+
+  setup-r:
+    runs-on: ubuntu-latest
+    outputs:
+      notebooks: ${{ steps.set-notebooks.outputs.notebooks }}
+      os-version: ${{ steps.setup-r-env.outputs.os-version }}
+      r-version: ${{ steps.setup-r-env.outputs.r-version }}
+      cache-key: ${{ steps.setup-r-env.outputs.cache-key }}
+    steps:
+    - id: checkout
+      uses: actions/checkout@v4
+
+    - id: setup-r-env
+      name: Set up R environment
+      uses: ./.github/actions/setup-r-environment-v2
+      with:
+        mode: 'full'
+
+    - id: set-notebooks
+      name: Set R notebook matrix
+      run: |
+        # Read all R notebooks from centralized config file and add "-r" suffix to names
+        notebooks=$(jq -c '[.r_notebooks[] | .name = (.name + "-r")]' .github/notebooks-config.json)
+        echo "notebooks=$notebooks" >> $GITHUB_OUTPUT
+
+  convert-python-notebooks:
+    runs-on: ubuntu-latest
+    needs: setup-python
+    continue-on-error: true
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.setup-python.outputs.notebooks) }}
+      
+    steps:
+    - id: checkout
+      uses: actions/checkout@v4
+
+    - id: python-setup
+      name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Restore Python dependencies cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - id: python-dependencies
+      name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install jupyter nbconvert
+
+    - id: convert
+      name: Convert ${{ matrix.notebook.name }} notebook to HTML
+      timeout-minutes: 60
+      run: |
+        echo "Converting notebook: ${{ matrix.notebook.path }}"
+        
+        set +e
+        # Step 1: Execute the notebook (including all cells)
+        jupyter nbconvert --execute --to notebook "${{ matrix.notebook.path }}" --output-dir=executed_notebooks
+        
+        # Step 2: Convert executed notebook to HTML with tag removal
+        executed_notebook="executed_notebooks/$(basename ${{ matrix.notebook.path }})"
+        jupyter nbconvert --to html "$executed_notebook" \
+          --TagRemovePreprocessor.remove_cell_tags='["hide-cell", "env-setup", "development-only"]' \
+          --output-dir=html_output
+        EXIT_CODE=$?
+        set -e
+
+        if [ $EXIT_CODE -ne 0 ]; then
+          echo "Notebook ${{ matrix.notebook.name }} conversion failed."
+          echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+          exit 1
+        else
+          echo "Notebook ${{ matrix.notebook.name }} converted successfully."
+          echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
+        fi
+
+    - name: Upload HTML artifact
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: html-python-${{ matrix.notebook.name }}
+        path: html_output/*.html
+
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: notebook-results-python-${{ matrix.notebook.name }}
+        path: results-${{ matrix.notebook.name }}.txt
+
+  convert-r-notebooks:
+    runs-on: ubuntu-latest
+    needs: setup-r
+    continue-on-error: true
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.setup-r.outputs.notebooks) }}
+    
+    steps:
+    - id: checkout
+      uses: actions/checkout@v4
+
+    - name: Activate R environment (fast)
+      uses: ./.github/actions/setup-r-environment-v2
+      with:
+        mode: 'activate'
+        cache-key: ${{ needs.setup-r.outputs.cache-key }}
+
+    - id: convert
+      name: Convert ${{ matrix.notebook.name }} notebook to HTML
+      timeout-minutes: 75
+      run: |
+        echo "Converting notebook: ${{ matrix.notebook.path }}"
+        
+        if [ ! -f "${{ matrix.notebook.path }}" ]; then
+          echo "ERROR: Notebook file not found: ${{ matrix.notebook.path }}"
+          echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+          exit 1
+        fi
+        
+        # Step 1: Execute the notebook (including all cells)
+        jupyter nbconvert --execute --to notebook "${{ matrix.notebook.path }}" --output-dir=executed_notebooks
+        EXEC_EXIT_CODE=$?
+        
+        if [ $EXEC_EXIT_CODE -eq 0 ]; then
+          # Step 2: Convert executed notebook to HTML with tag removal
+          executed_notebook="executed_notebooks/$(basename ${{ matrix.notebook.path }})"
+          jupyter nbconvert --to html "$executed_notebook" \
+             --TagRemovePreprocessor.remove_cell_tags='["hide-cell", "env-setup", "development-only"]' \
+             --output-dir=html_output
+          HTML_EXIT_CODE=$?
+          
+          if [ $HTML_EXIT_CODE -eq 0 ]; then
+            echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
+            echo "Notebook ${{ matrix.notebook.name }} converted successfully."
+          else
+            echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+            echo "Notebook ${{ matrix.notebook.name }} HTML conversion failed."
+            exit 1
+          fi
+        else
+          echo "FAILED" > results-${{ matrix.notebook.name }}.txt
+          echo "Notebook ${{ matrix.notebook.name }} execution failed."
+          exit 1
+        fi
+
+    - name: Upload HTML artifact
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: html-r-${{ matrix.notebook.name }}
+        path: html_output/*.html
+
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: notebook-results-r-${{ matrix.notebook.name }}
+        path: results-${{ matrix.notebook.name }}.txt
+
+
+  check-results:
+    runs-on: ubuntu-latest
+    needs: [setup-python, setup-r, convert-python-notebooks, convert-r-notebooks]
+    if: always()
+    outputs:
+      all-successful: ${{ steps.check.outputs.all-successful }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
+    - name: Gather all notebook results
+      uses: actions/download-artifact@v4
+      with:
+        path: results/
+
+    - id: check
+      name: Check notebook results
+      run: |
+        echo "Checking notebook conversion results..."
+        
+        # Count expected notebooks
+        EXPECTED_PYTHON=$(echo '${{ needs.setup-python.outputs.notebooks }}' | jq '. | length')
+        EXPECTED_R=$(echo '${{ needs.setup-r.outputs.notebooks }}' | jq '. | length')
+        EXPECTED_TOTAL=$((EXPECTED_PYTHON + EXPECTED_R))
+        
+        # Count actual results
+        ACTUAL_COUNT=$(find results/ -name "results-*.txt" 2>/dev/null | wc -l)
+        FAILED_COUNT=$(find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; 2>/dev/null | wc -l)
+        MISSING_COUNT=$((EXPECTED_TOTAL - ACTUAL_COUNT))
+        
+        echo "Total notebooks: $ACTUAL_COUNT (expected: $EXPECTED_TOTAL)"
+        echo "Failed notebooks: $FAILED_COUNT"
+        echo "Missing results: $MISSING_COUNT"
+        
+        if [ "$MISSING_COUNT" -gt 0 ] || [ "$FAILED_COUNT" -gt 0 ]; then
+          echo "❌ Deployment blocked: $MISSING_COUNT missing, $FAILED_COUNT failed"
+          find results/ -name "results-*.txt" -exec grep -l "FAILED" {} \; 2>/dev/null | while read file; do
+            notebook_name=$(basename "$file" | sed 's/results-\(.*\)\.txt/\1/')
+            echo "Failed notebook: $notebook_name"
+          done
+          echo "all-successful=false" >> $GITHUB_OUTPUT
+          exit 1
+        else
+          echo "✅ All $EXPECTED_TOTAL notebooks converted successfully!"
+          echo "all-successful=true" >> $GITHUB_OUTPUT
+        fi
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [check-results]
+    if: needs.check-results.result == 'success'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Download all HTML artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: html-artifacts/
+
+    - name: Prepare Pages content
+      run: |
+        mkdir -p _site
+        
+        # Copy the NMDC logo to the site directory
+        cp .github/workflows/nmdc_logo.png _site/
+        
+        # Move all HTML files to _site directory, organizing by source
+        find html-artifacts/html-python-* -name "*.html" 2>/dev/null -exec cp {} _site/ \; || true
+        find html-artifacts/html-r-* -name "*.html" 2>/dev/null -exec cp {} _site/ \; || true
+        
+        # Create lists of notebooks by language in config file order
+        python_notebooks=""
+        r_notebooks=""
+        
+        # Get Python notebooks in config order - match by path basename
+        while IFS= read -r notebook_path; do
+          notebook_basename=$(basename "$notebook_path" .ipynb)
+          html_file=$(find html-artifacts/html-python-* -name "${notebook_basename}.html" 2>/dev/null | head -1)
+          if [ -n "$html_file" ]; then
+            basename_file=$(basename "$html_file")
+            python_notebooks="$python_notebooks$basename_file"$'\n'
+          fi
+        done < <(jq -r '.python_notebooks[].path' .github/notebooks-config.json)
+        
+        # Get R notebooks in config order - match by path basename
+        while IFS= read -r notebook_path; do
+          notebook_basename=$(basename "$notebook_path" .ipynb)
+          html_file=$(find html-artifacts/html-r-* -name "${notebook_basename}.html" 2>/dev/null | head -1)
+          if [ -n "$html_file" ]; then
+            basename_file=$(basename "$html_file")
+            r_notebooks="$r_notebooks$basename_file"$'\n'
+          fi
+        done < <(jq -r '.r_notebooks[].path' .github/notebooks-config.json)
+        
+        echo "DEBUG: Python notebook HTML files found:"
+        echo "$python_notebooks"
+        echo "DEBUG: R notebook HTML files found:"
+        echo "$r_notebooks"
+        
+        # Create an index.html with links to all notebooks
+        cat > _site/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>NMDC Metadata Exploration</title>
+            <style>
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                    max-width: 900px;
+                    margin: 0 auto;
+                    padding: 40px 20px;
+                    line-height: 1.6;
+                    background: #f5f5f5;
+                }
+                .container {
+                    background: white;
+                    padding: 40px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                .header {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
+                .logo {
+                    width: 80px;
+                    height: 80px;
+                    margin-right: 20px;
+                }
+                .title-section {
+                    flex: 1;
+                }
+                h1 {
+                    color: #333;
+                    margin: 0;
+                    padding-bottom: 10px;
+                    font-size: 32px;
+                }
+                .subtitle {
+                    color: #666;
+                    font-size: 18px;
+                    margin-top: 8px;
+                }
+                .subtitle a {
+                    color: #007acc;
+                    text-decoration: none;
+                    border-bottom: 1px solid transparent;
+                    transition: border-color 0.3s;
+                }
+                .subtitle a:hover {
+                    border-bottom-color: #007acc;
+                }
+                .divider {
+                    border-bottom: 3px solid #007acc;
+                    margin: 20px 0 30px 0;
+                }
+                h2 {
+                    color: #555;
+                    margin-top: 40px;
+                    margin-bottom: 20px;
+                    font-size: 24px;
+                }
+                ul {
+                    list-style: none;
+                    padding: 0;
+                    max-width: 800px;
+                }
+                li {
+                    margin: 12px 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                a.notebook-link {
+                    color: #007acc;
+                    text-decoration: none;
+                    font-size: 16px;
+                    display: inline-block;
+                    padding: 12px 20px;
+                    border: 1px solid #ddd;
+                    border-radius: 6px;
+                    transition: all 0.3s;
+                    flex: 1;
+                }
+                a.notebook-link:hover {
+                    background-color: #007acc;
+                    color: white;
+                    border-color: #007acc;
+                    transform: translateX(5px);
+                }
+                a img {
+                    transition: all 0.3s;
+                    border-radius: 4px;
+                }
+                a img:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                }
+                .language-badge {
+                    display: inline-block;
+                    padding: 4px 10px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: bold;
+                    margin-left: 10px;
+                }
+                .python {
+                    background: #3776ab;
+                    color: white;
+                }
+                .r {
+                    background: #276DC3;
+                    color: white;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <img src="nmdc_logo.png" alt="NMDC Logo" class="logo">
+                    <div class="title-section">
+                        <h1>NMDC Metadata Exploration</h1>
+                        <div class="subtitle">Using Jupyter Notebooks and the <a href="https://api.microbiomedata.org/docs" target="_blank" rel="noopener noreferrer">NMDC Runtime API</a></div>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                
+                <h2>Python Notebooks</h2>
+                <ul>
+        EOF
+        
+        # Add Python notebook links
+        echo "$python_notebooks" | while read -r filename; do
+          if [ -n "$filename" ]; then
+            name="${filename%.*}"
+            echo "DEBUG: Looking for Python notebook with filename: $name"
+            # Match by the actual notebook filename in the path, not the config name
+            notebook_data=$(jq -r --arg filename "$name" '.python_notebooks[] | select(.path | test($filename)) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
+            echo "DEBUG: notebook_data result: '$notebook_data'"
+            display_name=$(echo "$notebook_data" | cut -d'|' -f1)
+            notebook_path=$(echo "$notebook_data" | cut -d'|' -f2)
+            echo "DEBUG: display_name: '$display_name', notebook_path: '$notebook_path'"
+            
+            # Create Colab link
+            colab_url="https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/${notebook_path}"
+            
+            echo "                <li>" >> _site/index.html
+            echo "                    <a href=\"$filename\" class=\"notebook-link\">$display_name <span class=\"language-badge python\">Python</span></a>" >> _site/index.html
+            echo "                    <a href=\"$colab_url\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open in Colab\"></a>" >> _site/index.html
+            echo "                </li>" >> _site/index.html
+          fi
+        done
+        
+        cat >> _site/index.html << 'EOF'
+                </ul>
+                
+                <h2>R Notebooks</h2>
+                <ul>
+        EOF
+        
+        # Add R notebook links
+        echo "$r_notebooks" | while read -r filename; do
+          if [ -n "$filename" ]; then
+            name="${filename%.*}"
+            echo "DEBUG: Looking for R notebook with filename: $name"
+            # Match by the actual notebook filename in the path, not the config name
+            notebook_data=$(jq -r --arg filename "$name" '.r_notebooks[] | select(.path | test($filename)) | "\(.display_name)|\(.path)"' .github/notebooks-config.json)
+            echo "DEBUG: notebook_data result: '$notebook_data'"
+            display_name=$(echo "$notebook_data" | cut -d'|' -f1)
+            notebook_path=$(echo "$notebook_data" | cut -d'|' -f2)
+            echo "DEBUG: display_name: '$display_name', notebook_path: '$notebook_path'"
+            
+            # Create Colab link
+            colab_url="https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/${notebook_path}"
+            
+            echo "                <li>" >> _site/index.html
+            echo "                    <a href=\"$filename\" class=\"notebook-link\">$display_name <span class=\"language-badge r\">R</span></a>" >> _site/index.html
+            echo "                    <a href=\"$colab_url\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open in Colab\"></a>" >> _site/index.html
+            echo "                </li>" >> _site/index.html
+          fi
+        done
+        
+        cat >> _site/index.html << 'EOF'
+                </ul>
+            </div>
+        </body>
+        </html>
+        EOF
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: '_site'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

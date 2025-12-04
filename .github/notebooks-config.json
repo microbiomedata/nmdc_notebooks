@@ -1,0 +1,71 @@
+{
+  "python_notebooks": [
+    {
+      "name": "integration",
+      "path": "omics_types_integration/python/integration_python.ipynb",
+      "display_name": "Omics Types Integration"
+    },
+    {
+      "name": "overrepresentation", 
+      "path": "over_representation/python/overrepresentation_python.ipynb",
+      "display_name": "Over-representation Analysis"
+    },
+    {
+      "name": "aggregation",
+      "path": "proteomic_aggregation/python/aggregation_python.ipynb",
+      "display_name": "Proteomic Data Aggregation"
+    },
+    {
+      "name": "bioscales",
+      "path": "bioscales_biogeochemical_metadata/python/bioscales_python.ipynb",
+      "display_name": "Bioscales Biogeochemical Metadata"
+    },
+    {
+      "name": "neon",
+      "path": "NEON_soil_metadata/python/neon_python.ipynb",
+      "display_name": "NEON Soil Metadata Exploration"
+    },
+    {
+      "name": "taxonomic",
+      "path": "taxonomic_dist_by_soil_layer/python/taxonomic_python.ipynb",
+      "display_name": "Taxonomic Distribution by Soil Layer"
+    },
+    {
+      "name": "nom",
+      "path": "NOM_visualizations/python/nom_python.ipynb",
+      "display_name": "Natural Organic Matter Visualizations"
+    }
+  ],
+  "r_notebooks": [    
+    {
+      "name": "integration",
+      "path": "omics_types_integration/R/integration_r.ipynb",
+      "display_name": "Omics Types Integration"
+    },
+    {
+      "name": "aggregation",
+      "path": "proteomic_aggregation/R/aggregation_r.ipynb",
+      "display_name": "Proteomic Data Aggregation"
+    },
+    {
+      "name": "bioscales",
+      "path": "bioscales_biogeochemical_metadata/R/bioscales_r.ipynb",
+      "display_name": "Bioscales Biogeochemical Metadata"
+    },
+    {
+      "name": "neon",
+      "path": "NEON_soil_metadata/R/neon_r.ipynb",
+      "display_name": "NEON Data Exploration"
+    },
+    {
+      "name": "taxonomic",
+      "path": "taxonomic_dist_by_soil_layer/R/taxonomic_r.ipynb",
+      "display_name": "Taxonomic Distribution by Soil Layer"
+    },
+    {
+      "name": "nom",
+      "path": "NOM_visualizations/R/nom_r.ipynb",
+      "display_name": "Natural Organic Matter Visualizations"
+    }
+  ]
+}
