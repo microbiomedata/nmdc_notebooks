@@ -2,7 +2,7 @@ requests>=2.31.0
 pandas>=2.1.2
 folium==0.14.0
 altair==5.1.2
-plotly==5.18.0
+plotly~=6.1.1
 dill==0.3.7
 statsmodels
 seaborn==0.13.2
@@ -10,7 +10,8 @@ scipy==1.15.1
 pycirclize>=1.9.1
 gffpandas==1.2.0
 nbformat>=4.2.0
-## NMDC python package
-nmdc_api_utilities==0.4.1
+## NMDC python package from https://github.com/microbiomedata/nmdc_api_utilities main branch
+#TODO KRH: Move to a specific release when available after testing
+git+https://github.com/microbiomedata/nmdc_api_utilities.git
 python-dotenv
 kaleido
