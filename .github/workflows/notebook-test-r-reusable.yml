@@ -179,7 +179,7 @@ jobs:
         if [ $EXIT_CODE -ne 0 ]; then
           echo "❌ R Notebook execution failed with exit code $EXIT_CODE"
           echo "FAILED" > results-${{ matrix.notebook.name }}.txt
-          # Don't exit here - let other notebooks continue and check-results handle the failure
+          exit 1
         else
           echo "✅ R Notebook executed successfully"
           echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
