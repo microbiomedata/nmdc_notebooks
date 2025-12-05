@@ -43,6 +43,11 @@
       "display_name": "Omics Types Integration"
     },
     {
+      "name": "overrepresentation", 
+      "path": "over_representation/R/overrepresentation_r.ipynb",
+      "display_name": "Over-representation Analysis"
+    },
+    {
       "name": "aggregation",
       "path": "proteomic_aggregation/R/aggregation_r.ipynb",
       "display_name": "Proteomic Data Aggregation"

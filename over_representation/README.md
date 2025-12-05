@@ -9,6 +9,7 @@ This folder includes notebooks that find over-represented functions in a given p
 - [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/over_representation/python/overrepresentation_python.ipynb) - Interactive notebook
 
 ### R
-- In progress
+- [**Over-representation Analysis**](https://microbiomedata.github.io/nmdc_notebooks/overrepresentation_r.html) - Static rendered notebook for viewing
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/main/over_representation/R/overrepresentation_r.ipynb) - Interactive notebook
 
 Or view all notebooks on our [**GitHub Pages site**](https://microbiomedata.github.io/nmdc_notebooks/).
