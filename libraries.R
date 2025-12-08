@@ -1,4 +1,5 @@
 # This file contains the libraries that are used in the R juptyer notebooks to facilitate reproducibility using the renv package.
+# Include required libraries here so that renv knows they are required, as it does not detect library() calls in ipynb files.
 
 library(jsonlite)
 library(dplyr)
@@ -21,3 +22,10 @@ library(fs)
 library(digest)
 library(httr)
 library(stats)
+library(ape)
+library(hash)
+library(data.table)
+library(rtracklayer)
+library(gridExtra)
+library(pheatmap)
+library(rjson)
