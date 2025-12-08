@@ -235,7 +235,7 @@ jobs:
             echo "This likely indicates the DEV API is not accessible or the notebook encountered an error"
           fi
           echo "FAILED" > results-${{ matrix.notebook.name }}.txt
-          # Don't exit here - let other notebooks continue and check-results handle the failure
+          exit 1
         else
           echo "✅ Notebook executed successfully"
           echo "SUCCESS" > results-${{ matrix.notebook.name }}.txt
