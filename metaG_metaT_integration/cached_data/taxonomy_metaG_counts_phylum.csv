@@ -1,0 +1,1518 @@
+biosample_id,taxon,count
+nmdc:bsm-11-3p2mnz08,Acidobacteriota,1095773
+nmdc:bsm-11-3p2mnz08,Actinomycetota,1171264
+nmdc:bsm-11-3p2mnz08,Annelida,117
+nmdc:bsm-11-3p2mnz08,Apicomplexa,148
+nmdc:bsm-11-3p2mnz08,Aquificota,1394
+nmdc:bsm-11-3p2mnz08,Armatimonadota,8120
+nmdc:bsm-11-3p2mnz08,Arthropoda,607
+nmdc:bsm-11-3p2mnz08,Artverviricota,5
+nmdc:bsm-11-3p2mnz08,Ascomycota,21273
+nmdc:bsm-11-3p2mnz08,Atribacterota,537
+nmdc:bsm-11-3p2mnz08,Bacillariophyta,31
+nmdc:bsm-11-3p2mnz08,Bacillota,68059
+nmdc:bsm-11-3p2mnz08,Bacteroidota,334968
+nmdc:bsm-11-3p2mnz08,Balneolota,1633
+nmdc:bsm-11-3p2mnz08,Basidiomycota,29282
+nmdc:bsm-11-3p2mnz08,Bdellovibrionota,2631
+nmdc:bsm-11-3p2mnz08,Blastocladiomycota,34
+nmdc:bsm-11-3p2mnz08,Caldisericota,77
+nmdc:bsm-11-3p2mnz08,Calditrichota,520
+nmdc:bsm-11-3p2mnz08,Campylobacterota,1320
+nmdc:bsm-11-3p2mnz08,Candidatus Absconditabacteria,3
+nmdc:bsm-11-3p2mnz08,Candidatus Aerophobetes,377
+nmdc:bsm-11-3p2mnz08,Candidatus Aminicenantes,1333
+nmdc:bsm-11-3p2mnz08,Candidatus Bathyarchaeota,199
+nmdc:bsm-11-3p2mnz08,Candidatus Berkelbacteria,42
+nmdc:bsm-11-3p2mnz08,Candidatus Bipolaricaulota,80
+nmdc:bsm-11-3p2mnz08,Candidatus Calescamantes,158
+nmdc:bsm-11-3p2mnz08,Candidatus Cloacimonadota,182
+nmdc:bsm-11-3p2mnz08,Candidatus Cryosericota,136
+nmdc:bsm-11-3p2mnz08,Candidatus Diapherotrites,38
+nmdc:bsm-11-3p2mnz08,Candidatus Fervidibacteria,796
+nmdc:bsm-11-3p2mnz08,Candidatus Gracilibacteria,24
+nmdc:bsm-11-3p2mnz08,Candidatus Hydrogenedentes,177
+nmdc:bsm-11-3p2mnz08,Candidatus Korarchaeota,115
+nmdc:bsm-11-3p2mnz08,Candidatus Latescibacteria,618
+nmdc:bsm-11-3p2mnz08,Candidatus Lokiarchaeota,23
+nmdc:bsm-11-3p2mnz08,Candidatus Marinimicrobia,357
+nmdc:bsm-11-3p2mnz08,Candidatus Melainabacteria,213
+nmdc:bsm-11-3p2mnz08,Candidatus Micrarchaeota,14
+nmdc:bsm-11-3p2mnz08,Candidatus Microgenomates,790
+nmdc:bsm-11-3p2mnz08,Candidatus Nanohaloarchaeota,4
+nmdc:bsm-11-3p2mnz08,Candidatus Omnitrophota,908
+nmdc:bsm-11-3p2mnz08,Candidatus Parcubacteria,908
+nmdc:bsm-11-3p2mnz08,Candidatus Poribacteria,834
+nmdc:bsm-11-3p2mnz08,Candidatus Saccharibacteria,654
+nmdc:bsm-11-3p2mnz08,Candidatus Sumerlaeota,771
+nmdc:bsm-11-3p2mnz08,Candidatus Thermoplasmatota,319
+nmdc:bsm-11-3p2mnz08,Chlamydiota,1293
+nmdc:bsm-11-3p2mnz08,Chlorobiota,1696
+nmdc:bsm-11-3p2mnz08,Chloroflexota,39612
+nmdc:bsm-11-3p2mnz08,Chlorophyta,469
+nmdc:bsm-11-3p2mnz08,Chordata,361
+nmdc:bsm-11-3p2mnz08,Chrysiogenota,187
+nmdc:bsm-11-3p2mnz08,Chytridiomycota,249
+nmdc:bsm-11-3p2mnz08,Ciliophora,48
+nmdc:bsm-11-3p2mnz08,Cnidaria,140
+nmdc:bsm-11-3p2mnz08,Coprothermobacterota,52
+nmdc:bsm-11-3p2mnz08,Cyanobacteriota,55070
+nmdc:bsm-11-3p2mnz08,Deferribacterota,430
+nmdc:bsm-11-3p2mnz08,Deinococcota,8306
+nmdc:bsm-11-3p2mnz08,Dictyoglomota,185
+nmdc:bsm-11-3p2mnz08,Elusimicrobiota,254
+nmdc:bsm-11-3p2mnz08,Euglenozoa,37
+nmdc:bsm-11-3p2mnz08,Euryarchaeota,8377
+nmdc:bsm-11-3p2mnz08,Evosea,101
+nmdc:bsm-11-3p2mnz08,Fibrobacterota,535
+nmdc:bsm-11-3p2mnz08,Fornicata,4
+nmdc:bsm-11-3p2mnz08,Fusobacteriota,323
+nmdc:bsm-11-3p2mnz08,Gemmatimonadota,24433
+nmdc:bsm-11-3p2mnz08,Haptophyta,99
+nmdc:bsm-11-3p2mnz08,Heterolobosea,37
+nmdc:bsm-11-3p2mnz08,Ignavibacteriota,1275
+nmdc:bsm-11-3p2mnz08,Kiritimatiellota,999
+nmdc:bsm-11-3p2mnz08,Lentisphaerota,739
+nmdc:bsm-11-3p2mnz08,Microsporidia,7
+nmdc:bsm-11-3p2mnz08,Mollusca,67
+nmdc:bsm-11-3p2mnz08,Mucoromycota,435
+nmdc:bsm-11-3p2mnz08,Mycoplasmatota,139
+nmdc:bsm-11-3p2mnz08,Myxococcota,177023
+nmdc:bsm-11-3p2mnz08,Nematoda,33
+nmdc:bsm-11-3p2mnz08,Nitrososphaerota,1127
+nmdc:bsm-11-3p2mnz08,Nitrospinota,863
+nmdc:bsm-11-3p2mnz08,Nitrospirota,13797
+nmdc:bsm-11-3p2mnz08,Nucleocytoviricota,63
+nmdc:bsm-11-3p2mnz08,Oomycota,100
+nmdc:bsm-11-3p2mnz08,Parabasalia,77
+nmdc:bsm-11-3p2mnz08,Peploviricota,3
+nmdc:bsm-11-3p2mnz08,Perkinsozoa,11
+nmdc:bsm-11-3p2mnz08,Placozoa,28
+nmdc:bsm-11-3p2mnz08,Planctomycetota,99718
+nmdc:bsm-11-3p2mnz08,Porifera,189
+nmdc:bsm-11-3p2mnz08,Preplasmiviricota,38
+nmdc:bsm-11-3p2mnz08,Pseudomonadota,2192413
+nmdc:bsm-11-3p2mnz08,Rhodothermota,4493
+nmdc:bsm-11-3p2mnz08,Spirochaetota,4183
+nmdc:bsm-11-3p2mnz08,Streptophyta,706
+nmdc:bsm-11-3p2mnz08,Synergistota,880
+nmdc:bsm-11-3p2mnz08,Thermodesulfobacteriota,46207
+nmdc:bsm-11-3p2mnz08,Thermomicrobiota,3509
+nmdc:bsm-11-3p2mnz08,Thermoproteota,597
+nmdc:bsm-11-3p2mnz08,Thermotogota,771
+nmdc:bsm-11-3p2mnz08,Uroviricota,969
+nmdc:bsm-11-3p2mnz08,Verrucomicrobiota,135540
+nmdc:bsm-11-3p2mnz08,Zoopagomycota,148
+nmdc:bsm-11-3p2mnz08,candidate division NC10,3027
+nmdc:bsm-11-3p2mnz08,candidate division Zixibacteria,544
+nmdc:bsm-11-3p2mnz08,"dsDNA viruses, no RNA stage",1147
+nmdc:bsm-11-3p2mnz08,dsRNA viruses,1
+nmdc:bsm-11-3p2mnz08,unclassified Bacteria,4700
+nmdc:bsm-11-3p2mnz08,unclassified Eukaryota,145
+nmdc:bsm-11-3p2mnz08,unclassified Viruses,6
+nmdc:bsm-11-3p2mnz08,unclassified phages,48
+nmdc:bsm-11-3p2mnz08,unclassified virophages,3
+nmdc:bsm-11-3p2mnz08,unclassified viruses,2
+nmdc:bsm-11-65a4xw75,Acidobacteriota,1199006
+nmdc:bsm-11-65a4xw75,Actinomycetota,725158
+nmdc:bsm-11-65a4xw75,Annelida,69
+nmdc:bsm-11-65a4xw75,Apicomplexa,162
+nmdc:bsm-11-65a4xw75,Aquificota,2294
+nmdc:bsm-11-65a4xw75,Armatimonadota,7068
+nmdc:bsm-11-65a4xw75,Arthropoda,401
+nmdc:bsm-11-65a4xw75,Artverviricota,13
+nmdc:bsm-11-65a4xw75,Ascomycota,3598
+nmdc:bsm-11-65a4xw75,Atribacterota,836
+nmdc:bsm-11-65a4xw75,Bacillariophyta,37
+nmdc:bsm-11-65a4xw75,Bacillota,84303
+nmdc:bsm-11-65a4xw75,Bacteroidota,84952
+nmdc:bsm-11-65a4xw75,Balneolota,2031
+nmdc:bsm-11-65a4xw75,Basidiomycota,25699
+nmdc:bsm-11-65a4xw75,Bdellovibrionota,2844
+nmdc:bsm-11-65a4xw75,Blastocladiomycota,31
+nmdc:bsm-11-65a4xw75,Caldisericota,105
+nmdc:bsm-11-65a4xw75,Calditrichota,666
+nmdc:bsm-11-65a4xw75,Campylobacterota,1596
+nmdc:bsm-11-65a4xw75,Candidatus Absconditabacteria,5
+nmdc:bsm-11-65a4xw75,Candidatus Aerophobetes,705
+nmdc:bsm-11-65a4xw75,Candidatus Aminicenantes,2076
+nmdc:bsm-11-65a4xw75,Candidatus Bathyarchaeota,650
+nmdc:bsm-11-65a4xw75,Candidatus Berkelbacteria,72
+nmdc:bsm-11-65a4xw75,Candidatus Bipolaricaulota,137
+nmdc:bsm-11-65a4xw75,Candidatus Calescamantes,224
+nmdc:bsm-11-65a4xw75,Candidatus Cloacimonadota,276
+nmdc:bsm-11-65a4xw75,Candidatus Cryosericota,191
+nmdc:bsm-11-65a4xw75,Candidatus Diapherotrites,85
+nmdc:bsm-11-65a4xw75,Candidatus Fervidibacteria,1289
+nmdc:bsm-11-65a4xw75,Candidatus Gracilibacteria,19
+nmdc:bsm-11-65a4xw75,Candidatus Hydrogenedentes,187
+nmdc:bsm-11-65a4xw75,Candidatus Hydrothermae,1
+nmdc:bsm-11-65a4xw75,Candidatus Korarchaeota,221
+nmdc:bsm-11-65a4xw75,Candidatus Latescibacteria,984
+nmdc:bsm-11-65a4xw75,Candidatus Lokiarchaeota,31
+nmdc:bsm-11-65a4xw75,Candidatus Marinimicrobia,506
+nmdc:bsm-11-65a4xw75,Candidatus Melainabacteria,380
+nmdc:bsm-11-65a4xw75,Candidatus Micrarchaeota,45
+nmdc:bsm-11-65a4xw75,Candidatus Microgenomates,1022
+nmdc:bsm-11-65a4xw75,Candidatus Nanohaloarchaeota,5
+nmdc:bsm-11-65a4xw75,Candidatus Omnitrophota,1392
+nmdc:bsm-11-65a4xw75,Candidatus Parcubacteria,1145
+nmdc:bsm-11-65a4xw75,Candidatus Poribacteria,1379
+nmdc:bsm-11-65a4xw75,Candidatus Saccharibacteria,581
+nmdc:bsm-11-65a4xw75,Candidatus Sumerlaeota,964
+nmdc:bsm-11-65a4xw75,Candidatus Thermoplasmatota,896
+nmdc:bsm-11-65a4xw75,Cercozoa,1
+nmdc:bsm-11-65a4xw75,Chlamydiota,3533
+nmdc:bsm-11-65a4xw75,Chlorobiota,2045
+nmdc:bsm-11-65a4xw75,Chloroflexota,66155
+nmdc:bsm-11-65a4xw75,Chlorophyta,456
+nmdc:bsm-11-65a4xw75,Chordata,340
+nmdc:bsm-11-65a4xw75,Chrysiogenota,262
+nmdc:bsm-11-65a4xw75,Chytridiomycota,281
+nmdc:bsm-11-65a4xw75,Ciliophora,60
+nmdc:bsm-11-65a4xw75,Cnidaria,154
+nmdc:bsm-11-65a4xw75,Coprothermobacterota,74
+nmdc:bsm-11-65a4xw75,Cyanobacteriota,73960
+nmdc:bsm-11-65a4xw75,Deferribacterota,656
+nmdc:bsm-11-65a4xw75,Deinococcota,10176
+nmdc:bsm-11-65a4xw75,Dictyoglomota,282
+nmdc:bsm-11-65a4xw75,Elusimicrobiota,861
+nmdc:bsm-11-65a4xw75,Euglenozoa,47
+nmdc:bsm-11-65a4xw75,Euryarchaeota,11660
+nmdc:bsm-11-65a4xw75,Evosea,109
+nmdc:bsm-11-65a4xw75,Fibrobacterota,464
+nmdc:bsm-11-65a4xw75,Fusobacteriota,395
+nmdc:bsm-11-65a4xw75,Gemmatimonadota,19839
+nmdc:bsm-11-65a4xw75,Haptophyta,69
+nmdc:bsm-11-65a4xw75,Heterolobosea,26
+nmdc:bsm-11-65a4xw75,Ignavibacteriota,1494
+nmdc:bsm-11-65a4xw75,Kiritimatiellota,1169
+nmdc:bsm-11-65a4xw75,Lentisphaerota,739
+nmdc:bsm-11-65a4xw75,Microsporidia,11
+nmdc:bsm-11-65a4xw75,Mollusca,34
+nmdc:bsm-11-65a4xw75,Mucoromycota,3716
+nmdc:bsm-11-65a4xw75,Mycoplasmatota,178
+nmdc:bsm-11-65a4xw75,Myxococcota,85362
+nmdc:bsm-11-65a4xw75,Nanoarchaeota,4
+nmdc:bsm-11-65a4xw75,Nematoda,16
+nmdc:bsm-11-65a4xw75,Nitrososphaerota,10143
+nmdc:bsm-11-65a4xw75,Nitrospinota,1391
+nmdc:bsm-11-65a4xw75,Nitrospirota,21409
+nmdc:bsm-11-65a4xw75,Nucleocytoviricota,104
+nmdc:bsm-11-65a4xw75,Oomycota,103
+nmdc:bsm-11-65a4xw75,Parabasalia,148
+nmdc:bsm-11-65a4xw75,Peploviricota,1
+nmdc:bsm-11-65a4xw75,Perkinsozoa,21
+nmdc:bsm-11-65a4xw75,Placozoa,31
+nmdc:bsm-11-65a4xw75,Planctomycetota,159096
+nmdc:bsm-11-65a4xw75,Porifera,172
+nmdc:bsm-11-65a4xw75,Preplasmiviricota,28
+nmdc:bsm-11-65a4xw75,Pseudomonadota,2049399
+nmdc:bsm-11-65a4xw75,Rhodothermota,5606
+nmdc:bsm-11-65a4xw75,Spirochaetota,4721
+nmdc:bsm-11-65a4xw75,Streptophyta,754
+nmdc:bsm-11-65a4xw75,Synergistota,1149
+nmdc:bsm-11-65a4xw75,Thermodesulfobacteriota,66504
+nmdc:bsm-11-65a4xw75,Thermomicrobiota,4542
+nmdc:bsm-11-65a4xw75,Thermoproteota,1468
+nmdc:bsm-11-65a4xw75,Thermotogota,1117
+nmdc:bsm-11-65a4xw75,Uroviricota,617
+nmdc:bsm-11-65a4xw75,Verrucomicrobiota,136957
+nmdc:bsm-11-65a4xw75,Zoopagomycota,340
+nmdc:bsm-11-65a4xw75,candidate division NC10,5111
+nmdc:bsm-11-65a4xw75,candidate division Zixibacteria,810
+nmdc:bsm-11-65a4xw75,"dsDNA viruses, no RNA stage",937
+nmdc:bsm-11-65a4xw75,unclassified Bacteria,4751
+nmdc:bsm-11-65a4xw75,unclassified Eukaryota,154
+nmdc:bsm-11-65a4xw75,unclassified Viruses,28
+nmdc:bsm-11-65a4xw75,unclassified phages,15
+nmdc:bsm-11-65a4xw75,unclassified virophages,7
+nmdc:bsm-11-65a4xw75,unclassified viruses,20
+nmdc:bsm-11-6m6c9g55,Acidobacteriota,1376895
+nmdc:bsm-11-6m6c9g55,Actinomycetota,1279421
+nmdc:bsm-11-6m6c9g55,Annelida,417
+nmdc:bsm-11-6m6c9g55,Apicomplexa,163
+nmdc:bsm-11-6m6c9g55,Aquificota,1688
+nmdc:bsm-11-6m6c9g55,Armatimonadota,8053
+nmdc:bsm-11-6m6c9g55,Arthropoda,1293
+nmdc:bsm-11-6m6c9g55,Artverviricota,23
+nmdc:bsm-11-6m6c9g55,Ascomycota,12057
+nmdc:bsm-11-6m6c9g55,Atribacterota,648
+nmdc:bsm-11-6m6c9g55,Bacillariophyta,21
+nmdc:bsm-11-6m6c9g55,Bacillota,75519
+nmdc:bsm-11-6m6c9g55,Bacteroidota,175398
+nmdc:bsm-11-6m6c9g55,Balneolota,1685
+nmdc:bsm-11-6m6c9g55,Basidiomycota,36187
+nmdc:bsm-11-6m6c9g55,Bdellovibrionota,2642
+nmdc:bsm-11-6m6c9g55,Blastocladiomycota,31
+nmdc:bsm-11-6m6c9g55,Caldisericota,83
+nmdc:bsm-11-6m6c9g55,Calditrichota,573
+nmdc:bsm-11-6m6c9g55,Campylobacterota,1462
+nmdc:bsm-11-6m6c9g55,Candidatus Absconditabacteria,2
+nmdc:bsm-11-6m6c9g55,Candidatus Aerophobetes,491
+nmdc:bsm-11-6m6c9g55,Candidatus Aminicenantes,1555
+nmdc:bsm-11-6m6c9g55,Candidatus Bathyarchaeota,232
+nmdc:bsm-11-6m6c9g55,Candidatus Berkelbacteria,62
+nmdc:bsm-11-6m6c9g55,Candidatus Bipolaricaulota,110
+nmdc:bsm-11-6m6c9g55,Candidatus Calescamantes,205
+nmdc:bsm-11-6m6c9g55,Candidatus Cloacimonadota,246
+nmdc:bsm-11-6m6c9g55,Candidatus Cryosericota,177
+nmdc:bsm-11-6m6c9g55,Candidatus Diapherotrites,42
+nmdc:bsm-11-6m6c9g55,Candidatus Fervidibacteria,909
+nmdc:bsm-11-6m6c9g55,Candidatus Gracilibacteria,12
+nmdc:bsm-11-6m6c9g55,Candidatus Hydrogenedentes,159
+nmdc:bsm-11-6m6c9g55,Candidatus Hydrothermae,2
+nmdc:bsm-11-6m6c9g55,Candidatus Korarchaeota,174
+nmdc:bsm-11-6m6c9g55,Candidatus Latescibacteria,742
+nmdc:bsm-11-6m6c9g55,Candidatus Lokiarchaeota,17
+nmdc:bsm-11-6m6c9g55,Candidatus Marinimicrobia,422
+nmdc:bsm-11-6m6c9g55,Candidatus Melainabacteria,232
+nmdc:bsm-11-6m6c9g55,Candidatus Micrarchaeota,27
+nmdc:bsm-11-6m6c9g55,Candidatus Microgenomates,1316
+nmdc:bsm-11-6m6c9g55,Candidatus Nanohaloarchaeota,2
+nmdc:bsm-11-6m6c9g55,Candidatus Omnitrophota,1165
+nmdc:bsm-11-6m6c9g55,Candidatus Parcubacteria,519
+nmdc:bsm-11-6m6c9g55,Candidatus Poribacteria,958
+nmdc:bsm-11-6m6c9g55,Candidatus Saccharibacteria,1176
+nmdc:bsm-11-6m6c9g55,Candidatus Sumerlaeota,776
+nmdc:bsm-11-6m6c9g55,Candidatus Thermoplasmatota,815
+nmdc:bsm-11-6m6c9g55,Cercozoa,3
+nmdc:bsm-11-6m6c9g55,Chlamydiota,4180
+nmdc:bsm-11-6m6c9g55,Chlorobiota,1774
+nmdc:bsm-11-6m6c9g55,Chloroflexota,37796
+nmdc:bsm-11-6m6c9g55,Chlorophyta,517
+nmdc:bsm-11-6m6c9g55,Chordata,626
+nmdc:bsm-11-6m6c9g55,Chrysiogenota,186
+nmdc:bsm-11-6m6c9g55,Chytridiomycota,278
+nmdc:bsm-11-6m6c9g55,Ciliophora,55
+nmdc:bsm-11-6m6c9g55,Cnidaria,405
+nmdc:bsm-11-6m6c9g55,Coprothermobacterota,77
+nmdc:bsm-11-6m6c9g55,Cyanobacteriota,59873
+nmdc:bsm-11-6m6c9g55,Deferribacterota,496
+nmdc:bsm-11-6m6c9g55,Deinococcota,8830
+nmdc:bsm-11-6m6c9g55,Dictyoglomota,231
+nmdc:bsm-11-6m6c9g55,Elusimicrobiota,242
+nmdc:bsm-11-6m6c9g55,Euglenozoa,29
+nmdc:bsm-11-6m6c9g55,Euryarchaeota,9711
+nmdc:bsm-11-6m6c9g55,Evosea,84
+nmdc:bsm-11-6m6c9g55,Fibrobacterota,466
+nmdc:bsm-11-6m6c9g55,Fornicata,5
+nmdc:bsm-11-6m6c9g55,Fusobacteriota,345
+nmdc:bsm-11-6m6c9g55,Gemmatimonadota,25688
+nmdc:bsm-11-6m6c9g55,Haptophyta,81
+nmdc:bsm-11-6m6c9g55,Heterolobosea,29
+nmdc:bsm-11-6m6c9g55,Ignavibacteriota,1415
+nmdc:bsm-11-6m6c9g55,Kiritimatiellota,1071
+nmdc:bsm-11-6m6c9g55,Lentisphaerota,729
+nmdc:bsm-11-6m6c9g55,Microsporidia,10
+nmdc:bsm-11-6m6c9g55,Mollusca,117
+nmdc:bsm-11-6m6c9g55,Mucoromycota,424
+nmdc:bsm-11-6m6c9g55,Mycoplasmatota,156
+nmdc:bsm-11-6m6c9g55,Myxococcota,104358
+nmdc:bsm-11-6m6c9g55,Nanoarchaeota,2
+nmdc:bsm-11-6m6c9g55,Nematoda,52
+nmdc:bsm-11-6m6c9g55,Nitrososphaerota,1306
+nmdc:bsm-11-6m6c9g55,Nitrospinota,1032
+nmdc:bsm-11-6m6c9g55,Nitrospirota,16191
+nmdc:bsm-11-6m6c9g55,Nucleocytoviricota,86
+nmdc:bsm-11-6m6c9g55,Oomycota,126
+nmdc:bsm-11-6m6c9g55,Parabasalia,149
+nmdc:bsm-11-6m6c9g55,Peploviricota,6
+nmdc:bsm-11-6m6c9g55,Perkinsozoa,21
+nmdc:bsm-11-6m6c9g55,Placozoa,36
+nmdc:bsm-11-6m6c9g55,Planctomycetota,108721
+nmdc:bsm-11-6m6c9g55,Porifera,411
+nmdc:bsm-11-6m6c9g55,Preplasmiviricota,23
+nmdc:bsm-11-6m6c9g55,Pseudomonadota,2041670
+nmdc:bsm-11-6m6c9g55,Retro-transcribing viruses,4
+nmdc:bsm-11-6m6c9g55,Rhodothermota,4803
+nmdc:bsm-11-6m6c9g55,Spirochaetota,4299
+nmdc:bsm-11-6m6c9g55,Streptophyta,843
+nmdc:bsm-11-6m6c9g55,Synergistota,999
+nmdc:bsm-11-6m6c9g55,Thermodesulfobacteriota,53105
+nmdc:bsm-11-6m6c9g55,Thermomicrobiota,3613
+nmdc:bsm-11-6m6c9g55,Thermoproteota,938
+nmdc:bsm-11-6m6c9g55,Thermotogota,858
+nmdc:bsm-11-6m6c9g55,Uroviricota,590
+nmdc:bsm-11-6m6c9g55,Verrucomicrobiota,130985
+nmdc:bsm-11-6m6c9g55,Zoopagomycota,155
+nmdc:bsm-11-6m6c9g55,candidate division NC10,3386
+nmdc:bsm-11-6m6c9g55,candidate division Zixibacteria,623
+nmdc:bsm-11-6m6c9g55,"dsDNA viruses, no RNA stage",706
+nmdc:bsm-11-6m6c9g55,dsRNA viruses,1
+nmdc:bsm-11-6m6c9g55,ssDNA viruses,3
+nmdc:bsm-11-6m6c9g55,unclassified Bacteria,4287
+nmdc:bsm-11-6m6c9g55,unclassified Eukaryota,196
+nmdc:bsm-11-6m6c9g55,unclassified Viruses,6
+nmdc:bsm-11-6m6c9g55,unclassified phages,18
+nmdc:bsm-11-6m6c9g55,unclassified virophages,3
+nmdc:bsm-11-6m6c9g55,unclassified viruses,22
+nmdc:bsm-11-6x067s27,Acidobacteriota,1171537
+nmdc:bsm-11-6x067s27,Actinomycetota,1153060
+nmdc:bsm-11-6x067s27,Annelida,1480
+nmdc:bsm-11-6x067s27,Apicomplexa,177
+nmdc:bsm-11-6x067s27,Aquificota,1423
+nmdc:bsm-11-6x067s27,Armatimonadota,6735
+nmdc:bsm-11-6x067s27,Arthropoda,1620
+nmdc:bsm-11-6x067s27,Artverviricota,30
+nmdc:bsm-11-6x067s27,Ascomycota,24901
+nmdc:bsm-11-6x067s27,Atribacterota,543
+nmdc:bsm-11-6x067s27,Bacillariophyta,40
+nmdc:bsm-11-6x067s27,Bacillota,64701
+nmdc:bsm-11-6x067s27,Bacteroidota,200282
+nmdc:bsm-11-6x067s27,Balneolota,1445
+nmdc:bsm-11-6x067s27,Basidiomycota,18919
+nmdc:bsm-11-6x067s27,Bdellovibrionota,2236
+nmdc:bsm-11-6x067s27,Blastocladiomycota,35
+nmdc:bsm-11-6x067s27,Caldisericota,73
+nmdc:bsm-11-6x067s27,Calditrichota,498
+nmdc:bsm-11-6x067s27,Campylobacterota,1227
+nmdc:bsm-11-6x067s27,Candidatus Absconditabacteria,2
+nmdc:bsm-11-6x067s27,Candidatus Aerophobetes,400
+nmdc:bsm-11-6x067s27,Candidatus Aminicenantes,1230
+nmdc:bsm-11-6x067s27,Candidatus Bathyarchaeota,219
+nmdc:bsm-11-6x067s27,Candidatus Berkelbacteria,47
+nmdc:bsm-11-6x067s27,Candidatus Bipolaricaulota,84
+nmdc:bsm-11-6x067s27,Candidatus Calescamantes,135
+nmdc:bsm-11-6x067s27,Candidatus Cloacimonadota,187
+nmdc:bsm-11-6x067s27,Candidatus Cryosericota,143
+nmdc:bsm-11-6x067s27,Candidatus Diapherotrites,40
+nmdc:bsm-11-6x067s27,Candidatus Fervidibacteria,661
+nmdc:bsm-11-6x067s27,Candidatus Gracilibacteria,18
+nmdc:bsm-11-6x067s27,Candidatus Hydrogenedentes,120
+nmdc:bsm-11-6x067s27,Candidatus Korarchaeota,113
+nmdc:bsm-11-6x067s27,Candidatus Latescibacteria,636
+nmdc:bsm-11-6x067s27,Candidatus Lokiarchaeota,12
+nmdc:bsm-11-6x067s27,Candidatus Marinimicrobia,319
+nmdc:bsm-11-6x067s27,Candidatus Melainabacteria,220
+nmdc:bsm-11-6x067s27,Candidatus Micrarchaeota,23
+nmdc:bsm-11-6x067s27,Candidatus Microgenomates,628
+nmdc:bsm-11-6x067s27,Candidatus Nanohaloarchaeota,4
+nmdc:bsm-11-6x067s27,Candidatus Omnitrophota,926
+nmdc:bsm-11-6x067s27,Candidatus Parcubacteria,818
+nmdc:bsm-11-6x067s27,Candidatus Poribacteria,784
+nmdc:bsm-11-6x067s27,Candidatus Saccharibacteria,1035
+nmdc:bsm-11-6x067s27,Candidatus Sumerlaeota,629
+nmdc:bsm-11-6x067s27,Candidatus Thermoplasmatota,737
+nmdc:bsm-11-6x067s27,Cercozoa,3
+nmdc:bsm-11-6x067s27,Chlamydiota,2327
+nmdc:bsm-11-6x067s27,Chlorobiota,1458
+nmdc:bsm-11-6x067s27,Chloroflexota,32720
+nmdc:bsm-11-6x067s27,Chlorophyta,482
+nmdc:bsm-11-6x067s27,Chordata,1061
+nmdc:bsm-11-6x067s27,Chrysiogenota,180
+nmdc:bsm-11-6x067s27,Chytridiomycota,288
+nmdc:bsm-11-6x067s27,Ciliophora,61
+nmdc:bsm-11-6x067s27,Cnidaria,758
+nmdc:bsm-11-6x067s27,Coprothermobacterota,53
+nmdc:bsm-11-6x067s27,Cressdnaviricota,1
+nmdc:bsm-11-6x067s27,Cyanobacteriota,49827
+nmdc:bsm-11-6x067s27,Deferribacterota,428
+nmdc:bsm-11-6x067s27,Deinococcota,7330
+nmdc:bsm-11-6x067s27,Dictyoglomota,202
+nmdc:bsm-11-6x067s27,Elusimicrobiota,322
+nmdc:bsm-11-6x067s27,Euglenozoa,62
+nmdc:bsm-11-6x067s27,Euryarchaeota,7905
+nmdc:bsm-11-6x067s27,Evosea,91
+nmdc:bsm-11-6x067s27,Fibrobacterota,434
+nmdc:bsm-11-6x067s27,Fornicata,1
+nmdc:bsm-11-6x067s27,Fusobacteriota,320
+nmdc:bsm-11-6x067s27,Gemmatimonadota,18928
+nmdc:bsm-11-6x067s27,Haptophyta,80
+nmdc:bsm-11-6x067s27,Heterolobosea,23
+nmdc:bsm-11-6x067s27,Ignavibacteriota,1101
+nmdc:bsm-11-6x067s27,Kiritimatiellota,846
+nmdc:bsm-11-6x067s27,Lentisphaerota,575
+nmdc:bsm-11-6x067s27,Microsporidia,8
+nmdc:bsm-11-6x067s27,Mollusca,333
+nmdc:bsm-11-6x067s27,Mucoromycota,587
+nmdc:bsm-11-6x067s27,Mycoplasmatota,174
+nmdc:bsm-11-6x067s27,Myxococcota,96780
+nmdc:bsm-11-6x067s27,Nanoarchaeota,1
+nmdc:bsm-11-6x067s27,Nematoda,59
+nmdc:bsm-11-6x067s27,Nitrososphaerota,1062
+nmdc:bsm-11-6x067s27,Nitrospinota,863
+nmdc:bsm-11-6x067s27,Nitrospirota,13039
+nmdc:bsm-11-6x067s27,Nucleocytoviricota,135
+nmdc:bsm-11-6x067s27,Oomycota,100
+nmdc:bsm-11-6x067s27,Parabasalia,119
+nmdc:bsm-11-6x067s27,Peploviricota,3
+nmdc:bsm-11-6x067s27,Perkinsozoa,39
+nmdc:bsm-11-6x067s27,Placozoa,54
+nmdc:bsm-11-6x067s27,Planctomycetota,79150
+nmdc:bsm-11-6x067s27,Porifera,573
+nmdc:bsm-11-6x067s27,Preplasmiviricota,25
+nmdc:bsm-11-6x067s27,Pseudomonadota,1847047
+nmdc:bsm-11-6x067s27,Retro-transcribing viruses,1
+nmdc:bsm-11-6x067s27,Rhodothermota,3845
+nmdc:bsm-11-6x067s27,Spirochaetota,5367
+nmdc:bsm-11-6x067s27,Streptophyta,671
+nmdc:bsm-11-6x067s27,Synergistota,880
+nmdc:bsm-11-6x067s27,Thermodesulfobacteriota,42760
+nmdc:bsm-11-6x067s27,Thermomicrobiota,3037
+nmdc:bsm-11-6x067s27,Thermoproteota,704
+nmdc:bsm-11-6x067s27,Thermotogota,739
+nmdc:bsm-11-6x067s27,Uroviricota,697
+nmdc:bsm-11-6x067s27,Verrucomicrobiota,116682
+nmdc:bsm-11-6x067s27,Zoopagomycota,163
+nmdc:bsm-11-6x067s27,candidate division NC10,2825
+nmdc:bsm-11-6x067s27,candidate division Zixibacteria,511
+nmdc:bsm-11-6x067s27,dsDNA,1
+nmdc:bsm-11-6x067s27,"dsDNA viruses, no RNA stage",962
+nmdc:bsm-11-6x067s27,ssDNA viruses,1
+nmdc:bsm-11-6x067s27,unclassified Bacteria,3383
+nmdc:bsm-11-6x067s27,unclassified Eukaryota,264
+nmdc:bsm-11-6x067s27,unclassified Viruses,10
+nmdc:bsm-11-6x067s27,unclassified phages,14
+nmdc:bsm-11-6x067s27,unclassified virophages,6
+nmdc:bsm-11-6x067s27,unclassified viruses,28
+nmdc:bsm-11-7m09me46,Acidobacteriota,1523523
+nmdc:bsm-11-7m09me46,Actinomycetota,1019167
+nmdc:bsm-11-7m09me46,Annelida,97
+nmdc:bsm-11-7m09me46,Apicomplexa,157
+nmdc:bsm-11-7m09me46,Aquificota,1732
+nmdc:bsm-11-7m09me46,Armatimonadota,8004
+nmdc:bsm-11-7m09me46,Arthropoda,722
+nmdc:bsm-11-7m09me46,Artverviricota,47
+nmdc:bsm-11-7m09me46,Ascomycota,14883
+nmdc:bsm-11-7m09me46,Atribacterota,612
+nmdc:bsm-11-7m09me46,Bacillariophyta,22
+nmdc:bsm-11-7m09me46,Bacillota,71869
+nmdc:bsm-11-7m09me46,Bacteroidota,198546
+nmdc:bsm-11-7m09me46,Balneolota,1626
+nmdc:bsm-11-7m09me46,Basidiomycota,54275
+nmdc:bsm-11-7m09me46,Bdellovibrionota,2883
+nmdc:bsm-11-7m09me46,Blastocladiomycota,22
+nmdc:bsm-11-7m09me46,Caldisericota,69
+nmdc:bsm-11-7m09me46,Calditrichota,584
+nmdc:bsm-11-7m09me46,Campylobacterota,1422
+nmdc:bsm-11-7m09me46,Candidatus Absconditabacteria,2
+nmdc:bsm-11-7m09me46,Candidatus Aerophobetes,513
+nmdc:bsm-11-7m09me46,Candidatus Aminicenantes,1760
+nmdc:bsm-11-7m09me46,Candidatus Bathyarchaeota,260
+nmdc:bsm-11-7m09me46,Candidatus Berkelbacteria,59
+nmdc:bsm-11-7m09me46,Candidatus Bipolaricaulota,125
+nmdc:bsm-11-7m09me46,Candidatus Calescamantes,191
+nmdc:bsm-11-7m09me46,Candidatus Cloacimonadota,213
+nmdc:bsm-11-7m09me46,Candidatus Cryosericota,175
+nmdc:bsm-11-7m09me46,Candidatus Diapherotrites,54
+nmdc:bsm-11-7m09me46,Candidatus Fervidibacteria,882
+nmdc:bsm-11-7m09me46,Candidatus Gracilibacteria,13
+nmdc:bsm-11-7m09me46,Candidatus Hydrogenedentes,168
+nmdc:bsm-11-7m09me46,Candidatus Hydrothermae,1
+nmdc:bsm-11-7m09me46,Candidatus Korarchaeota,219
+nmdc:bsm-11-7m09me46,Candidatus Latescibacteria,762
+nmdc:bsm-11-7m09me46,Candidatus Lokiarchaeota,22
+nmdc:bsm-11-7m09me46,Candidatus Marinimicrobia,328
+nmdc:bsm-11-7m09me46,Candidatus Melainabacteria,273
+nmdc:bsm-11-7m09me46,Candidatus Micrarchaeota,16
+nmdc:bsm-11-7m09me46,Candidatus Microgenomates,656
+nmdc:bsm-11-7m09me46,Candidatus Nanohaloarchaeota,5
+nmdc:bsm-11-7m09me46,Candidatus Omnitrophota,1003
+nmdc:bsm-11-7m09me46,Candidatus Parcubacteria,444
+nmdc:bsm-11-7m09me46,Candidatus Poribacteria,956
+nmdc:bsm-11-7m09me46,Candidatus Saccharibacteria,197
+nmdc:bsm-11-7m09me46,Candidatus Sumerlaeota,892
+nmdc:bsm-11-7m09me46,Candidatus Thermoplasmatota,339
+nmdc:bsm-11-7m09me46,Chlamydiota,1601
+nmdc:bsm-11-7m09me46,Chlorobiota,1798
+nmdc:bsm-11-7m09me46,Chloroflexota,36731
+nmdc:bsm-11-7m09me46,Chlorophyta,472
+nmdc:bsm-11-7m09me46,Chordata,335
+nmdc:bsm-11-7m09me46,Chrysiogenota,221
+nmdc:bsm-11-7m09me46,Chytridiomycota,306
+nmdc:bsm-11-7m09me46,Ciliophora,41
+nmdc:bsm-11-7m09me46,Cnidaria,145
+nmdc:bsm-11-7m09me46,Coprothermobacterota,54
+nmdc:bsm-11-7m09me46,Cyanobacteriota,64657
+nmdc:bsm-11-7m09me46,Deferribacterota,486
+nmdc:bsm-11-7m09me46,Deinococcota,8805
+nmdc:bsm-11-7m09me46,Dictyoglomota,264
+nmdc:bsm-11-7m09me46,Elusimicrobiota,252
+nmdc:bsm-11-7m09me46,Euglenozoa,35
+nmdc:bsm-11-7m09me46,Euryarchaeota,9169
+nmdc:bsm-11-7m09me46,Evosea,72
+nmdc:bsm-11-7m09me46,Fibrobacterota,404
+nmdc:bsm-11-7m09me46,Fusobacteriota,305
+nmdc:bsm-11-7m09me46,Gemmatimonadota,18989
+nmdc:bsm-11-7m09me46,Haptophyta,69
+nmdc:bsm-11-7m09me46,Heterolobosea,43
+nmdc:bsm-11-7m09me46,Ignavibacteriota,1196
+nmdc:bsm-11-7m09me46,Kiritimatiellota,918
+nmdc:bsm-11-7m09me46,Lentisphaerota,669
+nmdc:bsm-11-7m09me46,Microsporidia,8
+nmdc:bsm-11-7m09me46,Mollusca,42
+nmdc:bsm-11-7m09me46,Mucoromycota,346
+nmdc:bsm-11-7m09me46,Mycoplasmatota,150
+nmdc:bsm-11-7m09me46,Myxococcota,142053
+nmdc:bsm-11-7m09me46,Nanoarchaeota,1
+nmdc:bsm-11-7m09me46,Nematoda,32
+nmdc:bsm-11-7m09me46,Nitrososphaerota,1302
+nmdc:bsm-11-7m09me46,Nitrospinota,1063
+nmdc:bsm-11-7m09me46,Nitrospirota,16673
+nmdc:bsm-11-7m09me46,Nucleocytoviricota,109
+nmdc:bsm-11-7m09me46,Oomycota,105
+nmdc:bsm-11-7m09me46,Parabasalia,281
+nmdc:bsm-11-7m09me46,Peploviricota,8
+nmdc:bsm-11-7m09me46,Perkinsozoa,20
+nmdc:bsm-11-7m09me46,Placozoa,26
+nmdc:bsm-11-7m09me46,Planctomycetota,134246
+nmdc:bsm-11-7m09me46,Porifera,214
+nmdc:bsm-11-7m09me46,Preplasmiviricota,25
+nmdc:bsm-11-7m09me46,Pseudomonadota,2209978
+nmdc:bsm-11-7m09me46,Retro-transcribing viruses,1
+nmdc:bsm-11-7m09me46,Rhodothermota,4835
+nmdc:bsm-11-7m09me46,Spirochaetota,4370
+nmdc:bsm-11-7m09me46,Streptophyta,807
+nmdc:bsm-11-7m09me46,Synergistota,971
+nmdc:bsm-11-7m09me46,Thermodesulfobacteriota,52327
+nmdc:bsm-11-7m09me46,Thermomicrobiota,3288
+nmdc:bsm-11-7m09me46,Thermoproteota,1031
+nmdc:bsm-11-7m09me46,Thermotogota,772
+nmdc:bsm-11-7m09me46,Uroviricota,568
+nmdc:bsm-11-7m09me46,Verrucomicrobiota,126532
+nmdc:bsm-11-7m09me46,Zoopagomycota,118
+nmdc:bsm-11-7m09me46,candidate division NC10,3530
+nmdc:bsm-11-7m09me46,candidate division Zixibacteria,587
+nmdc:bsm-11-7m09me46,dsDNA viruses,1
+nmdc:bsm-11-7m09me46,"dsDNA viruses, no RNA stage",731
+nmdc:bsm-11-7m09me46,ssDNA viruses,2
+nmdc:bsm-11-7m09me46,unclassified Bacteria,3749
+nmdc:bsm-11-7m09me46,unclassified Eukaryota,187
+nmdc:bsm-11-7m09me46,unclassified Viruses,9
+nmdc:bsm-11-7m09me46,unclassified phages,13
+nmdc:bsm-11-7m09me46,unclassified virophages,8
+nmdc:bsm-11-7m09me46,unclassified viruses,12
+nmdc:bsm-11-7twwzs96,Acidobacteriota,1175151
+nmdc:bsm-11-7twwzs96,Actinomycetota,685350
+nmdc:bsm-11-7twwzs96,Annelida,58
+nmdc:bsm-11-7twwzs96,Apicomplexa,123
+nmdc:bsm-11-7twwzs96,Aquificota,1107
+nmdc:bsm-11-7twwzs96,Armatimonadota,7172
+nmdc:bsm-11-7twwzs96,Arthropoda,355
+nmdc:bsm-11-7twwzs96,Artverviricota,2
+nmdc:bsm-11-7twwzs96,Ascomycota,35972
+nmdc:bsm-11-7twwzs96,Atribacterota,411
+nmdc:bsm-11-7twwzs96,Bacillariophyta,29
+nmdc:bsm-11-7twwzs96,Bacillota,53735
+nmdc:bsm-11-7twwzs96,Bacteroidota,413031
+nmdc:bsm-11-7twwzs96,Balneolota,1433
+nmdc:bsm-11-7twwzs96,Basidiomycota,29898
+nmdc:bsm-11-7twwzs96,Bdellovibrionota,2600
+nmdc:bsm-11-7twwzs96,Blastocladiomycota,22
+nmdc:bsm-11-7twwzs96,Caldisericota,45
+nmdc:bsm-11-7twwzs96,Calditrichota,402
+nmdc:bsm-11-7twwzs96,Campylobacterota,1121
+nmdc:bsm-11-7twwzs96,Candidatus Absconditabacteria,5
+nmdc:bsm-11-7twwzs96,Candidatus Aerophobetes,321
+nmdc:bsm-11-7twwzs96,Candidatus Aminicenantes,1142
+nmdc:bsm-11-7twwzs96,Candidatus Bathyarchaeota,154
+nmdc:bsm-11-7twwzs96,Candidatus Berkelbacteria,58
+nmdc:bsm-11-7twwzs96,Candidatus Bipolaricaulota,74
+nmdc:bsm-11-7twwzs96,Candidatus Calescamantes,117
+nmdc:bsm-11-7twwzs96,Candidatus Cloacimonadota,190
+nmdc:bsm-11-7twwzs96,Candidatus Cryosericota,122
+nmdc:bsm-11-7twwzs96,Candidatus Diapherotrites,41
+nmdc:bsm-11-7twwzs96,Candidatus Fervidibacteria,550
+nmdc:bsm-11-7twwzs96,Candidatus Gracilibacteria,21
+nmdc:bsm-11-7twwzs96,Candidatus Hydrogenedentes,126
+nmdc:bsm-11-7twwzs96,Candidatus Hydrothermae,3
+nmdc:bsm-11-7twwzs96,Candidatus Korarchaeota,102
+nmdc:bsm-11-7twwzs96,Candidatus Latescibacteria,510
+nmdc:bsm-11-7twwzs96,Candidatus Lokiarchaeota,12
+nmdc:bsm-11-7twwzs96,Candidatus Marinimicrobia,263
+nmdc:bsm-11-7twwzs96,Candidatus Melainabacteria,332
+nmdc:bsm-11-7twwzs96,Candidatus Micrarchaeota,11
+nmdc:bsm-11-7twwzs96,Candidatus Microgenomates,1120
+nmdc:bsm-11-7twwzs96,Candidatus Nanohaloarchaeota,6
+nmdc:bsm-11-7twwzs96,Candidatus Omnitrophota,591
+nmdc:bsm-11-7twwzs96,Candidatus Parcubacteria,1617
+nmdc:bsm-11-7twwzs96,Candidatus Poribacteria,587
+nmdc:bsm-11-7twwzs96,Candidatus Saccharibacteria,2061
+nmdc:bsm-11-7twwzs96,Candidatus Sumerlaeota,588
+nmdc:bsm-11-7twwzs96,Candidatus Thermoplasmatota,217
+nmdc:bsm-11-7twwzs96,Cercozoa,1
+nmdc:bsm-11-7twwzs96,Chlamydiota,1252
+nmdc:bsm-11-7twwzs96,Chlorobiota,1348
+nmdc:bsm-11-7twwzs96,Chloroflexota,26634
+nmdc:bsm-11-7twwzs96,Chlorophyta,422
+nmdc:bsm-11-7twwzs96,Chordata,247
+nmdc:bsm-11-7twwzs96,Chrysiogenota,140
+nmdc:bsm-11-7twwzs96,Chytridiomycota,191
+nmdc:bsm-11-7twwzs96,Ciliophora,58
+nmdc:bsm-11-7twwzs96,Cnidaria,75
+nmdc:bsm-11-7twwzs96,Coprothermobacterota,24
+nmdc:bsm-11-7twwzs96,Cyanobacteriota,49614
+nmdc:bsm-11-7twwzs96,Deferribacterota,336
+nmdc:bsm-11-7twwzs96,Deinococcota,6903
+nmdc:bsm-11-7twwzs96,Dictyoglomota,158
+nmdc:bsm-11-7twwzs96,Elusimicrobiota,161
+nmdc:bsm-11-7twwzs96,Euglenozoa,25
+nmdc:bsm-11-7twwzs96,Euryarchaeota,6653
+nmdc:bsm-11-7twwzs96,Evosea,76
+nmdc:bsm-11-7twwzs96,Fibrobacterota,461
+nmdc:bsm-11-7twwzs96,Fornicata,2
+nmdc:bsm-11-7twwzs96,Fusobacteriota,302
+nmdc:bsm-11-7twwzs96,Gemmatimonadota,23224
+nmdc:bsm-11-7twwzs96,Haptophyta,72
+nmdc:bsm-11-7twwzs96,Heterolobosea,66
+nmdc:bsm-11-7twwzs96,Ignavibacteriota,934
+nmdc:bsm-11-7twwzs96,Kiritimatiellota,904
+nmdc:bsm-11-7twwzs96,Lentisphaerota,632
+nmdc:bsm-11-7twwzs96,Microsporidia,7
+nmdc:bsm-11-7twwzs96,Mollusca,50
+nmdc:bsm-11-7twwzs96,Mucoromycota,406
+nmdc:bsm-11-7twwzs96,Mycoplasmatota,145
+nmdc:bsm-11-7twwzs96,Myxococcota,147324
+nmdc:bsm-11-7twwzs96,Nanoarchaeota,4
+nmdc:bsm-11-7twwzs96,Nematoda,20
+nmdc:bsm-11-7twwzs96,Nitrososphaerota,805
+nmdc:bsm-11-7twwzs96,Nitrospinota,701
+nmdc:bsm-11-7twwzs96,Nitrospirota,11043
+nmdc:bsm-11-7twwzs96,Nucleocytoviricota,47
+nmdc:bsm-11-7twwzs96,Oomycota,72
+nmdc:bsm-11-7twwzs96,Parabasalia,152
+nmdc:bsm-11-7twwzs96,Perkinsozoa,31
+nmdc:bsm-11-7twwzs96,Placozoa,18
+nmdc:bsm-11-7twwzs96,Planctomycetota,74615
+nmdc:bsm-11-7twwzs96,Porifera,159
+nmdc:bsm-11-7twwzs96,Preplasmiviricota,36
+nmdc:bsm-11-7twwzs96,Pseudomonadota,2318120
+nmdc:bsm-11-7twwzs96,Rhodothermota,3696
+nmdc:bsm-11-7twwzs96,Spirochaetota,3553
+nmdc:bsm-11-7twwzs96,Streptophyta,665
+nmdc:bsm-11-7twwzs96,Synergistota,704
+nmdc:bsm-11-7twwzs96,Thermodesulfobacteriota,36675
+nmdc:bsm-11-7twwzs96,Thermomicrobiota,2117
+nmdc:bsm-11-7twwzs96,Thermoproteota,522
+nmdc:bsm-11-7twwzs96,Thermotogota,627
+nmdc:bsm-11-7twwzs96,Uroviricota,1235
+nmdc:bsm-11-7twwzs96,Verrucomicrobiota,163678
+nmdc:bsm-11-7twwzs96,Zoopagomycota,111
+nmdc:bsm-11-7twwzs96,candidate division NC10,1999
+nmdc:bsm-11-7twwzs96,candidate division Zixibacteria,431
+nmdc:bsm-11-7twwzs96,dsDNA viruses,2
+nmdc:bsm-11-7twwzs96,"dsDNA viruses, no RNA stage",1295
+nmdc:bsm-11-7twwzs96,dsRNA viruses,1
+nmdc:bsm-11-7twwzs96,ssDNA viruses,5
+nmdc:bsm-11-7twwzs96,ssRNA viruses,1
+nmdc:bsm-11-7twwzs96,unclassified Bacteria,3690
+nmdc:bsm-11-7twwzs96,unclassified Eukaryota,149
+nmdc:bsm-11-7twwzs96,unclassified Viruses,6
+nmdc:bsm-11-7twwzs96,unclassified phages,34
+nmdc:bsm-11-7twwzs96,unclassified virophages,1
+nmdc:bsm-11-7twwzs96,unclassified viruses,15
+nmdc:bsm-11-93mc8g67,Acidobacteriota,1447871
+nmdc:bsm-11-93mc8g67,Actinomycetota,490613
+nmdc:bsm-11-93mc8g67,Annelida,67
+nmdc:bsm-11-93mc8g67,Apicomplexa,149
+nmdc:bsm-11-93mc8g67,Aquificota,2179
+nmdc:bsm-11-93mc8g67,Armatimonadota,6822
+nmdc:bsm-11-93mc8g67,Arthropoda,282
+nmdc:bsm-11-93mc8g67,Artverviricota,3
+nmdc:bsm-11-93mc8g67,Ascomycota,4126
+nmdc:bsm-11-93mc8g67,Atribacterota,788
+nmdc:bsm-11-93mc8g67,Bacillariophyta,35
+nmdc:bsm-11-93mc8g67,Bacillota,82316
+nmdc:bsm-11-93mc8g67,Bacteroidota,172998
+nmdc:bsm-11-93mc8g67,Balneolota,2162
+nmdc:bsm-11-93mc8g67,Basidiomycota,51105
+nmdc:bsm-11-93mc8g67,Bdellovibrionota,3988
+nmdc:bsm-11-93mc8g67,Blastocladiomycota,25
+nmdc:bsm-11-93mc8g67,Caldisericota,78
+nmdc:bsm-11-93mc8g67,Calditrichota,679
+nmdc:bsm-11-93mc8g67,Campylobacterota,1642
+nmdc:bsm-11-93mc8g67,Candidatus Absconditabacteria,10
+nmdc:bsm-11-93mc8g67,Candidatus Aerophobetes,621
+nmdc:bsm-11-93mc8g67,Candidatus Aminicenantes,2193
+nmdc:bsm-11-93mc8g67,Candidatus Bathyarchaeota,312
+nmdc:bsm-11-93mc8g67,Candidatus Berkelbacteria,129
+nmdc:bsm-11-93mc8g67,Candidatus Bipolaricaulota,129
+nmdc:bsm-11-93mc8g67,Candidatus Calescamantes,230
+nmdc:bsm-11-93mc8g67,Candidatus Cloacimonadota,308
+nmdc:bsm-11-93mc8g67,Candidatus Cryosericota,171
+nmdc:bsm-11-93mc8g67,Candidatus Diapherotrites,110
+nmdc:bsm-11-93mc8g67,Candidatus Fervidibacteria,1173
+nmdc:bsm-11-93mc8g67,Candidatus Gracilibacteria,32
+nmdc:bsm-11-93mc8g67,Candidatus Hydrogenedentes,158
+nmdc:bsm-11-93mc8g67,Candidatus Hydrothermae,3
+nmdc:bsm-11-93mc8g67,Candidatus Korarchaeota,143
+nmdc:bsm-11-93mc8g67,Candidatus Latescibacteria,921
+nmdc:bsm-11-93mc8g67,Candidatus Lokiarchaeota,28
+nmdc:bsm-11-93mc8g67,Candidatus Marinimicrobia,489
+nmdc:bsm-11-93mc8g67,Candidatus Melainabacteria,338
+nmdc:bsm-11-93mc8g67,Candidatus Micrarchaeota,49
+nmdc:bsm-11-93mc8g67,Candidatus Microgenomates,1643
+nmdc:bsm-11-93mc8g67,Candidatus Nanohaloarchaeota,6
+nmdc:bsm-11-93mc8g67,Candidatus Omnitrophota,1561
+nmdc:bsm-11-93mc8g67,Candidatus Parcubacteria,1394
+nmdc:bsm-11-93mc8g67,Candidatus Poribacteria,1132
+nmdc:bsm-11-93mc8g67,Candidatus Saccharibacteria,1042
+nmdc:bsm-11-93mc8g67,Candidatus Sumerlaeota,975
+nmdc:bsm-11-93mc8g67,Candidatus Thermoplasmatota,659
+nmdc:bsm-11-93mc8g67,Chlamydiota,3767
+nmdc:bsm-11-93mc8g67,Chlorobiota,2097
+nmdc:bsm-11-93mc8g67,Chloroflexota,54311
+nmdc:bsm-11-93mc8g67,Chlorophyta,403
+nmdc:bsm-11-93mc8g67,Chordata,280
+nmdc:bsm-11-93mc8g67,Chrysiogenota,247
+nmdc:bsm-11-93mc8g67,Chytridiomycota,177
+nmdc:bsm-11-93mc8g67,Ciliophora,50
+nmdc:bsm-11-93mc8g67,Cnidaria,110
+nmdc:bsm-11-93mc8g67,Coprothermobacterota,78
+nmdc:bsm-11-93mc8g67,Cressdnaviricota,1
+nmdc:bsm-11-93mc8g67,Cyanobacteriota,71814
+nmdc:bsm-11-93mc8g67,Deferribacterota,625
+nmdc:bsm-11-93mc8g67,Deinococcota,9804
+nmdc:bsm-11-93mc8g67,Dictyoglomota,289
+nmdc:bsm-11-93mc8g67,Elusimicrobiota,919
+nmdc:bsm-11-93mc8g67,Euglenozoa,35
+nmdc:bsm-11-93mc8g67,Euryarchaeota,10940
+nmdc:bsm-11-93mc8g67,Evosea,113
+nmdc:bsm-11-93mc8g67,Fibrobacterota,409
+nmdc:bsm-11-93mc8g67,Fornicata,1
+nmdc:bsm-11-93mc8g67,Fusobacteriota,404
+nmdc:bsm-11-93mc8g67,Gemmatimonadota,22156
+nmdc:bsm-11-93mc8g67,Haptophyta,63
+nmdc:bsm-11-93mc8g67,Heterolobosea,31
+nmdc:bsm-11-93mc8g67,Ignavibacteriota,1863
+nmdc:bsm-11-93mc8g67,Kiritimatiellota,1023
+nmdc:bsm-11-93mc8g67,Lentisphaerota,621
+nmdc:bsm-11-93mc8g67,Microsporidia,13
+nmdc:bsm-11-93mc8g67,Mollusca,37
+nmdc:bsm-11-93mc8g67,Mucoromycota,1322
+nmdc:bsm-11-93mc8g67,Mycoplasmatota,484
+nmdc:bsm-11-93mc8g67,Myxococcota,81756
+nmdc:bsm-11-93mc8g67,Nanoarchaeota,3
+nmdc:bsm-11-93mc8g67,Nematoda,29
+nmdc:bsm-11-93mc8g67,Nitrososphaerota,2482
+nmdc:bsm-11-93mc8g67,Nitrospinota,1449
+nmdc:bsm-11-93mc8g67,Nitrospirota,22349
+nmdc:bsm-11-93mc8g67,Nucleocytoviricota,115
+nmdc:bsm-11-93mc8g67,Oomycota,69
+nmdc:bsm-11-93mc8g67,Parabasalia,59
+nmdc:bsm-11-93mc8g67,Peploviricota,4
+nmdc:bsm-11-93mc8g67,Perkinsozoa,15
+nmdc:bsm-11-93mc8g67,Placozoa,34
+nmdc:bsm-11-93mc8g67,Planctomycetota,107270
+nmdc:bsm-11-93mc8g67,Porifera,151
+nmdc:bsm-11-93mc8g67,Preplasmiviricota,35
+nmdc:bsm-11-93mc8g67,Pseudomonadota,2220801
+nmdc:bsm-11-93mc8g67,Retro-transcribing viruses,1
+nmdc:bsm-11-93mc8g67,Rhodothermota,5929
+nmdc:bsm-11-93mc8g67,Spirochaetota,5013
+nmdc:bsm-11-93mc8g67,Streptophyta,690
+nmdc:bsm-11-93mc8g67,Synergistota,1149
+nmdc:bsm-11-93mc8g67,Thermodesulfobacteriota,64326
+nmdc:bsm-11-93mc8g67,Thermomicrobiota,4224
+nmdc:bsm-11-93mc8g67,Thermoproteota,950
+nmdc:bsm-11-93mc8g67,Thermotogota,1037
+nmdc:bsm-11-93mc8g67,Uroviricota,1204
+nmdc:bsm-11-93mc8g67,Verrucomicrobiota,115860
+nmdc:bsm-11-93mc8g67,Zoopagomycota,135
+nmdc:bsm-11-93mc8g67,candidate division NC10,5188
+nmdc:bsm-11-93mc8g67,candidate division Zixibacteria,888
+nmdc:bsm-11-93mc8g67,dsDNA viruses,2
+nmdc:bsm-11-93mc8g67,"dsDNA viruses, no RNA stage",1542
+nmdc:bsm-11-93mc8g67,ssDNA viruses,3
+nmdc:bsm-11-93mc8g67,ssRNA viruses,1
+nmdc:bsm-11-93mc8g67,unclassified Bacteria,3896
+nmdc:bsm-11-93mc8g67,unclassified Eukaryota,175
+nmdc:bsm-11-93mc8g67,unclassified Viruses,12
+nmdc:bsm-11-93mc8g67,unclassified phages,34
+nmdc:bsm-11-93mc8g67,unclassified virophages,29
+nmdc:bsm-11-93mc8g67,unclassified viruses,26
+nmdc:bsm-11-cwey4y35,Acidobacteriota,1544201
+nmdc:bsm-11-cwey4y35,Actinomycetota,802632
+nmdc:bsm-11-cwey4y35,Annelida,99
+nmdc:bsm-11-cwey4y35,Apicomplexa,137
+nmdc:bsm-11-cwey4y35,Aquificota,2373
+nmdc:bsm-11-cwey4y35,Armatimonadota,7874
+nmdc:bsm-11-cwey4y35,Arthropoda,581
+nmdc:bsm-11-cwey4y35,Ascomycota,6439
+nmdc:bsm-11-cwey4y35,Atribacterota,843
+nmdc:bsm-11-cwey4y35,Bacillariophyta,25
+nmdc:bsm-11-cwey4y35,Bacillota,89650
+nmdc:bsm-11-cwey4y35,Bacteroidota,155500
+nmdc:bsm-11-cwey4y35,Balneolota,2180
+nmdc:bsm-11-cwey4y35,Basidiomycota,21550
+nmdc:bsm-11-cwey4y35,Bdellovibrionota,4858
+nmdc:bsm-11-cwey4y35,Blastocladiomycota,21
+nmdc:bsm-11-cwey4y35,Caldisericota,82
+nmdc:bsm-11-cwey4y35,Calditrichota,790
+nmdc:bsm-11-cwey4y35,Campylobacterota,1908
+nmdc:bsm-11-cwey4y35,Candidatus Absconditabacteria,11
+nmdc:bsm-11-cwey4y35,Candidatus Aerophobetes,736
+nmdc:bsm-11-cwey4y35,Candidatus Aminicenantes,2114
+nmdc:bsm-11-cwey4y35,Candidatus Bathyarchaeota,317
+nmdc:bsm-11-cwey4y35,Candidatus Berkelbacteria,154
+nmdc:bsm-11-cwey4y35,Candidatus Bipolaricaulota,153
+nmdc:bsm-11-cwey4y35,Candidatus Calescamantes,290
+nmdc:bsm-11-cwey4y35,Candidatus Cloacimonadota,356
+nmdc:bsm-11-cwey4y35,Candidatus Cryosericota,224
+nmdc:bsm-11-cwey4y35,Candidatus Diapherotrites,97
+nmdc:bsm-11-cwey4y35,Candidatus Fervidibacteria,1322
+nmdc:bsm-11-cwey4y35,Candidatus Gracilibacteria,60
+nmdc:bsm-11-cwey4y35,Candidatus Hydrogenedentes,210
+nmdc:bsm-11-cwey4y35,Candidatus Hydrothermae,2
+nmdc:bsm-11-cwey4y35,Candidatus Korarchaeota,169
+nmdc:bsm-11-cwey4y35,Candidatus Latescibacteria,1037
+nmdc:bsm-11-cwey4y35,Candidatus Lokiarchaeota,26
+nmdc:bsm-11-cwey4y35,Candidatus Marinimicrobia,575
+nmdc:bsm-11-cwey4y35,Candidatus Melainabacteria,341
+nmdc:bsm-11-cwey4y35,Candidatus Micrarchaeota,38
+nmdc:bsm-11-cwey4y35,Candidatus Microgenomates,2708
+nmdc:bsm-11-cwey4y35,Candidatus Nanohaloarchaeota,13
+nmdc:bsm-11-cwey4y35,Candidatus Omnitrophota,1611
+nmdc:bsm-11-cwey4y35,Candidatus Parcubacteria,3287
+nmdc:bsm-11-cwey4y35,Candidatus Poribacteria,1388
+nmdc:bsm-11-cwey4y35,Candidatus Saccharibacteria,2319
+nmdc:bsm-11-cwey4y35,Candidatus Sumerlaeota,1029
+nmdc:bsm-11-cwey4y35,Candidatus Thermoplasmatota,604
+nmdc:bsm-11-cwey4y35,Chlamydiota,3912
+nmdc:bsm-11-cwey4y35,Chlorobiota,2225
+nmdc:bsm-11-cwey4y35,Chloroflexota,55049
+nmdc:bsm-11-cwey4y35,Chlorophyta,511
+nmdc:bsm-11-cwey4y35,Chordata,367
+nmdc:bsm-11-cwey4y35,Chrysiogenota,298
+nmdc:bsm-11-cwey4y35,Chytridiomycota,209
+nmdc:bsm-11-cwey4y35,Ciliophora,55
+nmdc:bsm-11-cwey4y35,Cnidaria,207
+nmdc:bsm-11-cwey4y35,Coprothermobacterota,72
+nmdc:bsm-11-cwey4y35,Cyanobacteriota,78024
+nmdc:bsm-11-cwey4y35,Deferribacterota,662
+nmdc:bsm-11-cwey4y35,Deinococcota,10814
+nmdc:bsm-11-cwey4y35,Dictyoglomota,344
+nmdc:bsm-11-cwey4y35,Elusimicrobiota,532
+nmdc:bsm-11-cwey4y35,Euglenozoa,42
+nmdc:bsm-11-cwey4y35,Euryarchaeota,11629
+nmdc:bsm-11-cwey4y35,Evosea,113
+nmdc:bsm-11-cwey4y35,Fibrobacterota,471
+nmdc:bsm-11-cwey4y35,Fornicata,2
+nmdc:bsm-11-cwey4y35,Fusobacteriota,470
+nmdc:bsm-11-cwey4y35,Gemmatimonadota,17537
+nmdc:bsm-11-cwey4y35,Haptophyta,62
+nmdc:bsm-11-cwey4y35,Heterolobosea,36
+nmdc:bsm-11-cwey4y35,Ignavibacteriota,2000
+nmdc:bsm-11-cwey4y35,Kiritimatiellota,1215
+nmdc:bsm-11-cwey4y35,Lentisphaerota,719
+nmdc:bsm-11-cwey4y35,Microsporidia,5
+nmdc:bsm-11-cwey4y35,Mollusca,47
+nmdc:bsm-11-cwey4y35,Mucoromycota,465
+nmdc:bsm-11-cwey4y35,Mycoplasmatota,192
+nmdc:bsm-11-cwey4y35,Myxococcota,126708
+nmdc:bsm-11-cwey4y35,Nanoarchaeota,5
+nmdc:bsm-11-cwey4y35,Nematoda,30
+nmdc:bsm-11-cwey4y35,Nitrososphaerota,1853
+nmdc:bsm-11-cwey4y35,Nitrospinota,1574
+nmdc:bsm-11-cwey4y35,Nitrospirota,23153
+nmdc:bsm-11-cwey4y35,Nucleocytoviricota,54
+nmdc:bsm-11-cwey4y35,Oomycota,94
+nmdc:bsm-11-cwey4y35,Parabasalia,114
+nmdc:bsm-11-cwey4y35,Peploviricota,2
+nmdc:bsm-11-cwey4y35,Perkinsozoa,12
+nmdc:bsm-11-cwey4y35,Placozoa,45
+nmdc:bsm-11-cwey4y35,Planctomycetota,142479
+nmdc:bsm-11-cwey4y35,Porifera,222
+nmdc:bsm-11-cwey4y35,Preplasmiviricota,13
+nmdc:bsm-11-cwey4y35,Pseudomonadota,2162787
+nmdc:bsm-11-cwey4y35,Rhodothermota,5813
+nmdc:bsm-11-cwey4y35,Spirochaetota,5256
+nmdc:bsm-11-cwey4y35,Streptophyta,703
+nmdc:bsm-11-cwey4y35,Synergistota,1220
+nmdc:bsm-11-cwey4y35,Thermodesulfobacteriota,72619
+nmdc:bsm-11-cwey4y35,Thermomicrobiota,4200
+nmdc:bsm-11-cwey4y35,Thermoproteota,986
+nmdc:bsm-11-cwey4y35,Thermotogota,1136
+nmdc:bsm-11-cwey4y35,Uroviricota,939
+nmdc:bsm-11-cwey4y35,Verrucomicrobiota,131647
+nmdc:bsm-11-cwey4y35,Zoopagomycota,137
+nmdc:bsm-11-cwey4y35,candidate division NC10,5458
+nmdc:bsm-11-cwey4y35,candidate division Zixibacteria,846
+nmdc:bsm-11-cwey4y35,"dsDNA viruses, no RNA stage",1125
+nmdc:bsm-11-cwey4y35,ssDNA viruses,1
+nmdc:bsm-11-cwey4y35,unclassified Bacteria,4820
+nmdc:bsm-11-cwey4y35,unclassified Eukaryota,163
+nmdc:bsm-11-cwey4y35,unclassified Viruses,7
+nmdc:bsm-11-cwey4y35,unclassified phages,30
+nmdc:bsm-11-cwey4y35,unclassified virophages,9
+nmdc:bsm-11-cwey4y35,unclassified viruses,124
+nmdc:bsm-11-frgt4x11,Acidobacteriota,1423408
+nmdc:bsm-11-frgt4x11,Actinomycetota,695702
+nmdc:bsm-11-frgt4x11,Annelida,418
+nmdc:bsm-11-frgt4x11,Apicomplexa,192
+nmdc:bsm-11-frgt4x11,Aquificota,2452
+nmdc:bsm-11-frgt4x11,Armatimonadota,8477
+nmdc:bsm-11-frgt4x11,Arthropoda,517
+nmdc:bsm-11-frgt4x11,Artverviricota,5
+nmdc:bsm-11-frgt4x11,Ascomycota,8132
+nmdc:bsm-11-frgt4x11,Atribacterota,892
+nmdc:bsm-11-frgt4x11,Bacillariophyta,28
+nmdc:bsm-11-frgt4x11,Bacillota,103110
+nmdc:bsm-11-frgt4x11,Bacteroidota,156172
+nmdc:bsm-11-frgt4x11,Balneolota,2449
+nmdc:bsm-11-frgt4x11,Basidiomycota,25233
+nmdc:bsm-11-frgt4x11,Bdellovibrionota,2937
+nmdc:bsm-11-frgt4x11,Blastocladiomycota,31
+nmdc:bsm-11-frgt4x11,Caldisericota,112
+nmdc:bsm-11-frgt4x11,Calditrichota,891
+nmdc:bsm-11-frgt4x11,Campylobacterota,1732
+nmdc:bsm-11-frgt4x11,Candidatus Absconditabacteria,3
+nmdc:bsm-11-frgt4x11,Candidatus Aerophobetes,840
+nmdc:bsm-11-frgt4x11,Candidatus Aminicenantes,2716
+nmdc:bsm-11-frgt4x11,Candidatus Bathyarchaeota,430
+nmdc:bsm-11-frgt4x11,Candidatus Berkelbacteria,75
+nmdc:bsm-11-frgt4x11,Candidatus Bipolaricaulota,142
+nmdc:bsm-11-frgt4x11,Candidatus Calescamantes,238
+nmdc:bsm-11-frgt4x11,Candidatus Cloacimonadota,284
+nmdc:bsm-11-frgt4x11,Candidatus Cryosericota,243
+nmdc:bsm-11-frgt4x11,Candidatus Diapherotrites,100
+nmdc:bsm-11-frgt4x11,Candidatus Fervidibacteria,1453
+nmdc:bsm-11-frgt4x11,Candidatus Gracilibacteria,24
+nmdc:bsm-11-frgt4x11,Candidatus Hydrogenedentes,205
+nmdc:bsm-11-frgt4x11,Candidatus Korarchaeota,202
+nmdc:bsm-11-frgt4x11,Candidatus Latescibacteria,1067
+nmdc:bsm-11-frgt4x11,Candidatus Lokiarchaeota,33
+nmdc:bsm-11-frgt4x11,Candidatus Marinimicrobia,629
+nmdc:bsm-11-frgt4x11,Candidatus Melainabacteria,370
+nmdc:bsm-11-frgt4x11,Candidatus Micrarchaeota,148
+nmdc:bsm-11-frgt4x11,Candidatus Microgenomates,990
+nmdc:bsm-11-frgt4x11,Candidatus Nanohaloarchaeota,7
+nmdc:bsm-11-frgt4x11,Candidatus Omnitrophota,1625
+nmdc:bsm-11-frgt4x11,Candidatus Parcubacteria,712
+nmdc:bsm-11-frgt4x11,Candidatus Poribacteria,1434
+nmdc:bsm-11-frgt4x11,Candidatus Saccharibacteria,511
+nmdc:bsm-11-frgt4x11,Candidatus Sumerlaeota,1174
+nmdc:bsm-11-frgt4x11,Candidatus Thermoplasmatota,1930
+nmdc:bsm-11-frgt4x11,Chlamydiota,1895
+nmdc:bsm-11-frgt4x11,Chlorobiota,2412
+nmdc:bsm-11-frgt4x11,Chloroflexota,98456
+nmdc:bsm-11-frgt4x11,Chlorophyta,464
+nmdc:bsm-11-frgt4x11,Chordata,360
+nmdc:bsm-11-frgt4x11,Chrysiogenota,267
+nmdc:bsm-11-frgt4x11,Chytridiomycota,152
+nmdc:bsm-11-frgt4x11,Ciliophora,28
+nmdc:bsm-11-frgt4x11,Cnidaria,403
+nmdc:bsm-11-frgt4x11,Coprothermobacterota,95
+nmdc:bsm-11-frgt4x11,Cyanobacteriota,78942
+nmdc:bsm-11-frgt4x11,Deferribacterota,700
+nmdc:bsm-11-frgt4x11,Deinococcota,12019
+nmdc:bsm-11-frgt4x11,Dictyoglomota,415
+nmdc:bsm-11-frgt4x11,Elusimicrobiota,956
+nmdc:bsm-11-frgt4x11,Euglenozoa,34
+nmdc:bsm-11-frgt4x11,Euryarchaeota,13755
+nmdc:bsm-11-frgt4x11,Evosea,85
+nmdc:bsm-11-frgt4x11,Fibrobacterota,428
+nmdc:bsm-11-frgt4x11,Fornicata,2
+nmdc:bsm-11-frgt4x11,Fusobacteriota,410
+nmdc:bsm-11-frgt4x11,Gemmatimonadota,25527
+nmdc:bsm-11-frgt4x11,Haptophyta,57
+nmdc:bsm-11-frgt4x11,Heterolobosea,27
+nmdc:bsm-11-frgt4x11,Ignavibacteriota,2220
+nmdc:bsm-11-frgt4x11,Kiritimatiellota,1102
+nmdc:bsm-11-frgt4x11,Lentisphaerota,653
+nmdc:bsm-11-frgt4x11,Microsporidia,3
+nmdc:bsm-11-frgt4x11,Mollusca,72
+nmdc:bsm-11-frgt4x11,Mucoromycota,437
+nmdc:bsm-11-frgt4x11,Mycoplasmatota,212
+nmdc:bsm-11-frgt4x11,Myxococcota,114974
+nmdc:bsm-11-frgt4x11,Nanoarchaeota,2
+nmdc:bsm-11-frgt4x11,Nematoda,35
+nmdc:bsm-11-frgt4x11,Nitrososphaerota,3907
+nmdc:bsm-11-frgt4x11,Nitrospinota,1610
+nmdc:bsm-11-frgt4x11,Nitrospirota,24307
+nmdc:bsm-11-frgt4x11,Nucleocytoviricota,57
+nmdc:bsm-11-frgt4x11,Oomycota,61
+nmdc:bsm-11-frgt4x11,Parabasalia,71
+nmdc:bsm-11-frgt4x11,Peploviricota,8
+nmdc:bsm-11-frgt4x11,Perkinsozoa,19
+nmdc:bsm-11-frgt4x11,Placozoa,36
+nmdc:bsm-11-frgt4x11,Planctomycetota,118709
+nmdc:bsm-11-frgt4x11,Porifera,263
+nmdc:bsm-11-frgt4x11,Preplasmiviricota,16
+nmdc:bsm-11-frgt4x11,Pseudomonadota,2098131
+nmdc:bsm-11-frgt4x11,Retro-transcribing viruses,1
+nmdc:bsm-11-frgt4x11,Rhodothermota,6910
+nmdc:bsm-11-frgt4x11,Spirochaetota,5283
+nmdc:bsm-11-frgt4x11,Streptophyta,697
+nmdc:bsm-11-frgt4x11,Synergistota,1351
+nmdc:bsm-11-frgt4x11,Thermodesulfobacteriota,71214
+nmdc:bsm-11-frgt4x11,Thermomicrobiota,7087
+nmdc:bsm-11-frgt4x11,Thermoproteota,1443
+nmdc:bsm-11-frgt4x11,Thermotogota,1175
+nmdc:bsm-11-frgt4x11,Uroviricota,510
+nmdc:bsm-11-frgt4x11,Verrucomicrobiota,107137
+nmdc:bsm-11-frgt4x11,Zoopagomycota,109
+nmdc:bsm-11-frgt4x11,candidate division NC10,6117
+nmdc:bsm-11-frgt4x11,candidate division Zixibacteria,996
+nmdc:bsm-11-frgt4x11,"dsDNA viruses, no RNA stage",890
+nmdc:bsm-11-frgt4x11,ssDNA viruses,1
+nmdc:bsm-11-frgt4x11,unclassified Bacteria,4468
+nmdc:bsm-11-frgt4x11,unclassified Eukaryota,148
+nmdc:bsm-11-frgt4x11,unclassified Viruses,5
+nmdc:bsm-11-frgt4x11,unclassified phages,22
+nmdc:bsm-11-frgt4x11,unclassified viruses,7
+nmdc:bsm-11-g61cvw79,Acidobacteriota,1416465
+nmdc:bsm-11-g61cvw79,Actinomycetota,455532
+nmdc:bsm-11-g61cvw79,Annelida,78
+nmdc:bsm-11-g61cvw79,Apicomplexa,120
+nmdc:bsm-11-g61cvw79,Aquificota,2364
+nmdc:bsm-11-g61cvw79,Armatimonadota,7598
+nmdc:bsm-11-g61cvw79,Arthropoda,304
+nmdc:bsm-11-g61cvw79,Artverviricota,6
+nmdc:bsm-11-g61cvw79,Ascomycota,2742
+nmdc:bsm-11-g61cvw79,Atribacterota,846
+nmdc:bsm-11-g61cvw79,Bacillariophyta,29
+nmdc:bsm-11-g61cvw79,Bacillota,90935
+nmdc:bsm-11-g61cvw79,Bacteroidota,115619
+nmdc:bsm-11-g61cvw79,Balneolota,2333
+nmdc:bsm-11-g61cvw79,Basidiomycota,19701
+nmdc:bsm-11-g61cvw79,Bdellovibrionota,4085
+nmdc:bsm-11-g61cvw79,Blastocladiomycota,25
+nmdc:bsm-11-g61cvw79,Caldisericota,96
+nmdc:bsm-11-g61cvw79,Calditrichota,824
+nmdc:bsm-11-g61cvw79,Campylobacterota,1606
+nmdc:bsm-11-g61cvw79,Candidatus Absconditabacteria,5
+nmdc:bsm-11-g61cvw79,Candidatus Aerophobetes,725
+nmdc:bsm-11-g61cvw79,Candidatus Aminicenantes,2574
+nmdc:bsm-11-g61cvw79,Candidatus Bathyarchaeota,300
+nmdc:bsm-11-g61cvw79,Candidatus Berkelbacteria,79
+nmdc:bsm-11-g61cvw79,Candidatus Bipolaricaulota,141
+nmdc:bsm-11-g61cvw79,Candidatus Calescamantes,259
+nmdc:bsm-11-g61cvw79,Candidatus Cloacimonadota,269
+nmdc:bsm-11-g61cvw79,Candidatus Cryosericota,201
+nmdc:bsm-11-g61cvw79,Candidatus Diapherotrites,87
+nmdc:bsm-11-g61cvw79,Candidatus Fervidibacteria,1448
+nmdc:bsm-11-g61cvw79,Candidatus Gracilibacteria,18
+nmdc:bsm-11-g61cvw79,Candidatus Hydrogenedentes,191
+nmdc:bsm-11-g61cvw79,Candidatus Hydrothermae,2
+nmdc:bsm-11-g61cvw79,Candidatus Korarchaeota,180
+nmdc:bsm-11-g61cvw79,Candidatus Latescibacteria,1013
+nmdc:bsm-11-g61cvw79,Candidatus Lokiarchaeota,28
+nmdc:bsm-11-g61cvw79,Candidatus Marinimicrobia,584
+nmdc:bsm-11-g61cvw79,Candidatus Melainabacteria,401
+nmdc:bsm-11-g61cvw79,Candidatus Micrarchaeota,169
+nmdc:bsm-11-g61cvw79,Candidatus Microgenomates,929
+nmdc:bsm-11-g61cvw79,Candidatus Nanohaloarchaeota,4
+nmdc:bsm-11-g61cvw79,Candidatus Omnitrophota,1508
+nmdc:bsm-11-g61cvw79,Candidatus Parcubacteria,578
+nmdc:bsm-11-g61cvw79,Candidatus Poribacteria,1477
+nmdc:bsm-11-g61cvw79,Candidatus Saccharibacteria,165
+nmdc:bsm-11-g61cvw79,Candidatus Sumerlaeota,1098
+nmdc:bsm-11-g61cvw79,Candidatus Thermoplasmatota,517
+nmdc:bsm-11-g61cvw79,Cercozoa,1
+nmdc:bsm-11-g61cvw79,Chlamydiota,2444
+nmdc:bsm-11-g61cvw79,Chlorobiota,2236
+nmdc:bsm-11-g61cvw79,Chloroflexota,57018
+nmdc:bsm-11-g61cvw79,Chlorophyta,397
+nmdc:bsm-11-g61cvw79,Chordata,261
+nmdc:bsm-11-g61cvw79,Chrysiogenota,273
+nmdc:bsm-11-g61cvw79,Chytridiomycota,168
+nmdc:bsm-11-g61cvw79,Ciliophora,41
+nmdc:bsm-11-g61cvw79,Cnidaria,102
+nmdc:bsm-11-g61cvw79,Coprothermobacterota,94
+nmdc:bsm-11-g61cvw79,Cyanobacteriota,80297
+nmdc:bsm-11-g61cvw79,Deferribacterota,720
+nmdc:bsm-11-g61cvw79,Deinococcota,11123
+nmdc:bsm-11-g61cvw79,Dictyoglomota,369
+nmdc:bsm-11-g61cvw79,Elusimicrobiota,603
+nmdc:bsm-11-g61cvw79,Euglenozoa,39
+nmdc:bsm-11-g61cvw79,Euryarchaeota,11856
+nmdc:bsm-11-g61cvw79,Evosea,73
+nmdc:bsm-11-g61cvw79,Fibrobacterota,455
+nmdc:bsm-11-g61cvw79,Fusobacteriota,393
+nmdc:bsm-11-g61cvw79,Gemmatimonadota,21733
+nmdc:bsm-11-g61cvw79,Haptophyta,54
+nmdc:bsm-11-g61cvw79,Heterolobosea,21
+nmdc:bsm-11-g61cvw79,Ignavibacteriota,1867
+nmdc:bsm-11-g61cvw79,Kiritimatiellota,1258
+nmdc:bsm-11-g61cvw79,Lentisphaerota,693
+nmdc:bsm-11-g61cvw79,Microsporidia,6
+nmdc:bsm-11-g61cvw79,Mollusca,30
+nmdc:bsm-11-g61cvw79,Mucoromycota,212
+nmdc:bsm-11-g61cvw79,Mycoplasmatota,157
+nmdc:bsm-11-g61cvw79,Myxococcota,94847
+nmdc:bsm-11-g61cvw79,Nanoarchaeota,1
+nmdc:bsm-11-g61cvw79,Nematoda,10
+nmdc:bsm-11-g61cvw79,Nitrososphaerota,4934
+nmdc:bsm-11-g61cvw79,Nitrospinota,1610
+nmdc:bsm-11-g61cvw79,Nitrospirota,24369
+nmdc:bsm-11-g61cvw79,Nucleocytoviricota,59
+nmdc:bsm-11-g61cvw79,Oomycota,72
+nmdc:bsm-11-g61cvw79,Parabasalia,120
+nmdc:bsm-11-g61cvw79,Peploviricota,3
+nmdc:bsm-11-g61cvw79,Perkinsozoa,23
+nmdc:bsm-11-g61cvw79,Placozoa,23
+nmdc:bsm-11-g61cvw79,Planctomycetota,150000
+nmdc:bsm-11-g61cvw79,Porifera,141
+nmdc:bsm-11-g61cvw79,Preplasmiviricota,21
+nmdc:bsm-11-g61cvw79,Pseudomonadota,2164452
+nmdc:bsm-11-g61cvw79,Rhodothermota,6467
+nmdc:bsm-11-g61cvw79,Spirochaetota,5132
+nmdc:bsm-11-g61cvw79,Streptophyta,697
+nmdc:bsm-11-g61cvw79,Synergistota,1265
+nmdc:bsm-11-g61cvw79,Thermodesulfobacteriota,72469
+nmdc:bsm-11-g61cvw79,Thermomicrobiota,5005
+nmdc:bsm-11-g61cvw79,Thermoproteota,1038
+nmdc:bsm-11-g61cvw79,Thermotogota,1131
+nmdc:bsm-11-g61cvw79,Uroviricota,714
+nmdc:bsm-11-g61cvw79,Verrucomicrobiota,152291
+nmdc:bsm-11-g61cvw79,Zoopagomycota,100
+nmdc:bsm-11-g61cvw79,candidate division NC10,6065
+nmdc:bsm-11-g61cvw79,candidate division Zixibacteria,947
+nmdc:bsm-11-g61cvw79,dsDNA viruses,1
+nmdc:bsm-11-g61cvw79,"dsDNA viruses, no RNA stage",974
+nmdc:bsm-11-g61cvw79,unclassified Bacteria,4496
+nmdc:bsm-11-g61cvw79,unclassified Eukaryota,145
+nmdc:bsm-11-g61cvw79,unclassified Viruses,5
+nmdc:bsm-11-g61cvw79,unclassified phages,12
+nmdc:bsm-11-g61cvw79,unclassified virophages,5
+nmdc:bsm-11-g61cvw79,unclassified viruses,8
+nmdc:bsm-11-gk0czc37,Acidobacteriota,1422870
+nmdc:bsm-11-gk0czc37,Actinomycetota,725849
+nmdc:bsm-11-gk0czc37,Annelida,68
+nmdc:bsm-11-gk0czc37,Apicomplexa,146
+nmdc:bsm-11-gk0czc37,Aquificota,2178
+nmdc:bsm-11-gk0czc37,Armatimonadota,7669
+nmdc:bsm-11-gk0czc37,Arthropoda,298
+nmdc:bsm-11-gk0czc37,Artverviricota,3
+nmdc:bsm-11-gk0czc37,Ascomycota,16990
+nmdc:bsm-11-gk0czc37,Atribacterota,821
+nmdc:bsm-11-gk0czc37,Bacillariophyta,28
+nmdc:bsm-11-gk0czc37,Bacillota,92601
+nmdc:bsm-11-gk0czc37,Bacteroidota,182836
+nmdc:bsm-11-gk0czc37,Balneolota,2213
+nmdc:bsm-11-gk0czc37,Basidiomycota,9031
+nmdc:bsm-11-gk0czc37,Bdellovibrionota,5142
+nmdc:bsm-11-gk0czc37,Blastocladiomycota,32
+nmdc:bsm-11-gk0czc37,Caldisericota,104
+nmdc:bsm-11-gk0czc37,Calditrichota,715
+nmdc:bsm-11-gk0czc37,Campylobacterota,1735
+nmdc:bsm-11-gk0czc37,Candidatus Absconditabacteria,6
+nmdc:bsm-11-gk0czc37,Candidatus Aerophobetes,643
+nmdc:bsm-11-gk0czc37,Candidatus Aminicenantes,2129
+nmdc:bsm-11-gk0czc37,Candidatus Bathyarchaeota,363
+nmdc:bsm-11-gk0czc37,Candidatus Berkelbacteria,163
+nmdc:bsm-11-gk0czc37,Candidatus Bipolaricaulota,129
+nmdc:bsm-11-gk0czc37,Candidatus Calescamantes,224
+nmdc:bsm-11-gk0czc37,Candidatus Cloacimonadota,324
+nmdc:bsm-11-gk0czc37,Candidatus Cryosericota,182
+nmdc:bsm-11-gk0czc37,Candidatus Diapherotrites,70
+nmdc:bsm-11-gk0czc37,Candidatus Fervidibacteria,1331
+nmdc:bsm-11-gk0czc37,Candidatus Gracilibacteria,53
+nmdc:bsm-11-gk0czc37,Candidatus Hydrogenedentes,201
+nmdc:bsm-11-gk0czc37,Candidatus Hydrothermae,4
+nmdc:bsm-11-gk0czc37,Candidatus Korarchaeota,146
+nmdc:bsm-11-gk0czc37,Candidatus Latescibacteria,923
+nmdc:bsm-11-gk0czc37,Candidatus Lokiarchaeota,23
+nmdc:bsm-11-gk0czc37,Candidatus Marinimicrobia,512
+nmdc:bsm-11-gk0czc37,Candidatus Melainabacteria,408
+nmdc:bsm-11-gk0czc37,Candidatus Micrarchaeota,19
+nmdc:bsm-11-gk0czc37,Candidatus Microgenomates,2927
+nmdc:bsm-11-gk0czc37,Candidatus Nanohaloarchaeota,11
+nmdc:bsm-11-gk0czc37,Candidatus Omnitrophota,1386
+nmdc:bsm-11-gk0czc37,Candidatus Parcubacteria,2705
+nmdc:bsm-11-gk0czc37,Candidatus Poribacteria,1252
+nmdc:bsm-11-gk0czc37,Candidatus Saccharibacteria,1959
+nmdc:bsm-11-gk0czc37,Candidatus Sumerlaeota,1017
+nmdc:bsm-11-gk0czc37,Candidatus Thermoplasmatota,475
+nmdc:bsm-11-gk0czc37,Cercozoa,2
+nmdc:bsm-11-gk0czc37,Chlamydiota,3350
+nmdc:bsm-11-gk0czc37,Chlorobiota,2104
+nmdc:bsm-11-gk0czc37,Chloroflexota,88899
+nmdc:bsm-11-gk0czc37,Chlorophyta,464
+nmdc:bsm-11-gk0czc37,Chordata,283
+nmdc:bsm-11-gk0czc37,Chrysiogenota,254
+nmdc:bsm-11-gk0czc37,Chytridiomycota,228
+nmdc:bsm-11-gk0czc37,Ciliophora,49
+nmdc:bsm-11-gk0czc37,Cnidaria,103
+nmdc:bsm-11-gk0czc37,Coprothermobacterota,69
+nmdc:bsm-11-gk0czc37,Cyanobacteriota,74384
+nmdc:bsm-11-gk0czc37,Deferribacterota,647
+nmdc:bsm-11-gk0czc37,Deinococcota,10808
+nmdc:bsm-11-gk0czc37,Dictyoglomota,351
+nmdc:bsm-11-gk0czc37,Elusimicrobiota,1207
+nmdc:bsm-11-gk0czc37,Euglenozoa,44
+nmdc:bsm-11-gk0czc37,Euryarchaeota,11503
+nmdc:bsm-11-gk0czc37,Evosea,120
+nmdc:bsm-11-gk0czc37,Fibrobacterota,458
+nmdc:bsm-11-gk0czc37,Fornicata,2
+nmdc:bsm-11-gk0czc37,Fusobacteriota,479
+nmdc:bsm-11-gk0czc37,Gemmatimonadota,21911
+nmdc:bsm-11-gk0czc37,Haptophyta,69
+nmdc:bsm-11-gk0czc37,Heterolobosea,44
+nmdc:bsm-11-gk0czc37,Ignavibacteriota,1767
+nmdc:bsm-11-gk0czc37,Kiritimatiellota,1039
+nmdc:bsm-11-gk0czc37,Lentisphaerota,680
+nmdc:bsm-11-gk0czc37,Microsporidia,7
+nmdc:bsm-11-gk0czc37,Mollusca,29
+nmdc:bsm-11-gk0czc37,Mucoromycota,1722
+nmdc:bsm-11-gk0czc37,Mycoplasmatota,220
+nmdc:bsm-11-gk0czc37,Myxococcota,106059
+nmdc:bsm-11-gk0czc37,Nanoarchaeota,3
+nmdc:bsm-11-gk0czc37,Nematoda,19
+nmdc:bsm-11-gk0czc37,Nitrososphaerota,3446
+nmdc:bsm-11-gk0czc37,Nitrospinota,1418
+nmdc:bsm-11-gk0czc37,Nitrospirota,21365
+nmdc:bsm-11-gk0czc37,Nucleocytoviricota,124
+nmdc:bsm-11-gk0czc37,Oomycota,102
+nmdc:bsm-11-gk0czc37,Parabasalia,79
+nmdc:bsm-11-gk0czc37,Peploviricota,3
+nmdc:bsm-11-gk0czc37,Perkinsozoa,21
+nmdc:bsm-11-gk0czc37,Placozoa,28
+nmdc:bsm-11-gk0czc37,Planctomycetota,139696
+nmdc:bsm-11-gk0czc37,Porifera,141
+nmdc:bsm-11-gk0czc37,Preplasmiviricota,21
+nmdc:bsm-11-gk0czc37,Pseudomonadota,2531327
+nmdc:bsm-11-gk0czc37,Rhodothermota,5814
+nmdc:bsm-11-gk0czc37,Spirochaetota,5129
+nmdc:bsm-11-gk0czc37,Streptophyta,794
+nmdc:bsm-11-gk0czc37,Synergistota,1237
+nmdc:bsm-11-gk0czc37,Thermodesulfobacteriota,64995
+nmdc:bsm-11-gk0czc37,Thermomicrobiota,6094
+nmdc:bsm-11-gk0czc37,Thermoproteota,942
+nmdc:bsm-11-gk0czc37,Thermotogota,1139
+nmdc:bsm-11-gk0czc37,Uroviricota,993
+nmdc:bsm-11-gk0czc37,Verrucomicrobiota,132935
+nmdc:bsm-11-gk0czc37,Zoopagomycota,152
+nmdc:bsm-11-gk0czc37,candidate division NC10,5199
+nmdc:bsm-11-gk0czc37,candidate division Zixibacteria,819
+nmdc:bsm-11-gk0czc37,dsDNA,3
+nmdc:bsm-11-gk0czc37,"dsDNA viruses, no RNA stage",1407
+nmdc:bsm-11-gk0czc37,unassigned viruses,1
+nmdc:bsm-11-gk0czc37,unclassified Bacteria,4115
+nmdc:bsm-11-gk0czc37,unclassified Eukaryota,177
+nmdc:bsm-11-gk0czc37,unclassified Viruses,14
+nmdc:bsm-11-gk0czc37,unclassified phages,19
+nmdc:bsm-11-gk0czc37,unclassified virophages,11
+nmdc:bsm-11-gk0czc37,unclassified viruses,32
+nmdc:bsm-11-gr59rt72,Acidobacteriota,852568
+nmdc:bsm-11-gr59rt72,Actinomycetota,506636
+nmdc:bsm-11-gr59rt72,Annelida,102
+nmdc:bsm-11-gr59rt72,Apicomplexa,83
+nmdc:bsm-11-gr59rt72,Aquificota,1657
+nmdc:bsm-11-gr59rt72,Armatimonadota,4963
+nmdc:bsm-11-gr59rt72,Arthropoda,524
+nmdc:bsm-11-gr59rt72,Artverviricota,1
+nmdc:bsm-11-gr59rt72,Ascomycota,2114
+nmdc:bsm-11-gr59rt72,Atribacterota,654
+nmdc:bsm-11-gr59rt72,Bacillariophyta,28
+nmdc:bsm-11-gr59rt72,Bacillota,67834
+nmdc:bsm-11-gr59rt72,Bacteroidota,96991
+nmdc:bsm-11-gr59rt72,Balneolota,1587
+nmdc:bsm-11-gr59rt72,Basidiomycota,6971
+nmdc:bsm-11-gr59rt72,Bdellovibrionota,2097
+nmdc:bsm-11-gr59rt72,Blastocladiomycota,12
+nmdc:bsm-11-gr59rt72,Caldisericota,94
+nmdc:bsm-11-gr59rt72,Calditrichota,582
+nmdc:bsm-11-gr59rt72,Campylobacterota,1183
+nmdc:bsm-11-gr59rt72,Candidatus Absconditabacteria,6
+nmdc:bsm-11-gr59rt72,Candidatus Aerophobetes,539
+nmdc:bsm-11-gr59rt72,Candidatus Aminicenantes,1726
+nmdc:bsm-11-gr59rt72,Candidatus Bathyarchaeota,1748
+nmdc:bsm-11-gr59rt72,Candidatus Berkelbacteria,68
+nmdc:bsm-11-gr59rt72,Candidatus Bipolaricaulota,86
+nmdc:bsm-11-gr59rt72,Candidatus Calescamantes,191
+nmdc:bsm-11-gr59rt72,Candidatus Cloacimonadota,246
+nmdc:bsm-11-gr59rt72,Candidatus Cryosericota,145
+nmdc:bsm-11-gr59rt72,Candidatus Diapherotrites,73
+nmdc:bsm-11-gr59rt72,Candidatus Fervidibacteria,938
+nmdc:bsm-11-gr59rt72,Candidatus Gracilibacteria,20
+nmdc:bsm-11-gr59rt72,Candidatus Hydrogenedentes,126
+nmdc:bsm-11-gr59rt72,Candidatus Hydrothermae,2
+nmdc:bsm-11-gr59rt72,Candidatus Korarchaeota,214
+nmdc:bsm-11-gr59rt72,Candidatus Latescibacteria,653
+nmdc:bsm-11-gr59rt72,Candidatus Lokiarchaeota,37
+nmdc:bsm-11-gr59rt72,Candidatus Marinimicrobia,426
+nmdc:bsm-11-gr59rt72,Candidatus Melainabacteria,246
+nmdc:bsm-11-gr59rt72,Candidatus Micrarchaeota,39
+nmdc:bsm-11-gr59rt72,Candidatus Microgenomates,1158
+nmdc:bsm-11-gr59rt72,Candidatus Nanohaloarchaeota,5
+nmdc:bsm-11-gr59rt72,Candidatus Omnitrophota,1026
+nmdc:bsm-11-gr59rt72,Candidatus Parcubacteria,938
+nmdc:bsm-11-gr59rt72,Candidatus Poribacteria,856
+nmdc:bsm-11-gr59rt72,Candidatus Saccharibacteria,722
+nmdc:bsm-11-gr59rt72,Candidatus Sumerlaeota,697
+nmdc:bsm-11-gr59rt72,Candidatus Thermoplasmatota,1103
+nmdc:bsm-11-gr59rt72,Chlamydiota,1731
+nmdc:bsm-11-gr59rt72,Chlorobiota,1450
+nmdc:bsm-11-gr59rt72,Chloroflexota,80390
+nmdc:bsm-11-gr59rt72,Chlorophyta,263
+nmdc:bsm-11-gr59rt72,Chordata,278
+nmdc:bsm-11-gr59rt72,Chrysiogenota,188
+nmdc:bsm-11-gr59rt72,Chytridiomycota,146
+nmdc:bsm-11-gr59rt72,Ciliophora,31
+nmdc:bsm-11-gr59rt72,Cnidaria,113
+nmdc:bsm-11-gr59rt72,Coprothermobacterota,68
+nmdc:bsm-11-gr59rt72,Cyanobacteriota,49741
+nmdc:bsm-11-gr59rt72,Deferribacterota,478
+nmdc:bsm-11-gr59rt72,Deinococcota,7795
+nmdc:bsm-11-gr59rt72,Dictyoglomota,282
+nmdc:bsm-11-gr59rt72,Elusimicrobiota,365
+nmdc:bsm-11-gr59rt72,Euglenozoa,37
+nmdc:bsm-11-gr59rt72,Euryarchaeota,10036
+nmdc:bsm-11-gr59rt72,Evosea,81
+nmdc:bsm-11-gr59rt72,Fibrobacterota,342
+nmdc:bsm-11-gr59rt72,Fornicata,2
+nmdc:bsm-11-gr59rt72,Fusobacteriota,326
+nmdc:bsm-11-gr59rt72,Gemmatimonadota,16213
+nmdc:bsm-11-gr59rt72,Haptophyta,33
+nmdc:bsm-11-gr59rt72,Heterolobosea,30
+nmdc:bsm-11-gr59rt72,Ignavibacteriota,1189
+nmdc:bsm-11-gr59rt72,Kiritimatiellota,847
+nmdc:bsm-11-gr59rt72,Lentisphaerota,400
+nmdc:bsm-11-gr59rt72,Microsporidia,8
+nmdc:bsm-11-gr59rt72,Mollusca,49
+nmdc:bsm-11-gr59rt72,Mucoromycota,190
+nmdc:bsm-11-gr59rt72,Mycoplasmatota,127
+nmdc:bsm-11-gr59rt72,Myxococcota,61863
+nmdc:bsm-11-gr59rt72,Nanoarchaeota,2
+nmdc:bsm-11-gr59rt72,Nematoda,21
+nmdc:bsm-11-gr59rt72,Nitrososphaerota,10729
+nmdc:bsm-11-gr59rt72,Nitrospinota,1115
+nmdc:bsm-11-gr59rt72,Nitrospirota,22772
+nmdc:bsm-11-gr59rt72,Nucleocytoviricota,160
+nmdc:bsm-11-gr59rt72,Oomycota,49
+nmdc:bsm-11-gr59rt72,Parabasalia,36
+nmdc:bsm-11-gr59rt72,Peploviricota,1
+nmdc:bsm-11-gr59rt72,Perkinsozoa,9
+nmdc:bsm-11-gr59rt72,Placozoa,29
+nmdc:bsm-11-gr59rt72,Planctomycetota,63703
+nmdc:bsm-11-gr59rt72,Porifera,124
+nmdc:bsm-11-gr59rt72,Preplasmiviricota,14
+nmdc:bsm-11-gr59rt72,Pseudomonadota,1387007
+nmdc:bsm-11-gr59rt72,Rhodothermota,4308
+nmdc:bsm-11-gr59rt72,Spirochaetota,3540
+nmdc:bsm-11-gr59rt72,Streptophyta,469
+nmdc:bsm-11-gr59rt72,Synergistota,901
+nmdc:bsm-11-gr59rt72,Thermodesulfobacteriota,46767
+nmdc:bsm-11-gr59rt72,Thermomicrobiota,4805
+nmdc:bsm-11-gr59rt72,Thermoproteota,1804
+nmdc:bsm-11-gr59rt72,Thermotogota,885
+nmdc:bsm-11-gr59rt72,Uroviricota,603
+nmdc:bsm-11-gr59rt72,Verrucomicrobiota,90579
+nmdc:bsm-11-gr59rt72,Zoopagomycota,103
+nmdc:bsm-11-gr59rt72,candidate division NC10,4353
+nmdc:bsm-11-gr59rt72,candidate division Zixibacteria,748
+nmdc:bsm-11-gr59rt72,"dsDNA viruses, no RNA stage",852
+nmdc:bsm-11-gr59rt72,unclassified Bacteria,3312
+nmdc:bsm-11-gr59rt72,unclassified Eukaryota,101
+nmdc:bsm-11-gr59rt72,unclassified Viruses,9
+nmdc:bsm-11-gr59rt72,unclassified phages,11
+nmdc:bsm-11-gr59rt72,unclassified virophages,16
+nmdc:bsm-11-gr59rt72,unclassified viruses,41
+nmdc:bsm-11-xtz7he28,Acidobacteriota,1343374
+nmdc:bsm-11-xtz7he28,Actinomycetota,1212107
+nmdc:bsm-11-xtz7he28,Annelida,128
+nmdc:bsm-11-xtz7he28,Apicomplexa,152
+nmdc:bsm-11-xtz7he28,Aquificota,1615
+nmdc:bsm-11-xtz7he28,Armatimonadota,7430
+nmdc:bsm-11-xtz7he28,Arthropoda,742
+nmdc:bsm-11-xtz7he28,Artverviricota,8
+nmdc:bsm-11-xtz7he28,Ascomycota,21183
+nmdc:bsm-11-xtz7he28,Atribacterota,620
+nmdc:bsm-11-xtz7he28,Bacillariophyta,36
+nmdc:bsm-11-xtz7he28,Bacillota,71475
+nmdc:bsm-11-xtz7he28,Bacteroidota,280213
+nmdc:bsm-11-xtz7he28,Balneolota,1679
+nmdc:bsm-11-xtz7he28,Basidiomycota,18990
+nmdc:bsm-11-xtz7he28,Bdellovibrionota,2554
+nmdc:bsm-11-xtz7he28,Blastocladiomycota,39
+nmdc:bsm-11-xtz7he28,Caldisericota,66
+nmdc:bsm-11-xtz7he28,Calditrichota,544
+nmdc:bsm-11-xtz7he28,Campylobacterota,1483
+nmdc:bsm-11-xtz7he28,Candidatus Absconditabacteria,5
+nmdc:bsm-11-xtz7he28,Candidatus Aerophobetes,472
+nmdc:bsm-11-xtz7he28,Candidatus Aminicenantes,1447
+nmdc:bsm-11-xtz7he28,Candidatus Bathyarchaeota,350
+nmdc:bsm-11-xtz7he28,Candidatus Berkelbacteria,101
+nmdc:bsm-11-xtz7he28,Candidatus Bipolaricaulota,102
+nmdc:bsm-11-xtz7he28,Candidatus Calescamantes,176
+nmdc:bsm-11-xtz7he28,Candidatus Cloacimonadota,256
+nmdc:bsm-11-xtz7he28,Candidatus Cryosericota,144
+nmdc:bsm-11-xtz7he28,Candidatus Diapherotrites,62
+nmdc:bsm-11-xtz7he28,Candidatus Fervidibacteria,867
+nmdc:bsm-11-xtz7he28,Candidatus Gracilibacteria,23
+nmdc:bsm-11-xtz7he28,Candidatus Hydrogenedentes,169
+nmdc:bsm-11-xtz7he28,Candidatus Hydrothermae,3
+nmdc:bsm-11-xtz7he28,Candidatus Korarchaeota,145
+nmdc:bsm-11-xtz7he28,Candidatus Latescibacteria,741
+nmdc:bsm-11-xtz7he28,Candidatus Lokiarchaeota,15
+nmdc:bsm-11-xtz7he28,Candidatus Marinimicrobia,325
+nmdc:bsm-11-xtz7he28,Candidatus Melainabacteria,263
+nmdc:bsm-11-xtz7he28,Candidatus Micrarchaeota,20
+nmdc:bsm-11-xtz7he28,Candidatus Microgenomates,1796
+nmdc:bsm-11-xtz7he28,Candidatus Nanohaloarchaeota,3
+nmdc:bsm-11-xtz7he28,Candidatus Omnitrophota,1125
+nmdc:bsm-11-xtz7he28,Candidatus Parcubacteria,1271
+nmdc:bsm-11-xtz7he28,Candidatus Poribacteria,887
+nmdc:bsm-11-xtz7he28,Candidatus Saccharibacteria,1482
+nmdc:bsm-11-xtz7he28,Candidatus Sumerlaeota,798
+nmdc:bsm-11-xtz7he28,Candidatus Thermoplasmatota,389
+nmdc:bsm-11-xtz7he28,Chlamydiota,3534
+nmdc:bsm-11-xtz7he28,Chlorobiota,1702
+nmdc:bsm-11-xtz7he28,Chloroflexota,41931
+nmdc:bsm-11-xtz7he28,Chlorophyta,473
+nmdc:bsm-11-xtz7he28,Chordata,407
+nmdc:bsm-11-xtz7he28,Chrysiogenota,199
+nmdc:bsm-11-xtz7he28,Chytridiomycota,281
+nmdc:bsm-11-xtz7he28,Ciliophora,55
+nmdc:bsm-11-xtz7he28,Cnidaria,172
+nmdc:bsm-11-xtz7he28,Coprothermobacterota,48
+nmdc:bsm-11-xtz7he28,Cyanobacteriota,58308
+nmdc:bsm-11-xtz7he28,Deferribacterota,461
+nmdc:bsm-11-xtz7he28,Deinococcota,8741
+nmdc:bsm-11-xtz7he28,Dictyoglomota,249
+nmdc:bsm-11-xtz7he28,Elusimicrobiota,368
+nmdc:bsm-11-xtz7he28,Euglenozoa,34
+nmdc:bsm-11-xtz7he28,Euryarchaeota,9084
+nmdc:bsm-11-xtz7he28,Evosea,114
+nmdc:bsm-11-xtz7he28,Fibrobacterota,440
+nmdc:bsm-11-xtz7he28,Fornicata,2
+nmdc:bsm-11-xtz7he28,Fusobacteriota,380
+nmdc:bsm-11-xtz7he28,Gemmatimonadota,22024
+nmdc:bsm-11-xtz7he28,Haptophyta,82
+nmdc:bsm-11-xtz7he28,Heterolobosea,25
+nmdc:bsm-11-xtz7he28,Ignavibacteriota,1145
+nmdc:bsm-11-xtz7he28,Kiritimatiellota,1055
+nmdc:bsm-11-xtz7he28,Lentisphaerota,742
+nmdc:bsm-11-xtz7he28,Microsporidia,7
+nmdc:bsm-11-xtz7he28,Mollusca,77
+nmdc:bsm-11-xtz7he28,Mucoromycota,3199
+nmdc:bsm-11-xtz7he28,Mycoplasmatota,163
+nmdc:bsm-11-xtz7he28,Myxococcota,137571
+nmdc:bsm-11-xtz7he28,Nanoarchaeota,5
+nmdc:bsm-11-xtz7he28,Nematoda,36
+nmdc:bsm-11-xtz7he28,Nitrososphaerota,1471
+nmdc:bsm-11-xtz7he28,Nitrospinota,1002
+nmdc:bsm-11-xtz7he28,Nitrospirota,15644
+nmdc:bsm-11-xtz7he28,Nucleocytoviricota,133
+nmdc:bsm-11-xtz7he28,Oomycota,111
+nmdc:bsm-11-xtz7he28,Parabasalia,92
+nmdc:bsm-11-xtz7he28,Peploviricota,4
+nmdc:bsm-11-xtz7he28,Perkinsozoa,27
+nmdc:bsm-11-xtz7he28,Placozoa,40
+nmdc:bsm-11-xtz7he28,Planctomycetota,109287
+nmdc:bsm-11-xtz7he28,Porifera,232
+nmdc:bsm-11-xtz7he28,Preplasmiviricota,25
+nmdc:bsm-11-xtz7he28,Pseudomonadota,2226736
+nmdc:bsm-11-xtz7he28,Rhodothermota,4445
+nmdc:bsm-11-xtz7he28,Spirochaetota,4261
+nmdc:bsm-11-xtz7he28,Streptophyta,737
+nmdc:bsm-11-xtz7he28,Synergistota,925
+nmdc:bsm-11-xtz7he28,Thermodesulfobacteriota,51000
+nmdc:bsm-11-xtz7he28,Thermomicrobiota,3586
+nmdc:bsm-11-xtz7he28,Thermoproteota,818
+nmdc:bsm-11-xtz7he28,Thermotogota,851
+nmdc:bsm-11-xtz7he28,Uroviricota,779
+nmdc:bsm-11-xtz7he28,Verrucomicrobiota,116524
+nmdc:bsm-11-xtz7he28,Zoopagomycota,299
+nmdc:bsm-11-xtz7he28,candidate division NC10,3381
+nmdc:bsm-11-xtz7he28,candidate division Zixibacteria,642
+nmdc:bsm-11-xtz7he28,"dsDNA viruses, no RNA stage",1037
+nmdc:bsm-11-xtz7he28,unclassified Bacteria,3754
+nmdc:bsm-11-xtz7he28,unclassified Eukaryota,237
+nmdc:bsm-11-xtz7he28,unclassified Viruses,14
+nmdc:bsm-11-xtz7he28,unclassified phages,19
+nmdc:bsm-11-xtz7he28,unclassified virophages,11
+nmdc:bsm-11-xtz7he28,unclassified viruses,44
