@@ -37,7 +37,7 @@
     },
     {
       "name": "metagmetat",
-      "path": "metaG_metaT_integration/python/metagmetat_r.ipynb",
+      "path": "metaG_metaT_integration/python/metagmetat_python.ipynb",
       "display_name": "Metagenome-Metatranscriptome Integration"
     }
   ],
