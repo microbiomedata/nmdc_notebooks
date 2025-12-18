@@ -95,7 +95,7 @@ def gff_extract_features(url:str):
         # get TSV data using URL
         response = requests.get(url)
         tsv_data = StringIO(response.text)
-        tsv_df = pd.read_csv(tsv_data,sep='\t',header=None,dtype={0:'string',1:'string',2:'string',3:'int64',4:'int64',5:'string',6:'string',7:'string',8:'string'})
+        tsv_df = pd.read_csv(tsv_data,sep='\t',header=None,dtype=str)
         tsv_data.close()
 
         #create new columns for the listed values in last/feature column
