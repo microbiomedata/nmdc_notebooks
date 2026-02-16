@@ -11,7 +11,8 @@
 
 * [ ] Have you included a summary of the notebook in the README.md included updated links to the notebook? The links in the README.md should point to where the notebooks will live once they are merged into the **main** branch.
 * [ ] Have you added your notebook to `.github/notebooks-config.json` with a unique name and correct path? This ensures it will be included in all testing and deployment workflows.
-* [ ] Does your PR include links to the new notebook **(in the branch)** for review using [Colab](https://colab.research.google.com/)? These are the preferred ways to review changes and additions to notebooks during review.
+* [ ] Does your PR include links to the new notebook **(in the branch)** for review using [Colab](https://colab.research.google.com/)?
+* [ ] Have you checked that your notebook runs in Colab?
 
 ### Notebook Fix Submissions:
 * [ ] Does your PR include links to the updated notebook **(in the branch)** for review using [Colab](https://colab.research.google.com/)? These are the preferred ways to review changes and additions to notebooks during review. See the guidance below for how to create these links.
