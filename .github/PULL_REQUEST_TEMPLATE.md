@@ -11,20 +11,15 @@
 
 * [ ] Have you included a summary of the notebook in the README.md included updated links to the notebook? The links in the README.md should point to where the notebooks will live once they are merged into the **main** branch.
 * [ ] Have you added your notebook to `.github/notebooks-config.json` with a unique name and correct path? This ensures it will be included in all testing and deployment workflows.
-* [ ] Does your PR include links to the new notebook **(in the branch)** for review using [nbviewer](https://nbviewer.jupyter.org/), and [Colab](https://colab.research.google.com/)? These are the preferred ways to review changes and additions to notebooks during review.
+* [ ] Does your PR include links to the new notebook **(in the branch)** for review using [Colab](https://colab.research.google.com/)?
+* [ ] Have you checked that your notebook runs in Colab?
 
 ### Notebook Fix Submissions:
-* [ ] Does your PR include links to the updated notebook **(in the branch)** for review using [nbviewer](https://nbviewer.jupyter.org/), and [Colab](https://colab.research.google.com/)? These are the preferred ways to review changes and additions to notebooks during review. See the guidance below for how to create these links.
+* [ ] Does your PR include links to the updated notebook **(in the branch)** for review using [Colab](https://colab.research.google.com/)? These are the preferred ways to review changes and additions to notebooks during review. See the guidance below for how to create these links.
 
 ### Guidance for creating links to notebooks in the README.md
 * To create a Colab link for your notebook for review, use the following format:
     ```
     https://colab.research.google.com/github/microbiomedata/nmdc_notebooks/blob/your_branch/folder1/folder2/your_notebook.ipynb
-    ```
-    Replace `your_branch` with the branch name, `folder1` and `folder2` with the path to your notebook folder, and `your_notebook.ipynb` with the name of your notebook file.
-
-* To create a nbviewer link for your notebook for review, use the following format:
-    ```
-    https://nbviewer.org/github/microbiomedata/nmdc_notebooks/blob/your_branch/folder1/folder2/your_notebook.ipynb
     ```
     Replace `your_branch` with the branch name, `folder1` and `folder2` with the path to your notebook folder, and `your_notebook.ipynb` with the name of your notebook file.
