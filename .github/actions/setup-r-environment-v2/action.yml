@@ -33,7 +33,7 @@ runs:
         echo "RENV_PATHS_ROOT=$HOME/.local/share/renv/cache" >> $GITHUB_ENV
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: '3.11'
 
@@ -44,7 +44,7 @@ runs:
         pip install jupyter
 
     - name: Cache system packages
-      uses: actions/cache@v4
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: /var/cache/apt
         key: ${{ runner.os }}-apt-packages-r
@@ -52,7 +52,7 @@ runs:
           ${{ runner.os }}-apt-packages-
 
     - name: Set up R
-      uses: r-lib/actions/setup-r@v2
+      uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
       with:
         r-version: ${{ inputs.r-version }}
         use-public-rspm: true
@@ -112,7 +112,7 @@ runs:
         echo "cache-key=$cache_key" >> $GITHUB_OUTPUT
 
     - name: Cache R packages
-      uses: actions/cache@v4
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: |
           ${{ env.RENV_PATHS_ROOT }}
