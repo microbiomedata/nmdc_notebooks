@@ -14,3 +14,27 @@ jobs:
     with:
       environment: 'prod'
       notebook_selection: 'all'
+
+  report-failure:
+    needs: test-notebooks
+    if: failure()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Get CODEOWNERS assignees
+        id: codeowners
+        run: bash .github/scripts/get-codeowners-assignees.sh
+      - name: Create issue body
+        run: |
+          echo "The scheduled Python notebook execution failed." > /tmp/issue-body.md
+          echo "" >> /tmp/issue-body.md
+          echo "**Workflow run:** https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> /tmp/issue-body.md
+      - name: Create Issue
+        uses: peter-evans/create-issue-from-file@fca9117c27cdc29c6c4db3b86c48e4115a786710 # v6.0.0
+        with:
+          title: Python Notebook Execution Failure
+          content-filepath: /tmp/issue-body.md
+          labels: report, automated issue
+          assignees: ${{ steps.codeowners.outputs.assignees }}
