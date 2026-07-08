@@ -27,9 +27,7 @@ jobs:
       - name: Get CODEOWNERS assignees
         if: env.lychee_exit_code != 0
         id: codeowners
-        run: |
-          owners=$(grep '^\*' .github/CODEOWNERS | sed 's/^\*[[:space:]]*//' | sed 's/@//g' | tr -s ' ' ',' | sed 's/,$//')
-          echo "assignees=$owners" >> $GITHUB_OUTPUT
+        run: bash .github/scripts/get-codeowners-assignees.sh
 
       - name: Create Issue From File
         if: env.lychee_exit_code != 0
