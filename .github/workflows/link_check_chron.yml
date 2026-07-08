@@ -12,6 +12,8 @@ on:
 jobs:
   linkChecker:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
@@ -22,6 +24,13 @@ jobs:
           args: --retry-wait-time 10 './**/*.md'
           
 
+      - name: Get CODEOWNERS assignees
+        if: env.lychee_exit_code != 0
+        id: codeowners
+        run: |
+          owners=$(grep '^\*' .github/CODEOWNERS | sed 's/^\*[[:space:]]*//' | sed 's/@//g' | tr -s ' ' ',' | sed 's/,$//')
+          echo "assignees=$owners" >> $GITHUB_OUTPUT
+
       - name: Create Issue From File
         if: env.lychee_exit_code != 0
         uses: peter-evans/create-issue-from-file@fca9117c27cdc29c6c4db3b86c48e4115a786710 # v6.0.0
@@ -29,4 +38,4 @@ jobs:
           title: Link Checker Report
           content-filepath: ./lychee/out.md
           labels: report, automated issue
-          assignees: kheal, samobermiller, bmeluch
+          assignees: ${{ steps.codeowners.outputs.assignees }}
