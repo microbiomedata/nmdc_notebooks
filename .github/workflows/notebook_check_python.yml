@@ -12,5 +12,5 @@ jobs:
   test-notebooks:
     uses: ./.github/workflows/notebook-test-reusable.yml
     with:
-      environment: 'prod'
+      environment: 'https://api.microbiomedata.org'
       notebook_selection: 'all'

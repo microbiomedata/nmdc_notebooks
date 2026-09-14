@@ -1,0 +1,1081 @@
+env_local_scale,pathway_name,pathway_id,expr_sum
+mineral horizon [ENVO:03600011],ABC transporters [PATH:ko02010],map02010,165613.0909090909
+mineral horizon [ENVO:03600011],AGE-RAGE signaling pathway in diabetic complications [PATH:ko04933],map04933,4728.363636363636
+mineral horizon [ENVO:03600011],AMPK signaling pathway [PATH:ko04152],map04152,12229.181818181818
+mineral horizon [ENVO:03600011],ATP-dependent chromatin remodeling [PATH:ko03082],map03082,3942.181818181818
+mineral horizon [ENVO:03600011],Acarbose and validamycin biosynthesis [PATH:ko00525],map00525,2543.7272727272725
+mineral horizon [ENVO:03600011],Acute myeloid leukemia [PATH:ko05221],map05221,1326.1818181818182
+mineral horizon [ENVO:03600011],Adherens junction [PATH:ko04520],map04520,3862.090909090909
+mineral horizon [ENVO:03600011],Adipocytokine signaling pathway [PATH:ko04920],map04920,13799.636363636364
+mineral horizon [ENVO:03600011],Adrenergic signaling in cardiomyocytes [PATH:ko04261],map04261,3249.5454545454545
+mineral horizon [ENVO:03600011],Aflatoxin biosynthesis [PATH:ko00254],map00254,205.8181818181818
+mineral horizon [ENVO:03600011],African trypanosomiasis [PATH:ko05143],map05143,1541.090909090909
+mineral horizon [ENVO:03600011],"Alanine, aspartate and glutamate metabolism [PATH:ko00250]",map00250,100758.09090909091
+mineral horizon [ENVO:03600011],Alcoholic liver disease [PATH:ko04936],map04936,22810.363636363636
+mineral horizon [ENVO:03600011],Alcoholism [PATH:ko05034],map05034,12385.0
+mineral horizon [ENVO:03600011],Aldosterone synthesis and secretion [PATH:ko04925],map04925,1555.0
+mineral horizon [ENVO:03600011],Aldosterone-regulated sodium reabsorption [PATH:ko04960],map04960,1568.4545454545455
+mineral horizon [ENVO:03600011],Alzheimer disease [PATH:ko05010],map05010,54452.27272727273
+mineral horizon [ENVO:03600011],Amino acid metabolism,map99985,3119.818181818182
+mineral horizon [ENVO:03600011],Amino acid related enzymes [BR:ko01007],map01007,80484.0
+mineral horizon [ENVO:03600011],Amino sugar and nucleotide sugar metabolism [PATH:ko00520],map00520,56089.63636363636
+mineral horizon [ENVO:03600011],Aminoacyl-tRNA biosynthesis [PATH:ko00970],map00970,43271.63636363636
+mineral horizon [ENVO:03600011],Aminobenzoate degradation [PATH:ko00627],map00627,16235.454545454546
+mineral horizon [ENVO:03600011],Amoebiasis [PATH:ko05146],map05146,2845.5454545454545
+mineral horizon [ENVO:03600011],Amphetamine addiction [PATH:ko05031],map05031,1656.3636363636363
+mineral horizon [ENVO:03600011],Amyotrophic lateral sclerosis [PATH:ko05014],map05014,59812.09090909091
+mineral horizon [ENVO:03600011],Anthocyanin biosynthesis [PATH:ko00942],map00942,3.5
+mineral horizon [ENVO:03600011],Antifolate resistance [PATH:ko01523],map01523,5003.545454545455
+mineral horizon [ENVO:03600011],Antigen processing and presentation [PATH:ko04612],map04612,7503.454545454545
+mineral horizon [ENVO:03600011],Antimicrobial resistance genes [BR:ko01504],map01504,47783.545454545456
+mineral horizon [ENVO:03600011],Apelin signaling pathway [PATH:ko04371],map04371,2668.2727272727275
+mineral horizon [ENVO:03600011],Apoptosis - fly [PATH:ko04214],map04214,4956.181818181818
+mineral horizon [ENVO:03600011],Apoptosis - multiple species [PATH:ko04215],map04215,3409.181818181818
+mineral horizon [ENVO:03600011],Apoptosis [PATH:ko04210],map04210,12739.272727272728
+mineral horizon [ENVO:03600011],Arabinogalactan biosynthesis - Mycobacterium [PATH:ko00572],map00572,4854.272727272727
+mineral horizon [ENVO:03600011],Arachidonic acid metabolism [PATH:ko00590],map00590,551.7272727272727
+mineral horizon [ENVO:03600011],Arginine and proline metabolism [PATH:ko00330],map00330,52764.27272727273
+mineral horizon [ENVO:03600011],Arginine biosynthesis [PATH:ko00220],map00220,56512.63636363636
+mineral horizon [ENVO:03600011],Arrhythmogenic right ventricular cardiomyopathy [PATH:ko05412],map05412,1421.7272727272727
+mineral horizon [ENVO:03600011],Ascorbate and aldarate metabolism [PATH:ko00053],map00053,24749.81818181818
+mineral horizon [ENVO:03600011],Atrazine degradation [PATH:ko00791],map00791,2043.7272727272727
+mineral horizon [ENVO:03600011],Autophagy - animal [PATH:ko04140],map04140,15591.727272727272
+mineral horizon [ENVO:03600011],Autophagy - other [PATH:ko04136],map04136,1055.7272727272727
+mineral horizon [ENVO:03600011],Autophagy - yeast [PATH:ko04138],map04138,5082.636363636364
+mineral horizon [ENVO:03600011],Axon guidance [PATH:ko04360],map04360,3799.0
+mineral horizon [ENVO:03600011],Axon regeneration [PATH:ko04361],map04361,4416.636363636364
+mineral horizon [ENVO:03600011],B cell receptor signaling pathway [PATH:ko04662],map04662,2851.818181818182
+mineral horizon [ENVO:03600011],Bacterial chemotaxis [PATH:ko02030],map02030,20134.272727272728
+mineral horizon [ENVO:03600011],Bacterial invasion of epithelial cells [PATH:ko05100],map05100,4882.545454545455
+mineral horizon [ENVO:03600011],Bacterial motility proteins [BR:ko02035],map02035,161093.45454545456
+mineral horizon [ENVO:03600011],Bacterial secretion system [PATH:ko03070],map03070,132908.72727272726
+mineral horizon [ENVO:03600011],Bacterial toxins [BR:ko02042],map02042,4429.181818181818
+mineral horizon [ENVO:03600011],Basal cell carcinoma [PATH:ko05217],map05217,268.09090909090907
+mineral horizon [ENVO:03600011],Basal transcription factors [PATH:ko03022],map03022,1402.1818181818182
+mineral horizon [ENVO:03600011],Base excision repair [PATH:ko03410],map03410,7511.090909090909
+mineral horizon [ENVO:03600011],Benzoate degradation [PATH:ko00362],map00362,53215.454545454544
+mineral horizon [ENVO:03600011],Betalain biosynthesis [PATH:ko00965],map00965,468.54545454545456
+mineral horizon [ENVO:03600011],Bile secretion [PATH:ko04976],map04976,1936.1818181818182
+mineral horizon [ENVO:03600011],Biofilm formation - Escherichia coli [PATH:ko02026],map02026,59961.63636363636
+mineral horizon [ENVO:03600011],Biofilm formation - Pseudomonas aeruginosa [PATH:ko02025],map02025,87245.09090909091
+mineral horizon [ENVO:03600011],Biofilm formation - Vibrio cholerae [PATH:ko05111],map05111,65887.18181818182
+mineral horizon [ENVO:03600011],"Biosynthesis of 12-, 14- and 16-membered macrolides [PATH:ko00522]",map00522,4.5
+mineral horizon [ENVO:03600011],Biosynthesis of ansamycins [PATH:ko01051],map01051,8506.363636363636
+mineral horizon [ENVO:03600011],Biosynthesis of enediyne antibiotics [PATH:ko01059],map01059,4451.090909090909
+mineral horizon [ENVO:03600011],Biosynthesis of siderophore group nonribosomal peptides [PATH:ko01053],map01053,488.09090909090907
+mineral horizon [ENVO:03600011],Biosynthesis of type II polyketide backbone [PATH:ko01056],map01056,47.333333333333336
+mineral horizon [ENVO:03600011],Biosynthesis of type II polyketide products [PATH:ko01057],map01057,4942.727272727273
+mineral horizon [ENVO:03600011],Biosynthesis of unsaturated fatty acids [PATH:ko01040],map01040,6392.545454545455
+mineral horizon [ENVO:03600011],Biosynthesis of vancomycin group antibiotics [PATH:ko01055],map01055,2157.2727272727275
+mineral horizon [ENVO:03600011],Biosynthesis of various alkaloids [PATH:ko00996],map00996,95.0
+mineral horizon [ENVO:03600011],Biosynthesis of various antibiotics [PATH:ko00998],map00998,10964.09090909091
+mineral horizon [ENVO:03600011],Biosynthesis of various nucleotide sugars [PATH:ko00541],map00541,30667.545454545456
+mineral horizon [ENVO:03600011],Biosynthesis of various other secondary metabolites [PATH:ko00997],map00997,392.45454545454544
+mineral horizon [ENVO:03600011],Biosynthesis of various plant secondary metabolites [PATH:ko00999],map00999,20476.272727272728
+mineral horizon [ENVO:03600011],Biotin metabolism [PATH:ko00780],map00780,29277.18181818182
+mineral horizon [ENVO:03600011],Bisphenol degradation [PATH:ko00363],map00363,655.1818181818181
+mineral horizon [ENVO:03600011],Bladder cancer [PATH:ko05219],map05219,864.0
+mineral horizon [ENVO:03600011],Brassinosteroid biosynthesis [PATH:ko00905],map00905,4.0
+mineral horizon [ENVO:03600011],Breast cancer [PATH:ko05224],map05224,1639.1818181818182
+mineral horizon [ENVO:03600011],Butanoate metabolism [PATH:ko00650],map00650,130753.90909090909
+mineral horizon [ENVO:03600011],C-type lectin receptor signaling pathway [PATH:ko04625],map04625,1920.7272727272727
+mineral horizon [ENVO:03600011],C5-Branched dibasic acid metabolism [PATH:ko00660],map00660,29623.0
+mineral horizon [ENVO:03600011],CD molecules [BR:ko04090],map04090,1595.6363636363637
+mineral horizon [ENVO:03600011],Caffeine metabolism [PATH:ko00232],map00232,388.3636363636364
+mineral horizon [ENVO:03600011],Calcium signaling pathway [PATH:ko04020],map04020,2561.6363636363635
+mineral horizon [ENVO:03600011],Caprolactam degradation [PATH:ko00930],map00930,11990.818181818182
+mineral horizon [ENVO:03600011],Carbapenem biosynthesis [PATH:ko00332],map00332,1233.6363636363637
+mineral horizon [ENVO:03600011],Carbohydrate digestion and absorption [PATH:ko04973],map04973,1845.4545454545455
+mineral horizon [ENVO:03600011],Carbohydrate metabolism,map99981,3426.7272727272725
+mineral horizon [ENVO:03600011],Carbon fixation by Calvin cycle [PATH:ko00710],map00710,49237.09090909091
+mineral horizon [ENVO:03600011],Cardiac muscle contraction [PATH:ko04260],map04260,20144.090909090908
+mineral horizon [ENVO:03600011],Carotenoid biosynthesis [PATH:ko00906],map00906,709.1818181818181
+mineral horizon [ENVO:03600011],Cationic antimicrobial peptide (CAMP) resistance [PATH:ko01503],map01503,55868.545454545456
+mineral horizon [ENVO:03600011],Cell adhesion molecules [BR:ko04515],map04515,83.54545454545455
+mineral horizon [ENVO:03600011],Cell adhesion molecules [PATH:ko04514],map04514,62.3
+mineral horizon [ENVO:03600011],Cell cycle - Caulobacter [PATH:ko04112],map04112,144976.36363636365
+mineral horizon [ENVO:03600011],Cell cycle - yeast [PATH:ko04111],map04111,2975.0
+mineral horizon [ENVO:03600011],Cell cycle [PATH:ko04110],map04110,2804.4545454545455
+mineral horizon [ENVO:03600011],Cell growth,map99978,7520.272727272727
+mineral horizon [ENVO:03600011],Cell motility,map99993,1558.1818181818182
+mineral horizon [ENVO:03600011],Cellular senescence [PATH:ko04218],map04218,3457.090909090909
+mineral horizon [ENVO:03600011],Central carbon metabolism in cancer [PATH:ko05230],map05230,16034.0
+mineral horizon [ENVO:03600011],Chagas disease [PATH:ko05142],map05142,2840.818181818182
+mineral horizon [ENVO:03600011],Chaperones and folding catalysts [BR:ko03110],map03110,355321.54545454547
+mineral horizon [ENVO:03600011],Chemical carcinogenesis - DNA adducts [PATH:ko05204],map05204,8495.09090909091
+mineral horizon [ENVO:03600011],Chemical carcinogenesis - reactive oxygen species [PATH:ko05208],map05208,63601.181818181816
+mineral horizon [ENVO:03600011],Chemical carcinogenesis - receptor activation [PATH:ko05207],map05207,13156.454545454546
+mineral horizon [ENVO:03600011],Chemokine signaling pathway [PATH:ko04062],map04062,3758.818181818182
+mineral horizon [ENVO:03600011],Chloroalkane and chloroalkene degradation [PATH:ko00625],map00625,40276.0
+mineral horizon [ENVO:03600011],Chlorocyclohexane and chlorobenzene degradation [PATH:ko00361],map00361,20028.454545454544
+mineral horizon [ENVO:03600011],Cholesterol metabolism [PATH:ko04979],map04979,383.90909090909093
+mineral horizon [ENVO:03600011],Choline metabolism in cancer [PATH:ko05231],map05231,3318.5454545454545
+mineral horizon [ENVO:03600011],Cholinergic synapse [PATH:ko04725],map04725,1577.2727272727273
+mineral horizon [ENVO:03600011],Chromosome and associated proteins [BR:ko03036],map03036,155343.18181818182
+mineral horizon [ENVO:03600011],Chronic myeloid leukemia [PATH:ko05220],map05220,1167.0
+mineral horizon [ENVO:03600011],Cilium and associated proteins [BR:ko03037],map03037,1472.909090909091
+mineral horizon [ENVO:03600011],Circadian entrainment [PATH:ko04713],map04713,1644.2727272727273
+mineral horizon [ENVO:03600011],Circadian rhythm - fly [PATH:ko04711],map04711,226.1818181818182
+mineral horizon [ENVO:03600011],Circadian rhythm - plant [PATH:ko04712],map04712,127.27272727272727
+mineral horizon [ENVO:03600011],Circadian rhythm [PATH:ko04710],map04710,698.0909090909091
+mineral horizon [ENVO:03600011],Citrate cycle (TCA cycle) [PATH:ko00020],map00020,95328.54545454546
+mineral horizon [ENVO:03600011],Clavulanic acid biosynthesis [PATH:ko00331],map00331,2.0
+mineral horizon [ENVO:03600011],Cobalamin transport and metabolism [PATH:ko04980],map04980,6508.818181818182
+mineral horizon [ENVO:03600011],Cocaine addiction [PATH:ko05030],map05030,1000.5454545454545
+mineral horizon [ENVO:03600011],Cofactor metabolism,map99987,1355.3636363636363
+mineral horizon [ENVO:03600011],Collecting duct acid secretion [PATH:ko04966],map04966,901.5454545454545
+mineral horizon [ENVO:03600011],Colorectal cancer [PATH:ko05210],map05210,6667.636363636364
+mineral horizon [ENVO:03600011],Complement and coagulation cascades [PATH:ko04610],map04610,9.75
+mineral horizon [ENVO:03600011],Coronavirus disease - COVID-19 [PATH:ko05171],map05171,18839.18181818182
+mineral horizon [ENVO:03600011],Cortisol synthesis and secretion [PATH:ko04927],map04927,80.45454545454545
+mineral horizon [ENVO:03600011],Cushing syndrome [PATH:ko04934],map04934,2910.181818181818
+mineral horizon [ENVO:03600011],"Cutin, suberine and wax biosynthesis [PATH:ko00073]",map00073,929.2727272727273
+mineral horizon [ENVO:03600011],Cyanoamino acid metabolism [PATH:ko00460],map00460,12295.363636363636
+mineral horizon [ENVO:03600011],Cysteine and methionine metabolism [PATH:ko00270],map00270,92463.27272727272
+mineral horizon [ENVO:03600011],Cytochrome P450 [BR:ko00199],map00199,1663.7272727272727
+mineral horizon [ENVO:03600011],Cytokine-cytokine receptor interaction [PATH:ko04060],map04060,11.2
+mineral horizon [ENVO:03600011],Cytokines and neuropeptides [BR:ko04052],map04052,202.8181818181818
+mineral horizon [ENVO:03600011],Cytoskeleton in muscle cells [PATH:ko04820],map04820,5923.636363636364
+mineral horizon [ENVO:03600011],Cytoskeleton proteins [BR:ko04812],map04812,38373.818181818184
+mineral horizon [ENVO:03600011],Cytosolic DNA-sensing pathway [PATH:ko04623],map04623,308.1818181818182
+mineral horizon [ENVO:03600011],D-Amino acid metabolism [PATH:ko00470],map00470,8586.363636363636
+mineral horizon [ENVO:03600011],DNA repair and recombination proteins [BR:ko03400],map03400,310910.0909090909
+mineral horizon [ENVO:03600011],DNA replication [PATH:ko03030],map03030,22132.909090909092
+mineral horizon [ENVO:03600011],DNA replication proteins [BR:ko03032],map03032,92821.09090909091
+mineral horizon [ENVO:03600011],Degradation of flavonoids [PATH:ko00946],map00946,3858.909090909091
+mineral horizon [ENVO:03600011],Diabetic cardiomyopathy [PATH:ko05415],map05415,57700.0
+mineral horizon [ENVO:03600011],Dilated cardiomyopathy [PATH:ko05414],map05414,2073.7272727272725
+mineral horizon [ENVO:03600011],Dioxin degradation [PATH:ko00621],map00621,2488.5454545454545
+mineral horizon [ENVO:03600011],Diterpenoid biosynthesis [PATH:ko00904],map00904,10.333333333333334
+mineral horizon [ENVO:03600011],Domain-containing proteins not elsewhere classified [BR:ko04990],map04990,1671.0
+mineral horizon [ENVO:03600011],Dopaminergic synapse [PATH:ko04728],map04728,2803.4545454545455
+mineral horizon [ENVO:03600011],Dorso-ventral axis formation [PATH:ko04320],map04320,1145.3636363636363
+mineral horizon [ENVO:03600011],Drug metabolism - cytochrome P450 [PATH:ko00982],map00982,16047.181818181818
+mineral horizon [ENVO:03600011],Drug metabolism - other enzymes [PATH:ko00983],map00983,35652.27272727273
+mineral horizon [ENVO:03600011],ECM-receptor interaction [PATH:ko04512],map04512,273.09090909090907
+mineral horizon [ENVO:03600011],EGFR tyrosine kinase inhibitor resistance [PATH:ko01521],map01521,1957.5454545454545
+mineral horizon [ENVO:03600011],Efferocytosis [PATH:ko04148],map04148,10084.545454545454
+mineral horizon [ENVO:03600011],Endocrine and other factor-regulated calcium reabsorption [PATH:ko04961],map04961,1445.5454545454545
+mineral horizon [ENVO:03600011],Endocrine resistance [PATH:ko01522],map01522,1435.7272727272727
+mineral horizon [ENVO:03600011],Endocytosis [PATH:ko04144],map04144,6706.909090909091
+mineral horizon [ENVO:03600011],Endometrial cancer [PATH:ko05213],map05213,1398.909090909091
+mineral horizon [ENVO:03600011],Energy metabolism,map99982,20616.18181818182
+mineral horizon [ENVO:03600011],Enzymes with EC numbers,map99980,345150.63636363635
+mineral horizon [ENVO:03600011],Epithelial cell signaling in Helicobacter pylori infection [PATH:ko05120],map05120,3573.5454545454545
+mineral horizon [ENVO:03600011],Epstein-Barr virus infection [PATH:ko05169],map05169,6749.090909090909
+mineral horizon [ENVO:03600011],ErbB signaling pathway [PATH:ko04012],map04012,1638.8181818181818
+mineral horizon [ENVO:03600011],Estrogen signaling pathway [PATH:ko04915],map04915,8026.818181818182
+mineral horizon [ENVO:03600011],Ether lipid metabolism [PATH:ko00565],map00565,4045.2727272727275
+mineral horizon [ENVO:03600011],Ethylbenzene degradation [PATH:ko00642],map00642,4277.090909090909
+mineral horizon [ENVO:03600011],Exopolysaccharide biosynthesis [PATH:ko00543],map00543,11832.727272727272
+mineral horizon [ENVO:03600011],Exosome [BR:ko04147],map04147,295153.0909090909
+mineral horizon [ENVO:03600011],Fanconi anemia pathway [PATH:ko03460],map03460,335.09090909090907
+mineral horizon [ENVO:03600011],Fat digestion and absorption [PATH:ko04975],map04975,10994.90909090909
+mineral horizon [ENVO:03600011],Fatty acid biosynthesis [PATH:ko00061],map00061,57632.454545454544
+mineral horizon [ENVO:03600011],Fatty acid degradation [PATH:ko00071],map00071,59201.72727272727
+mineral horizon [ENVO:03600011],Fatty acid elongation [PATH:ko00062],map00062,499.90909090909093
+mineral horizon [ENVO:03600011],Fc epsilon RI signaling pathway [PATH:ko04664],map04664,2503.7272727272725
+mineral horizon [ENVO:03600011],Fc gamma R-mediated phagocytosis [PATH:ko04666],map04666,3954.0
+mineral horizon [ENVO:03600011],Ferroptosis [PATH:ko04216],map04216,11023.454545454546
+mineral horizon [ENVO:03600011],Flagellar assembly [PATH:ko02040],map02040,79913.45454545454
+mineral horizon [ENVO:03600011],Flavone and flavonol biosynthesis [PATH:ko00944],map00944,93.0909090909091
+mineral horizon [ENVO:03600011],Flavonoid biosynthesis [PATH:ko00941],map00941,200.0909090909091
+mineral horizon [ENVO:03600011],Fluid shear stress and atherosclerosis [PATH:ko05418],map05418,42235.63636363636
+mineral horizon [ENVO:03600011],Fluorobenzoate degradation [PATH:ko00364],map00364,14880.90909090909
+mineral horizon [ENVO:03600011],Focal adhesion [PATH:ko04510],map04510,4922.909090909091
+mineral horizon [ENVO:03600011],Folate biosynthesis [PATH:ko00790],map00790,21697.272727272728
+mineral horizon [ENVO:03600011],Folate transport and metabolism [PATH:ko04981],map04981,9599.545454545454
+mineral horizon [ENVO:03600011],FoxO signaling pathway [PATH:ko04068],map04068,19718.454545454544
+mineral horizon [ENVO:03600011],Fructose and mannose metabolism [PATH:ko00051],map00051,34458.27272727273
+mineral horizon [ENVO:03600011],Function unknown,map99997,160322.27272727274
+mineral horizon [ENVO:03600011],Furfural degradation [PATH:ko00365],map00365,522.1818181818181
+mineral horizon [ENVO:03600011],G protein-coupled receptors [BR:ko04030],map04030,263.54545454545456
+mineral horizon [ENVO:03600011],GABAergic synapse [PATH:ko04727],map04727,21539.0
+mineral horizon [ENVO:03600011],GTP-binding proteins [BR:ko04031],map04031,5516.454545454545
+mineral horizon [ENVO:03600011],Galactose metabolism [PATH:ko00052],map00052,19630.636363636364
+mineral horizon [ENVO:03600011],Gap junction [PATH:ko04540],map04540,6753.818181818182
+mineral horizon [ENVO:03600011],Gastric acid secretion [PATH:ko04971],map04971,2631.090909090909
+mineral horizon [ENVO:03600011],Gastric cancer [PATH:ko05226],map05226,2235.6363636363635
+mineral horizon [ENVO:03600011],General function prediction only,map99996,74085.54545454546
+mineral horizon [ENVO:03600011],Glioma [PATH:ko05214],map05214,2036.2727272727273
+mineral horizon [ENVO:03600011],Glucagon signaling pathway [PATH:ko04922],map04922,13570.363636363636
+mineral horizon [ENVO:03600011],Glucosinolate biosynthesis [PATH:ko00966],map00966,9421.90909090909
+mineral horizon [ENVO:03600011],Glutamatergic synapse [PATH:ko04724],map04724,21466.0
+mineral horizon [ENVO:03600011],Glutathione metabolism [PATH:ko00480],map00480,41374.90909090909
+mineral horizon [ENVO:03600011],Glycan metabolism,map99986,1781.6363636363637
+mineral horizon [ENVO:03600011],Glycerolipid metabolism [PATH:ko00561],map00561,23284.090909090908
+mineral horizon [ENVO:03600011],Glycerophospholipid metabolism [PATH:ko00564],map00564,17677.545454545456
+mineral horizon [ENVO:03600011],"Glycine, serine and threonine metabolism [PATH:ko00260]",map00260,57253.27272727273
+mineral horizon [ENVO:03600011],Glycolysis / Gluconeogenesis [PATH:ko00010],map00010,128878.36363636363
+mineral horizon [ENVO:03600011],Glycosaminoglycan binding proteins [BR:ko00536],map00536,1771.1818181818182
+mineral horizon [ENVO:03600011],Glycosaminoglycan biosynthesis - chondroitin sulfate / dermatan sulfate [PATH:ko00532],map00532,5.75
+mineral horizon [ENVO:03600011],Glycosaminoglycan biosynthesis - heparan sulfate / heparin [PATH:ko00534],map00534,18.545454545454547
+mineral horizon [ENVO:03600011],Glycosaminoglycan biosynthesis - keratan sulfate [PATH:ko00533],map00533,3.8333333333333335
+mineral horizon [ENVO:03600011],Glycosaminoglycan degradation [PATH:ko00531],map00531,2033.6363636363637
+mineral horizon [ENVO:03600011],Glycosphingolipid biosynthesis - ganglio series [PATH:ko00604],map00604,747.8181818181819
+mineral horizon [ENVO:03600011],Glycosphingolipid biosynthesis - globo and isoglobo series [PATH:ko00603],map00603,2402.7272727272725
+mineral horizon [ENVO:03600011],Glycosphingolipid biosynthesis - lacto and neolacto series [PATH:ko00601],map00601,3.6
+mineral horizon [ENVO:03600011],Glycosylphosphatidylinositol (GPI)-anchor biosynthesis [PATH:ko00563],map00563,263.45454545454544
+mineral horizon [ENVO:03600011],Glycosylphosphatidylinositol (GPI)-anchored proteins [BR:ko00537],map00537,3456.4545454545455
+mineral horizon [ENVO:03600011],Glycosyltransferases [BR:ko01003],map01003,33248.36363636364
+mineral horizon [ENVO:03600011],Glyoxylate and dicarboxylate metabolism [PATH:ko00630],map00630,143901.9090909091
+mineral horizon [ENVO:03600011],GnRH secretion [PATH:ko04929],map04929,884.8181818181819
+mineral horizon [ENVO:03600011],GnRH signaling pathway [PATH:ko04912],map04912,2009.1818181818182
+mineral horizon [ENVO:03600011],"Growth hormone synthesis, secretion and action [PATH:ko04935]",map04935,1893.7272727272727
+mineral horizon [ENVO:03600011],HIF-1 signaling pathway [PATH:ko04066],map04066,15106.363636363636
+mineral horizon [ENVO:03600011],Hedgehog signaling pathway - fly [PATH:ko04341],map04341,1021.9090909090909
+mineral horizon [ENVO:03600011],Hedgehog signaling pathway [PATH:ko04340],map04340,533.7272727272727
+mineral horizon [ENVO:03600011],Hematopoietic cell lineage [PATH:ko04640],map04640,31.4
+mineral horizon [ENVO:03600011],Hepatitis B [PATH:ko05161],map05161,4830.909090909091
+mineral horizon [ENVO:03600011],Hepatitis C [PATH:ko05160],map05160,5953.727272727273
+mineral horizon [ENVO:03600011],Hepatocellular carcinoma [PATH:ko05225],map05225,11171.818181818182
+mineral horizon [ENVO:03600011],Herpes simplex virus 1 infection [PATH:ko05168],map05168,4742.454545454545
+mineral horizon [ENVO:03600011],Hippo signaling pathway - fly [PATH:ko04391],map04391,2481.181818181818
+mineral horizon [ENVO:03600011],Hippo signaling pathway - multiple species [PATH:ko04392],map04392,402.90909090909093
+mineral horizon [ENVO:03600011],Hippo signaling pathway [PATH:ko04390],map04390,2864.6363636363635
+mineral horizon [ENVO:03600011],Histidine metabolism [PATH:ko00340],map00340,29400.272727272728
+mineral horizon [ENVO:03600011],Homologous recombination [PATH:ko03440],map03440,27053.636363636364
+mineral horizon [ENVO:03600011],Hormone signaling [PATH:ko04081],map04081,1102.6363636363637
+mineral horizon [ENVO:03600011],Human T-cell leukemia virus 1 infection [PATH:ko05166],map05166,4125.363636363636
+mineral horizon [ENVO:03600011],Human cytomegalovirus infection [PATH:ko05163],map05163,8383.90909090909
+mineral horizon [ENVO:03600011],Human immunodeficiency virus 1 infection [PATH:ko05170],map05170,8957.181818181818
+mineral horizon [ENVO:03600011],Human papillomavirus infection [PATH:ko05165],map05165,5346.181818181818
+mineral horizon [ENVO:03600011],Huntington disease [PATH:ko05016],map05016,57655.63636363636
+mineral horizon [ENVO:03600011],Hypertrophic cardiomyopathy [PATH:ko05410],map05410,2322.6363636363635
+mineral horizon [ENVO:03600011],IL-17 signaling pathway [PATH:ko04657],map04657,3516.818181818182
+mineral horizon [ENVO:03600011],Indole alkaloid biosynthesis [PATH:ko00901],map00901,275.3636363636364
+mineral horizon [ENVO:03600011],Indole diterpene alkaloid biosynthesis [PATH:ko00403],map00403,2.0
+mineral horizon [ENVO:03600011],Inflammatory bowel disease [PATH:ko05321],map05321,12.8
+mineral horizon [ENVO:03600011],Inflammatory mediator regulation of TRP channels [PATH:ko04750],map04750,772.2727272727273
+mineral horizon [ENVO:03600011],Influenza A [PATH:ko05164],map05164,7031.181818181818
+mineral horizon [ENVO:03600011],Inositol phosphate metabolism [PATH:ko00562],map00562,22806.454545454544
+mineral horizon [ENVO:03600011],Insect hormone biosynthesis [PATH:ko00981],map00981,7174.636363636364
+mineral horizon [ENVO:03600011],Insulin resistance [PATH:ko04931],map04931,12867.363636363636
+mineral horizon [ENVO:03600011],Insulin secretion [PATH:ko04911],map04911,806.9090909090909
+mineral horizon [ENVO:03600011],Insulin signaling pathway [PATH:ko04910],map04910,13106.09090909091
+mineral horizon [ENVO:03600011],Ion channels [BR:ko04040],map04040,431.72727272727275
+mineral horizon [ENVO:03600011],Isoflavonoid biosynthesis [PATH:ko00943],map00943,116.27272727272727
+mineral horizon [ENVO:03600011],Isoquinoline alkaloid biosynthesis [PATH:ko00950],map00950,7186.636363636364
+mineral horizon [ENVO:03600011],JAK-STAT signaling pathway [PATH:ko04630],map04630,584.9090909090909
+mineral horizon [ENVO:03600011],Kaposi sarcoma-associated herpesvirus infection [PATH:ko05167],map05167,15883.727272727272
+mineral horizon [ENVO:03600011],Lectins [BR:ko04091],map04091,521.2727272727273
+mineral horizon [ENVO:03600011],Legionellosis [PATH:ko05134],map05134,72253.18181818182
+mineral horizon [ENVO:03600011],Leishmaniasis [PATH:ko05140],map05140,6208.181818181818
+mineral horizon [ENVO:03600011],Leukocyte transendothelial migration [PATH:ko04670],map04670,4235.454545454545
+mineral horizon [ENVO:03600011],Limonene degradation [PATH:ko00903],map00903,12742.09090909091
+mineral horizon [ENVO:03600011],Linoleic acid metabolism [PATH:ko00591],map00591,2552.818181818182
+mineral horizon [ENVO:03600011],Lipid and atherosclerosis [PATH:ko05417],map05417,67457.54545454546
+mineral horizon [ENVO:03600011],Lipid biosynthesis proteins [BR:ko01004],map01004,69438.18181818182
+mineral horizon [ENVO:03600011],Lipid metabolism,map99983,205.36363636363637
+mineral horizon [ENVO:03600011],Lipoarabinomannan (LAM) biosynthesis [PATH:ko00571],map00571,686.0909090909091
+mineral horizon [ENVO:03600011],Lipoic acid metabolism [PATH:ko00785],map00785,41768.818181818184
+mineral horizon [ENVO:03600011],Lipopolysaccharide biosynthesis [PATH:ko00540],map00540,9068.0
+mineral horizon [ENVO:03600011],Lipopolysaccharide biosynthesis proteins [BR:ko01005],map01005,22764.272727272728
+mineral horizon [ENVO:03600011],Long-term depression [PATH:ko04730],map04730,1352.6363636363637
+mineral horizon [ENVO:03600011],Long-term potentiation [PATH:ko04720],map04720,1775.0
+mineral horizon [ENVO:03600011],Longevity regulating pathway - multiple species [PATH:ko04213],map04213,43575.63636363636
+mineral horizon [ENVO:03600011],Longevity regulating pathway - worm [PATH:ko04212],map04212,113760.36363636363
+mineral horizon [ENVO:03600011],Longevity regulating pathway [PATH:ko04211],map04211,14735.363636363636
+mineral horizon [ENVO:03600011],Lysine biosynthesis [PATH:ko00300],map00300,18655.090909090908
+mineral horizon [ENVO:03600011],Lysine degradation [PATH:ko00310],map00310,38343.454545454544
+mineral horizon [ENVO:03600011],Lysosome [PATH:ko04142],map04142,11772.272727272728
+mineral horizon [ENVO:03600011],MAPK signaling pathway - fly [PATH:ko04013],map04013,11154.272727272728
+mineral horizon [ENVO:03600011],MAPK signaling pathway - plant [PATH:ko04016],map04016,10222.363636363636
+mineral horizon [ENVO:03600011],MAPK signaling pathway - yeast [PATH:ko04011],map04011,13610.545454545454
+mineral horizon [ENVO:03600011],MAPK signaling pathway [PATH:ko04010],map04010,5386.0
+mineral horizon [ENVO:03600011],Malaria [PATH:ko05144],map05144,20.22222222222222
+mineral horizon [ENVO:03600011],Mannose type O-glycan biosynthesis [PATH:ko00515],map00515,455.6363636363636
+mineral horizon [ENVO:03600011],Maturity onset diabetes of the young [PATH:ko04950],map04950,8.0
+mineral horizon [ENVO:03600011],Measles [PATH:ko05162],map05162,6330.090909090909
+mineral horizon [ENVO:03600011],Meiosis - yeast [PATH:ko04113],map04113,14757.727272727272
+mineral horizon [ENVO:03600011],Melanogenesis [PATH:ko04916],map04916,2940.818181818182
+mineral horizon [ENVO:03600011],Melanoma [PATH:ko05218],map05218,883.3636363636364
+mineral horizon [ENVO:03600011],Membrane trafficking [BR:ko04131],map04131,56622.36363636364
+mineral horizon [ENVO:03600011],Messenger RNA biogenesis [BR:ko03019],map03019,179252.9090909091
+mineral horizon [ENVO:03600011],Metabolism of xenobiotics by cytochrome P450 [PATH:ko00980],map00980,15658.363636363636
+mineral horizon [ENVO:03600011],Methane metabolism [PATH:ko00680],map00680,132364.45454545456
+mineral horizon [ENVO:03600011],MicroRNAs in cancer [PATH:ko05206],map05206,4778.090909090909
+mineral horizon [ENVO:03600011],Mineral absorption [PATH:ko04978],map04978,2533.4545454545455
+mineral horizon [ENVO:03600011],Mismatch repair [PATH:ko03430],map03430,21911.272727272728
+mineral horizon [ENVO:03600011],Mitochondrial biogenesis [BR:ko03029],map03029,327242.2727272727
+mineral horizon [ENVO:03600011],Mitophagy - animal [PATH:ko04137],map04137,19423.18181818182
+mineral horizon [ENVO:03600011],Mitophagy - yeast [PATH:ko04139],map04139,1285.2727272727273
+mineral horizon [ENVO:03600011],Monobactam biosynthesis [PATH:ko00261],map00261,18449.090909090908
+mineral horizon [ENVO:03600011],Monoterpenoid biosynthesis [PATH:ko00902],map00902,10.0
+mineral horizon [ENVO:03600011],Morphine addiction [PATH:ko05032],map05032,669.6363636363636
+mineral horizon [ENVO:03600011],Motor proteins [PATH:ko04814],map04814,13291.181818181818
+mineral horizon [ENVO:03600011],Mucin type O-glycan biosynthesis [PATH:ko00512],map00512,22.666666666666668
+mineral horizon [ENVO:03600011],Mycolic acid biosynthesis [PATH:ko00074],map00074,13263.09090909091
+mineral horizon [ENVO:03600011],N-Glycan biosynthesis [PATH:ko00510],map00510,2865.6363636363635
+mineral horizon [ENVO:03600011],NF-kappa B signaling pathway [PATH:ko04064],map04064,247.8181818181818
+mineral horizon [ENVO:03600011],NOD-like receptor signaling pathway [PATH:ko04621],map04621,35590.63636363636
+mineral horizon [ENVO:03600011],Naphthalene degradation [PATH:ko00626],map00626,8265.545454545454
+mineral horizon [ENVO:03600011],Natural killer cell mediated cytotoxicity [PATH:ko04650],map04650,2668.4545454545455
+mineral horizon [ENVO:03600011],Necroptosis [PATH:ko04217],map04217,35867.27272727273
+mineral horizon [ENVO:03600011],"Neomycin, kanamycin and gentamicin biosynthesis [PATH:ko00524]",map00524,1695.0
+mineral horizon [ENVO:03600011],Neuroactive ligand-receptor interaction [PATH:ko04080],map04080,320.6363636363636
+mineral horizon [ENVO:03600011],Neurotrophin signaling pathway [PATH:ko04722],map04722,4521.727272727273
+mineral horizon [ENVO:03600011],Neutrophil extracellular trap formation [PATH:ko04613],map04613,14855.636363636364
+mineral horizon [ENVO:03600011],Nicotinate and nicotinamide metabolism [PATH:ko00760],map00760,29249.18181818182
+mineral horizon [ENVO:03600011],Nicotine addiction [PATH:ko05033],map05033,48.5
+mineral horizon [ENVO:03600011],Nitrogen metabolism [PATH:ko00910],map00910,76191.63636363637
+mineral horizon [ENVO:03600011],Nitrotoluene degradation [PATH:ko00633],map00633,16690.454545454544
+mineral horizon [ENVO:03600011],Non-alcoholic fatty liver disease [PATH:ko04932],map04932,25298.272727272728
+mineral horizon [ENVO:03600011],Non-homologous end-joining [PATH:ko03450],map03450,4890.454545454545
+mineral horizon [ENVO:03600011],Non-small cell lung cancer [PATH:ko05223],map05223,1193.3636363636363
+mineral horizon [ENVO:03600011],Nonribosomal peptide structures [PATH:ko01054],map01054,971.6363636363636
+mineral horizon [ENVO:03600011],Notch signaling pathway [PATH:ko04330],map04330,405.0
+mineral horizon [ENVO:03600011],Novobiocin biosynthesis [PATH:ko00401],map00401,9831.272727272728
+mineral horizon [ENVO:03600011],Nuclear receptors [BR:ko03310],map03310,34.8
+mineral horizon [ENVO:03600011],Nucleocytoplasmic transport [PATH:ko03013],map03013,7340.454545454545
+mineral horizon [ENVO:03600011],Nucleotide excision repair [PATH:ko03420],map03420,15011.818181818182
+mineral horizon [ENVO:03600011],Nucleotide metabolism,map99984,6.75
+mineral horizon [ENVO:03600011],O-Antigen repeat unit biosynthesis [PATH:ko00542],map00542,4344.454545454545
+mineral horizon [ENVO:03600011],Olfactory transduction [PATH:ko04740],map04740,895.6363636363636
+mineral horizon [ENVO:03600011],One carbon pool by folate [PATH:ko00670],map00670,59362.72727272727
+mineral horizon [ENVO:03600011],Oocyte meiosis [PATH:ko04114],map04114,3361.090909090909
+mineral horizon [ENVO:03600011],Osteoclast differentiation [PATH:ko04380],map04380,4220.363636363636
+mineral horizon [ENVO:03600011],Other carbon fixation pathways [PATH:ko00720],map00720,97026.63636363637
+mineral horizon [ENVO:03600011],Other glycan degradation [PATH:ko00511],map00511,5481.363636363636
+mineral horizon [ENVO:03600011],Other types of O-glycan biosynthesis [PATH:ko00514],map00514,1295.4545454545455
+mineral horizon [ENVO:03600011],Others,map99994,4641.272727272727
+mineral horizon [ENVO:03600011],Others,map99998,4686.090909090909
+mineral horizon [ENVO:03600011],Others,map99999,8346.636363636364
+mineral horizon [ENVO:03600011],Ovarian steroidogenesis [PATH:ko04913],map04913,67.0
+mineral horizon [ENVO:03600011],Oxidative phosphorylation [PATH:ko00190],map00190,180837.9090909091
+mineral horizon [ENVO:03600011],Oxytocin signaling pathway [PATH:ko04921],map04921,6356.0
+mineral horizon [ENVO:03600011],PD-L1 expression and PD-1 checkpoint pathway in cancer [PATH:ko05235],map05235,1479.2727272727273
+mineral horizon [ENVO:03600011],PI3K-Akt signaling pathway [PATH:ko04151],map04151,12113.0
+mineral horizon [ENVO:03600011],PPAR signaling pathway [PATH:ko03320],map03320,36620.90909090909
+mineral horizon [ENVO:03600011],Pancreatic cancer [PATH:ko05212],map05212,2864.0
+mineral horizon [ENVO:03600011],Pancreatic secretion [PATH:ko04972],map04972,4401.909090909091
+mineral horizon [ENVO:03600011],Pantothenate and CoA biosynthesis [PATH:ko00770],map00770,52666.27272727273
+mineral horizon [ENVO:03600011],"Parathyroid hormone synthesis, secretion and action [PATH:ko04928]",map04928,1448.4545454545455
+mineral horizon [ENVO:03600011],Parkinson disease [PATH:ko05012],map05012,79797.72727272728
+mineral horizon [ENVO:03600011],Pathogenic Escherichia coli infection [PATH:ko05130],map05130,19727.363636363636
+mineral horizon [ENVO:03600011],Pathways in cancer [PATH:ko05200],map05200,21764.363636363636
+mineral horizon [ENVO:03600011],Pathways of neurodegeneration - multiple diseases [PATH:ko05022],map05022,71871.18181818182
+mineral horizon [ENVO:03600011],Pattern recognition receptors [BR:ko04054],map04054,17.5
+mineral horizon [ENVO:03600011],Penicillin and cephalosporin biosynthesis [PATH:ko00311],map00311,1205.090909090909
+mineral horizon [ENVO:03600011],Pentose and glucuronate interconversions [PATH:ko00040],map00040,22068.81818181818
+mineral horizon [ENVO:03600011],Pentose phosphate pathway [PATH:ko00030],map00030,71880.18181818182
+mineral horizon [ENVO:03600011],Peptidases and inhibitors [BR:ko01002],map01002,308885.9090909091
+mineral horizon [ENVO:03600011],Peptidoglycan biosynthesis [PATH:ko00550],map00550,24454.454545454544
+mineral horizon [ENVO:03600011],Peptidoglycan biosynthesis and degradation proteins [BR:ko01011],map01011,47770.454545454544
+mineral horizon [ENVO:03600011],Peroxisome [PATH:ko04146],map04146,38944.181818181816
+mineral horizon [ENVO:03600011],Pertussis [PATH:ko05133],map05133,15093.818181818182
+mineral horizon [ENVO:03600011],Phagosome [PATH:ko04145],map04145,12631.454545454546
+mineral horizon [ENVO:03600011],Phenazine biosynthesis [PATH:ko00405],map00405,1117.3636363636363
+mineral horizon [ENVO:03600011],Phenylalanine metabolism [PATH:ko00360],map00360,48002.818181818184
+mineral horizon [ENVO:03600011],"Phenylalanine, tyrosine and tryptophan biosynthesis [PATH:ko00400]",map00400,29167.81818181818
+mineral horizon [ENVO:03600011],Phenylpropanoid biosynthesis [PATH:ko00940],map00940,13649.454545454546
+mineral horizon [ENVO:03600011],Phosphatidylinositol signaling system [PATH:ko04070],map04070,4130.454545454545
+mineral horizon [ENVO:03600011],Phospholipase D signaling pathway [PATH:ko04072],map04072,2940.818181818182
+mineral horizon [ENVO:03600011],Phosphonate and phosphinate metabolism [PATH:ko00440],map00440,947.1818181818181
+mineral horizon [ENVO:03600011],Phosphotransferase system (PTS) [PATH:ko02060],map02060,5005.454545454545
+mineral horizon [ENVO:03600011],Photosynthesis - antenna proteins [PATH:ko00196],map00196,5.0
+mineral horizon [ENVO:03600011],Photosynthesis [PATH:ko00195],map00195,38152.09090909091
+mineral horizon [ENVO:03600011],Photosynthesis proteins [BR:ko00194],map00194,42316.09090909091
+mineral horizon [ENVO:03600011],Phototransduction - fly [PATH:ko04745],map04745,1695.2727272727273
+mineral horizon [ENVO:03600011],Phototransduction [PATH:ko04744],map04744,796.5454545454545
+mineral horizon [ENVO:03600011],"Pinene, camphor and geraniol degradation [PATH:ko00907]",map00907,7966.818181818182
+mineral horizon [ENVO:03600011],Plant hormone signal transduction [PATH:ko04075],map04075,21669.18181818182
+mineral horizon [ENVO:03600011],Plant-pathogen interaction [PATH:ko04626],map04626,69123.45454545454
+mineral horizon [ENVO:03600011],Platelet activation [PATH:ko04611],map04611,2809.6363636363635
+mineral horizon [ENVO:03600011],Platinum drug resistance [PATH:ko01524],map01524,13752.636363636364
+mineral horizon [ENVO:03600011],Polycomb repressive complex [PATH:ko03083],map03083,2159.090909090909
+mineral horizon [ENVO:03600011],Polycyclic aromatic hydrocarbon degradation [PATH:ko00624],map00624,5880.090909090909
+mineral horizon [ENVO:03600011],Polyketide biosynthesis proteins [BR:ko01008],map01008,19231.18181818182
+mineral horizon [ENVO:03600011],Polyketide sugar unit biosynthesis [PATH:ko00523],map00523,4214.636363636364
+mineral horizon [ENVO:03600011],Porphyrin metabolism [PATH:ko00860],map00860,36007.0
+mineral horizon [ENVO:03600011],Prenyltransferases [BR:ko01006],map01006,9315.454545454546
+mineral horizon [ENVO:03600011],Primary bile acid biosynthesis [PATH:ko00120],map00120,575.0909090909091
+mineral horizon [ENVO:03600011],Primary immunodeficiency [PATH:ko05340],map05340,322.3636363636364
+mineral horizon [ENVO:03600011],Prion disease [PATH:ko05020],map05020,51625.0
+mineral horizon [ENVO:03600011],Prodigiosin biosynthesis [PATH:ko00333],map00333,17594.909090909092
+mineral horizon [ENVO:03600011],Progesterone-mediated oocyte maturation [PATH:ko04914],map04914,3826.7272727272725
+mineral horizon [ENVO:03600011],Prokaryotic defense system [BR:ko02048],map02048,39958.181818181816
+mineral horizon [ENVO:03600011],Prolactin signaling pathway [PATH:ko04917],map04917,2571.2727272727275
+mineral horizon [ENVO:03600011],Propanoate metabolism [PATH:ko00640],map00640,66528.09090909091
+mineral horizon [ENVO:03600011],Prostate cancer [PATH:ko05215],map05215,4290.909090909091
+mineral horizon [ENVO:03600011],Proteasome [BR:ko03051],map03051,14592.363636363636
+mineral horizon [ENVO:03600011],Proteasome [PATH:ko03050],map03050,7206.090909090909
+mineral horizon [ENVO:03600011],Protein digestion and absorption [PATH:ko04974],map04974,2373.2727272727275
+mineral horizon [ENVO:03600011],Protein export [PATH:ko03060],map03060,90597.36363636363
+mineral horizon [ENVO:03600011],Protein kinases [BR:ko01001],map01001,62618.181818181816
+mineral horizon [ENVO:03600011],Protein phosphatases and associated proteins [BR:ko01009],map01009,24963.272727272728
+mineral horizon [ENVO:03600011],Protein processing,map99975,21719.272727272728
+mineral horizon [ENVO:03600011],Protein processing in endoplasmic reticulum [PATH:ko04141],map04141,24432.272727272728
+mineral horizon [ENVO:03600011],Proteoglycans [BR:ko00535],map00535,43.36363636363637
+mineral horizon [ENVO:03600011],Proteoglycans in cancer [PATH:ko05205],map05205,8391.727272727272
+mineral horizon [ENVO:03600011],Proximal tubule bicarbonate reclamation [PATH:ko04964],map04964,8394.363636363636
+mineral horizon [ENVO:03600011],Purine metabolism [PATH:ko00230],map00230,117954.36363636363
+mineral horizon [ENVO:03600011],Pyrimidine metabolism [PATH:ko00240],map00240,55444.09090909091
+mineral horizon [ENVO:03600011],Pyruvate metabolism [PATH:ko00620],map00620,144715.72727272726
+mineral horizon [ENVO:03600011],Quorum sensing [PATH:ko02024],map02024,210487.54545454544
+mineral horizon [ENVO:03600011],RIG-I-like receptor signaling pathway [PATH:ko04622],map04622,296.09090909090907
+mineral horizon [ENVO:03600011],RNA degradation [PATH:ko03018],map03018,149070.27272727274
+mineral horizon [ENVO:03600011],RNA polymerase [PATH:ko03020],map03020,165431.0909090909
+mineral horizon [ENVO:03600011],Rap1 signaling pathway [PATH:ko04015],map04015,5067.272727272727
+mineral horizon [ENVO:03600011],Ras signaling pathway [PATH:ko04014],map04014,4473.272727272727
+mineral horizon [ENVO:03600011],Regulation of actin cytoskeleton [PATH:ko04810],map04810,7545.727272727273
+mineral horizon [ENVO:03600011],Regulation of lipolysis in adipocytes [PATH:ko04923],map04923,436.3636363636364
+mineral horizon [ENVO:03600011],Relaxin signaling pathway [PATH:ko04926],map04926,1950.6363636363637
+mineral horizon [ENVO:03600011],Renal cell carcinoma [PATH:ko05211],map05211,4420.181818181818
+mineral horizon [ENVO:03600011],Renin secretion [PATH:ko04924],map04924,1769.4545454545455
+mineral horizon [ENVO:03600011],Renin-angiotensin system [PATH:ko04614],map04614,1974.2727272727273
+mineral horizon [ENVO:03600011],Replication and repair,map99976,27715.81818181818
+mineral horizon [ENVO:03600011],Retinol metabolism [PATH:ko00830],map00830,7480.727272727273
+mineral horizon [ENVO:03600011],Retrograde endocannabinoid signaling [PATH:ko04723],map04723,9451.272727272728
+mineral horizon [ENVO:03600011],Rheumatoid arthritis [PATH:ko05323],map05323,2476.2727272727275
+mineral horizon [ENVO:03600011],Riboflavin metabolism [PATH:ko00740],map00740,7039.454545454545
+mineral horizon [ENVO:03600011],Ribosome [BR:ko03011],map03011,531676.2727272727
+mineral horizon [ENVO:03600011],Ribosome [PATH:ko03010],map03010,531544.9090909091
+mineral horizon [ENVO:03600011],Ribosome biogenesis [BR:ko03009],map03009,101406.54545454546
+mineral horizon [ENVO:03600011],Ribosome biogenesis in eukaryotes [PATH:ko03008],map03008,3281.3636363636365
+mineral horizon [ENVO:03600011],SNARE interactions in vesicular transport [PATH:ko04130],map04130,486.54545454545456
+mineral horizon [ENVO:03600011],Salivary secretion [PATH:ko04970],map04970,2297.3636363636365
+mineral horizon [ENVO:03600011],Salmonella infection [PATH:ko05132],map05132,53533.0
+mineral horizon [ENVO:03600011],Secondary bile acid biosynthesis [PATH:ko00121],map00121,60.72727272727273
+mineral horizon [ENVO:03600011],Secondary metabolism,map99988,2857.090909090909
+mineral horizon [ENVO:03600011],Secretion system [BR:ko02044],map02044,310016.63636363635
+mineral horizon [ENVO:03600011],Selenocompound metabolism [PATH:ko00450],map00450,41556.454545454544
+mineral horizon [ENVO:03600011],Serotonergic synapse [PATH:ko04726],map04726,2232.2727272727275
+mineral horizon [ENVO:03600011],Sesquiterpenoid and triterpenoid biosynthesis [PATH:ko00909],map00909,7733.272727272727
+mineral horizon [ENVO:03600011],Shigellosis [PATH:ko05131],map05131,30687.545454545456
+mineral horizon [ENVO:03600011],Signaling pathways regulating pluripotency of stem cells [PATH:ko04550],map04550,1198.4545454545455
+mineral horizon [ENVO:03600011],Signaling proteins,map99995,28735.090909090908
+mineral horizon [ENVO:03600011],Small cell lung cancer [PATH:ko05222],map05222,3509.3636363636365
+mineral horizon [ENVO:03600011],Sphingolipid metabolism [PATH:ko00600],map00600,6460.636363636364
+mineral horizon [ENVO:03600011],Sphingolipid signaling pathway [PATH:ko04071],map04071,5979.090909090909
+mineral horizon [ENVO:03600011],Spinocerebellar ataxia [PATH:ko05017],map05017,7674.727272727273
+mineral horizon [ENVO:03600011],Spliceosome [BR:ko03041],map03041,29321.363636363636
+mineral horizon [ENVO:03600011],Spliceosome [PATH:ko03040],map03040,5588.454545454545
+mineral horizon [ENVO:03600011],Staphylococcus aureus infection [PATH:ko05150],map05150,169.0909090909091
+mineral horizon [ENVO:03600011],Starch and sucrose metabolism [PATH:ko00500],map00500,47030.818181818184
+mineral horizon [ENVO:03600011],Staurosporine biosynthesis [PATH:ko00404],map00404,278.1818181818182
+mineral horizon [ENVO:03600011],Steroid biosynthesis [PATH:ko00100],map00100,727.1818181818181
+mineral horizon [ENVO:03600011],Steroid degradation [PATH:ko00984],map00984,2214.818181818182
+mineral horizon [ENVO:03600011],Steroid hormone biosynthesis [PATH:ko00140],map00140,3718.7272727272725
+mineral horizon [ENVO:03600011],"Stilbenoid, diarylheptanoid and gingerol biosynthesis [PATH:ko00945]",map00945,198.45454545454547
+mineral horizon [ENVO:03600011],Streptomycin biosynthesis [PATH:ko00521],map00521,13896.636363636364
+mineral horizon [ENVO:03600011],Structural proteins,map99992,24516.090909090908
+mineral horizon [ENVO:03600011],Styrene degradation [PATH:ko00643],map00643,16065.363636363636
+mineral horizon [ENVO:03600011],Sulfur metabolism [PATH:ko00920],map00920,61736.90909090909
+mineral horizon [ENVO:03600011],Sulfur relay system [PATH:ko04122],map04122,38033.90909090909
+mineral horizon [ENVO:03600011],Synaptic vesicle cycle [PATH:ko04721],map04721,1939.4545454545455
+mineral horizon [ENVO:03600011],Systemic lupus erythematosus [PATH:ko05322],map05322,17997.545454545456
+mineral horizon [ENVO:03600011],T cell receptor signaling pathway [PATH:ko04660],map04660,2320.7272727272725
+mineral horizon [ENVO:03600011],TGF-beta signaling pathway [PATH:ko04350],map04350,1751.5454545454545
+mineral horizon [ENVO:03600011],TNF signaling pathway [PATH:ko04668],map04668,619.8181818181819
+mineral horizon [ENVO:03600011],Taste transduction [PATH:ko04742],map04742,56.18181818181818
+mineral horizon [ENVO:03600011],Taurine and hypotaurine metabolism [PATH:ko00430],map00430,19161.454545454544
+mineral horizon [ENVO:03600011],Teichoic acid biosynthesis [PATH:ko00552],map00552,6910.727272727273
+mineral horizon [ENVO:03600011],Terpenoid backbone biosynthesis [PATH:ko00900],map00900,46203.818181818184
+mineral horizon [ENVO:03600011],Tetracycline biosynthesis [PATH:ko00253],map00253,114.36363636363636
+mineral horizon [ENVO:03600011],Th1 and Th2 cell differentiation [PATH:ko04658],map04658,999.5454545454545
+mineral horizon [ENVO:03600011],Th17 cell differentiation [PATH:ko04659],map04659,3446.3636363636365
+mineral horizon [ENVO:03600011],Thermogenesis [PATH:ko04714],map04714,49810.27272727273
+mineral horizon [ENVO:03600011],Thiamine metabolism [PATH:ko00730],map00730,34017.63636363636
+mineral horizon [ENVO:03600011],Thyroid cancer [PATH:ko05216],map05216,921.2727272727273
+mineral horizon [ENVO:03600011],Thyroid hormone signaling pathway [PATH:ko04919],map04919,7871.363636363636
+mineral horizon [ENVO:03600011],Thyroid hormone synthesis [PATH:ko04918],map04918,4010.0
+mineral horizon [ENVO:03600011],Tight junction [PATH:ko04530],map04530,7974.363636363636
+mineral horizon [ENVO:03600011],Toll and Imd signaling pathway [PATH:ko04624],map04624,582.8181818181819
+mineral horizon [ENVO:03600011],Toll-like receptor signaling pathway [PATH:ko04620],map04620,1900.3636363636363
+mineral horizon [ENVO:03600011],Toluene degradation [PATH:ko00623],map00623,15451.09090909091
+mineral horizon [ENVO:03600011],Toxoplasmosis [PATH:ko05145],map05145,6216.181818181818
+mineral horizon [ENVO:03600011],Transcription,map99973,138875.0
+mineral horizon [ENVO:03600011],Transcription factors [BR:ko03000],map03000,195334.0909090909
+mineral horizon [ENVO:03600011],Transcription machinery [BR:ko03021],map03021,450631.9090909091
+mineral horizon [ENVO:03600011],Transcriptional misregulation in cancer [PATH:ko05202],map05202,3749.4545454545455
+mineral horizon [ENVO:03600011],Transfer RNA biogenesis [BR:ko03016],map03016,119567.72727272728
+mineral horizon [ENVO:03600011],Translation,map99974,427.1818181818182
+mineral horizon [ENVO:03600011],Translation factors [BR:ko03012],map03012,175018.54545454544
+mineral horizon [ENVO:03600011],Transport,map99977,32269.81818181818
+mineral horizon [ENVO:03600011],Transporters [BR:ko02000],map02000,734843.5454545454
+mineral horizon [ENVO:03600011],"Tropane, piperidine and pyridine alkaloid biosynthesis [PATH:ko00960]",map00960,10520.545454545454
+mineral horizon [ENVO:03600011],Tryptophan metabolism [PATH:ko00380],map00380,62169.454545454544
+mineral horizon [ENVO:03600011],Tuberculosis [PATH:ko05152],map05152,90681.0
+mineral horizon [ENVO:03600011],Two-component system [BR:ko02022],map02022,77996.09090909091
+mineral horizon [ENVO:03600011],Two-component system [PATH:ko02020],map02020,343972.63636363635
+mineral horizon [ENVO:03600011],Type I diabetes mellitus [PATH:ko04940],map04940,46241.181818181816
+mineral horizon [ENVO:03600011],Type I polyketide structures [PATH:ko01052],map01052,132.45454545454547
+mineral horizon [ENVO:03600011],Type II diabetes mellitus [PATH:ko04930],map04930,2045.8181818181818
+mineral horizon [ENVO:03600011],Tyrosine metabolism [PATH:ko00350],map00350,36606.545454545456
+mineral horizon [ENVO:03600011],Ubiquinone and other terpenoid-quinone biosynthesis [PATH:ko00130],map00130,11753.636363636364
+mineral horizon [ENVO:03600011],Ubiquitin mediated proteolysis [PATH:ko04120],map04120,12347.545454545454
+mineral horizon [ENVO:03600011],Ubiquitin system [BR:ko04121],map04121,17578.727272727272
+mineral horizon [ENVO:03600011],VEGF signaling pathway [PATH:ko04370],map04370,2583.3636363636365
+mineral horizon [ENVO:03600011],"Valine, leucine and isoleucine biosynthesis [PATH:ko00290]",map00290,46936.0
+mineral horizon [ENVO:03600011],"Valine, leucine and isoleucine degradation [PATH:ko00280]",map00280,69338.18181818182
+mineral horizon [ENVO:03600011],Vancomycin resistance [PATH:ko01502],map01502,3794.4545454545455
+mineral horizon [ENVO:03600011],Various types of N-glycan biosynthesis [PATH:ko00513],map00513,1288.090909090909
+mineral horizon [ENVO:03600011],Vascular smooth muscle contraction [PATH:ko04270],map04270,1882.2727272727273
+mineral horizon [ENVO:03600011],Vasopressin-regulated water reabsorption [PATH:ko04962],map04962,935.9090909090909
+mineral horizon [ENVO:03600011],Vibrio cholerae infection [PATH:ko05110],map05110,2958.3636363636365
+mineral horizon [ENVO:03600011],Viral carcinogenesis [PATH:ko05203],map05203,11161.818181818182
+mineral horizon [ENVO:03600011],Viral life cycle - HIV-1 [PATH:ko03250],map03250,2198.090909090909
+mineral horizon [ENVO:03600011],Viral myocarditis [PATH:ko05416],map05416,6481.454545454545
+mineral horizon [ENVO:03600011],Viral proteins [BR:ko03200],map03200,11.363636363636363
+mineral horizon [ENVO:03600011],Virion - Bacteriophage lambda [PATH:ko03258],map03258,8.2
+mineral horizon [ENVO:03600011],"Virion - Ebolavirus, Lyssavirus and Morbillivirus [PATH:ko03265]",map03265,81.3
+mineral horizon [ENVO:03600011],Virion - Flavivirus and Alphavirus [PATH:ko03264],map03264,84.72727272727273
+mineral horizon [ENVO:03600011],Virion - Hepatitis viruses [PATH:ko03272],map03272,718.7272727272727
+mineral horizon [ENVO:03600011],Virion - Herpesvirus [PATH:ko03266],map03266,50.81818181818182
+mineral horizon [ENVO:03600011],Virion - Lassa virus and SFTS virus [PATH:ko03273],map03273,326.8181818181818
+mineral horizon [ENVO:03600011],Virion - Orthopoxvirus [PATH:ko03268],map03268,4.0
+mineral horizon [ENVO:03600011],Virion - Rotavirus [PATH:ko03271],map03271,7.5
+mineral horizon [ENVO:03600011],Vitamin B6 metabolism [PATH:ko00750],map00750,10934.181818181818
+mineral horizon [ENVO:03600011],Vitamin digestion and absorption [PATH:ko04977],map04977,545.4545454545455
+mineral horizon [ENVO:03600011],Wnt signaling pathway [PATH:ko04310],map04310,3053.7272727272725
+mineral horizon [ENVO:03600011],Xylene degradation [PATH:ko00622],map00622,7149.545454545455
+mineral horizon [ENVO:03600011],Yersinia infection [PATH:ko05135],map05135,4837.818181818182
+mineral horizon [ENVO:03600011],Zeatin biosynthesis [PATH:ko00908],map00908,471.6363636363636
+mineral horizon [ENVO:03600011],alpha-Linolenic acid metabolism [PATH:ko00592],map00592,4693.090909090909
+mineral horizon [ENVO:03600011],beta-Alanine metabolism [PATH:ko00410],map00410,23221.545454545456
+mineral horizon [ENVO:03600011],beta-Lactam resistance [PATH:ko01501],map01501,50200.545454545456
+mineral horizon [ENVO:03600011],cAMP signaling pathway [PATH:ko04024],map04024,4474.636363636364
+mineral horizon [ENVO:03600011],cGMP-PKG signaling pathway [PATH:ko04022],map04022,4437.0
+mineral horizon [ENVO:03600011],mRNA surveillance pathway [PATH:ko03015],map03015,3216.7272727272725
+mineral horizon [ENVO:03600011],mTOR signaling pathway [PATH:ko04150],map04150,3414.181818181818
+mineral horizon [ENVO:03600011],p53 signaling pathway [PATH:ko04115],map04115,3781.181818181818
+organic horizon [ENVO:03600018],ABC transporters [PATH:ko02010],map02010,140227.38461538462
+organic horizon [ENVO:03600018],AGE-RAGE signaling pathway in diabetic complications [PATH:ko04933],map04933,2459.5384615384614
+organic horizon [ENVO:03600018],AMPK signaling pathway [PATH:ko04152],map04152,11773.923076923076
+organic horizon [ENVO:03600018],ATP-dependent chromatin remodeling [PATH:ko03082],map03082,4307.384615384615
+organic horizon [ENVO:03600018],Acarbose and validamycin biosynthesis [PATH:ko00525],map00525,2732.3846153846152
+organic horizon [ENVO:03600018],Acute myeloid leukemia [PATH:ko05221],map05221,524.8461538461538
+organic horizon [ENVO:03600018],Adherens junction [PATH:ko04520],map04520,3873.6153846153848
+organic horizon [ENVO:03600018],Adipocytokine signaling pathway [PATH:ko04920],map04920,11196.76923076923
+organic horizon [ENVO:03600018],Adrenergic signaling in cardiomyocytes [PATH:ko04261],map04261,3316.6923076923076
+organic horizon [ENVO:03600018],Aflatoxin biosynthesis [PATH:ko00254],map00254,123.76923076923077
+organic horizon [ENVO:03600018],African trypanosomiasis [PATH:ko05143],map05143,730.9230769230769
+organic horizon [ENVO:03600018],"Alanine, aspartate and glutamate metabolism [PATH:ko00250]",map00250,67735.76923076923
+organic horizon [ENVO:03600018],Alcoholic liver disease [PATH:ko04936],map04936,18302.076923076922
+organic horizon [ENVO:03600018],Alcoholism [PATH:ko05034],map05034,14264.461538461539
+organic horizon [ENVO:03600018],Aldosterone synthesis and secretion [PATH:ko04925],map04925,1286.8461538461538
+organic horizon [ENVO:03600018],Aldosterone-regulated sodium reabsorption [PATH:ko04960],map04960,719.3846153846154
+organic horizon [ENVO:03600018],Alzheimer disease [PATH:ko05010],map05010,47782.230769230766
+organic horizon [ENVO:03600018],Amino acid metabolism,map99985,2917.923076923077
+organic horizon [ENVO:03600018],Amino acid related enzymes [BR:ko01007],map01007,81989.23076923077
+organic horizon [ENVO:03600018],Amino sugar and nucleotide sugar metabolism [PATH:ko00520],map00520,50718.846153846156
+organic horizon [ENVO:03600018],Aminoacyl-tRNA biosynthesis [PATH:ko00970],map00970,55920.53846153846
+organic horizon [ENVO:03600018],Aminobenzoate degradation [PATH:ko00627],map00627,14037.461538461539
+organic horizon [ENVO:03600018],Amoebiasis [PATH:ko05146],map05146,1331.5384615384614
+organic horizon [ENVO:03600018],Amphetamine addiction [PATH:ko05031],map05031,1695.923076923077
+organic horizon [ENVO:03600018],Amyotrophic lateral sclerosis [PATH:ko05014],map05014,47879.230769230766
+organic horizon [ENVO:03600018],Antifolate resistance [PATH:ko01523],map01523,3908.153846153846
+organic horizon [ENVO:03600018],Antigen processing and presentation [PATH:ko04612],map04612,8431.307692307691
+organic horizon [ENVO:03600018],Antimicrobial resistance genes [BR:ko01504],map01504,16721.53846153846
+organic horizon [ENVO:03600018],Apelin signaling pathway [PATH:ko04371],map04371,2089.0
+organic horizon [ENVO:03600018],Apoptosis - fly [PATH:ko04214],map04214,3288.923076923077
+organic horizon [ENVO:03600018],Apoptosis - multiple species [PATH:ko04215],map04215,2214.153846153846
+organic horizon [ENVO:03600018],Apoptosis [PATH:ko04210],map04210,10592.538461538461
+organic horizon [ENVO:03600018],Arabinogalactan biosynthesis - Mycobacterium [PATH:ko00572],map00572,2817.3076923076924
+organic horizon [ENVO:03600018],Arachidonic acid metabolism [PATH:ko00590],map00590,403.9230769230769
+organic horizon [ENVO:03600018],Arginine and proline metabolism [PATH:ko00330],map00330,35975.61538461538
+organic horizon [ENVO:03600018],Arginine biosynthesis [PATH:ko00220],map00220,37950.692307692305
+organic horizon [ENVO:03600018],Arrhythmogenic right ventricular cardiomyopathy [PATH:ko05412],map05412,2032.0
+organic horizon [ENVO:03600018],Ascorbate and aldarate metabolism [PATH:ko00053],map00053,17259.615384615383
+organic horizon [ENVO:03600018],Atrazine degradation [PATH:ko00791],map00791,1617.6923076923076
+organic horizon [ENVO:03600018],Autophagy - animal [PATH:ko04140],map04140,10267.076923076924
+organic horizon [ENVO:03600018],Autophagy - other [PATH:ko04136],map04136,506.84615384615387
+organic horizon [ENVO:03600018],Autophagy - yeast [PATH:ko04138],map04138,2524.230769230769
+organic horizon [ENVO:03600018],Axon guidance [PATH:ko04360],map04360,2838.769230769231
+organic horizon [ENVO:03600018],Axon regeneration [PATH:ko04361],map04361,2913.153846153846
+organic horizon [ENVO:03600018],B cell receptor signaling pathway [PATH:ko04662],map04662,2065.6153846153848
+organic horizon [ENVO:03600018],Bacterial chemotaxis [PATH:ko02030],map02030,19619.923076923078
+organic horizon [ENVO:03600018],Bacterial invasion of epithelial cells [PATH:ko05100],map05100,5129.2307692307695
+organic horizon [ENVO:03600018],Bacterial motility proteins [BR:ko02035],map02035,120143.0
+organic horizon [ENVO:03600018],Bacterial secretion system [PATH:ko03070],map03070,92564.92307692308
+organic horizon [ENVO:03600018],Bacterial toxins [BR:ko02042],map02042,4749.846153846154
+organic horizon [ENVO:03600018],Basal cell carcinoma [PATH:ko05217],map05217,101.53846153846153
+organic horizon [ENVO:03600018],Basal transcription factors [PATH:ko03022],map03022,610.3076923076923
+organic horizon [ENVO:03600018],Base excision repair [PATH:ko03410],map03410,7782.692307692308
+organic horizon [ENVO:03600018],Benzoate degradation [PATH:ko00362],map00362,45360.46153846154
+organic horizon [ENVO:03600018],Betalain biosynthesis [PATH:ko00965],map00965,506.6923076923077
+organic horizon [ENVO:03600018],Bile secretion [PATH:ko04976],map04976,820.3076923076923
+organic horizon [ENVO:03600018],Biofilm formation - Escherichia coli [PATH:ko02026],map02026,56306.46153846154
+organic horizon [ENVO:03600018],Biofilm formation - Pseudomonas aeruginosa [PATH:ko02025],map02025,56417.61538461538
+organic horizon [ENVO:03600018],Biofilm formation - Vibrio cholerae [PATH:ko05111],map05111,67195.84615384616
+organic horizon [ENVO:03600018],"Biosynthesis of 12-, 14- and 16-membered macrolides [PATH:ko00522]",map00522,4.0
+organic horizon [ENVO:03600018],Biosynthesis of ansamycins [PATH:ko01051],map01051,8703.76923076923
+organic horizon [ENVO:03600018],Biosynthesis of enediyne antibiotics [PATH:ko01059],map01059,2990.6153846153848
+organic horizon [ENVO:03600018],Biosynthesis of siderophore group nonribosomal peptides [PATH:ko01053],map01053,1323.3076923076924
+organic horizon [ENVO:03600018],Biosynthesis of type II polyketide backbone [PATH:ko01056],map01056,163.46153846153845
+organic horizon [ENVO:03600018],Biosynthesis of type II polyketide products [PATH:ko01057],map01057,2772.6923076923076
+organic horizon [ENVO:03600018],Biosynthesis of unsaturated fatty acids [PATH:ko01040],map01040,5278.923076923077
+organic horizon [ENVO:03600018],Biosynthesis of vancomycin group antibiotics [PATH:ko01055],map01055,2177.846153846154
+organic horizon [ENVO:03600018],Biosynthesis of various alkaloids [PATH:ko00996],map00996,49.07692307692308
+organic horizon [ENVO:03600018],Biosynthesis of various antibiotics [PATH:ko00998],map00998,11237.153846153846
+organic horizon [ENVO:03600018],Biosynthesis of various nucleotide sugars [PATH:ko00541],map00541,27442.615384615383
+organic horizon [ENVO:03600018],Biosynthesis of various other secondary metabolites [PATH:ko00997],map00997,842.3076923076923
+organic horizon [ENVO:03600018],Biosynthesis of various plant secondary metabolites [PATH:ko00999],map00999,13527.846153846154
+organic horizon [ENVO:03600018],Biotin metabolism [PATH:ko00780],map00780,19770.153846153848
+organic horizon [ENVO:03600018],Bisphenol degradation [PATH:ko00363],map00363,527.8461538461538
+organic horizon [ENVO:03600018],Bladder cancer [PATH:ko05219],map05219,477.2307692307692
+organic horizon [ENVO:03600018],Brassinosteroid biosynthesis [PATH:ko00905],map00905,4.0
+organic horizon [ENVO:03600018],Breast cancer [PATH:ko05224],map05224,691.1538461538462
+organic horizon [ENVO:03600018],Butanoate metabolism [PATH:ko00650],map00650,173701.38461538462
+organic horizon [ENVO:03600018],C-type lectin receptor signaling pathway [PATH:ko04625],map04625,1326.3846153846155
+organic horizon [ENVO:03600018],C5-Branched dibasic acid metabolism [PATH:ko00660],map00660,31735.076923076922
+organic horizon [ENVO:03600018],CD molecules [BR:ko04090],map04090,1112.8461538461538
+organic horizon [ENVO:03600018],Caffeine metabolism [PATH:ko00232],map00232,161.69230769230768
+organic horizon [ENVO:03600018],Calcium signaling pathway [PATH:ko04020],map04020,2974.923076923077
+organic horizon [ENVO:03600018],Caprolactam degradation [PATH:ko00930],map00930,9565.615384615385
+organic horizon [ENVO:03600018],Carbapenem biosynthesis [PATH:ko00332],map00332,1139.3846153846155
+organic horizon [ENVO:03600018],Carbohydrate digestion and absorption [PATH:ko04973],map04973,910.5384615384615
+organic horizon [ENVO:03600018],Carbohydrate metabolism,map99981,2637.153846153846
+organic horizon [ENVO:03600018],Carbon fixation by Calvin cycle [PATH:ko00710],map00710,68147.0
+organic horizon [ENVO:03600018],Cardiac muscle contraction [PATH:ko04260],map04260,17531.53846153846
+organic horizon [ENVO:03600018],Carotenoid biosynthesis [PATH:ko00906],map00906,1025.8461538461538
+organic horizon [ENVO:03600018],Cationic antimicrobial peptide (CAMP) resistance [PATH:ko01503],map01503,24453.384615384617
+organic horizon [ENVO:03600018],Cell adhesion molecules [BR:ko04515],map04515,56.0
+organic horizon [ENVO:03600018],Cell adhesion molecules [PATH:ko04514],map04514,45.61538461538461
+organic horizon [ENVO:03600018],Cell cycle - Caulobacter [PATH:ko04112],map04112,126577.23076923077
+organic horizon [ENVO:03600018],Cell cycle - yeast [PATH:ko04111],map04111,1358.2307692307693
+organic horizon [ENVO:03600018],Cell cycle [PATH:ko04110],map04110,1886.6923076923076
+organic horizon [ENVO:03600018],Cell growth,map99978,6101.461538461538
+organic horizon [ENVO:03600018],Cell motility,map99993,946.3846153846154
+organic horizon [ENVO:03600018],Cellular senescence [PATH:ko04218],map04218,3078.6153846153848
+organic horizon [ENVO:03600018],Central carbon metabolism in cancer [PATH:ko05230],map05230,23044.69230769231
+organic horizon [ENVO:03600018],Chagas disease [PATH:ko05142],map05142,1568.923076923077
+organic horizon [ENVO:03600018],Chaperones and folding catalysts [BR:ko03110],map03110,334297.3846153846
+organic horizon [ENVO:03600018],Chemical carcinogenesis - DNA adducts [PATH:ko05204],map05204,4871.307692307692
+organic horizon [ENVO:03600018],Chemical carcinogenesis - reactive oxygen species [PATH:ko05208],map05208,47421.61538461538
+organic horizon [ENVO:03600018],Chemical carcinogenesis - receptor activation [PATH:ko05207],map05207,9138.846153846154
+organic horizon [ENVO:03600018],Chemokine signaling pathway [PATH:ko04062],map04062,2527.076923076923
+organic horizon [ENVO:03600018],Chloroalkane and chloroalkene degradation [PATH:ko00625],map00625,34892.07692307692
+organic horizon [ENVO:03600018],Chlorocyclohexane and chlorobenzene degradation [PATH:ko00361],map00361,14473.538461538461
+organic horizon [ENVO:03600018],Cholesterol metabolism [PATH:ko04979],map04979,394.3076923076923
+organic horizon [ENVO:03600018],Choline metabolism in cancer [PATH:ko05231],map05231,2239.769230769231
+organic horizon [ENVO:03600018],Cholinergic synapse [PATH:ko04725],map04725,797.8461538461538
+organic horizon [ENVO:03600018],Chromosome and associated proteins [BR:ko03036],map03036,155576.61538461538
+organic horizon [ENVO:03600018],Chronic myeloid leukemia [PATH:ko05220],map05220,501.61538461538464
+organic horizon [ENVO:03600018],Cilium and associated proteins [BR:ko03037],map03037,1444.0
+organic horizon [ENVO:03600018],Circadian entrainment [PATH:ko04713],map04713,1328.5384615384614
+organic horizon [ENVO:03600018],Circadian rhythm - fly [PATH:ko04711],map04711,77.38461538461539
+organic horizon [ENVO:03600018],Circadian rhythm - plant [PATH:ko04712],map04712,86.3076923076923
+organic horizon [ENVO:03600018],Circadian rhythm [PATH:ko04710],map04710,606.6923076923077
+organic horizon [ENVO:03600018],Citrate cycle (TCA cycle) [PATH:ko00020],map00020,101984.84615384616
+organic horizon [ENVO:03600018],Clavulanic acid biosynthesis [PATH:ko00331],map00331,10.2
+organic horizon [ENVO:03600018],Cobalamin transport and metabolism [PATH:ko04980],map04980,4888.076923076923
+organic horizon [ENVO:03600018],Cocaine addiction [PATH:ko05030],map05030,821.9230769230769
+organic horizon [ENVO:03600018],Cofactor metabolism,map99987,1934.4615384615386
+organic horizon [ENVO:03600018],Collecting duct acid secretion [PATH:ko04966],map04966,937.5384615384615
+organic horizon [ENVO:03600018],Colorectal cancer [PATH:ko05210],map05210,4399.538461538462
+organic horizon [ENVO:03600018],Complement and coagulation cascades [PATH:ko04610],map04610,29.166666666666668
+organic horizon [ENVO:03600018],Coronavirus disease - COVID-19 [PATH:ko05171],map05171,36378.692307692305
+organic horizon [ENVO:03600018],Cortisol synthesis and secretion [PATH:ko04927],map04927,65.23076923076923
+organic horizon [ENVO:03600018],Cushing syndrome [PATH:ko04934],map04934,2281.923076923077
+organic horizon [ENVO:03600018],"Cutin, suberine and wax biosynthesis [PATH:ko00073]",map00073,923.7692307692307
+organic horizon [ENVO:03600018],Cyanoamino acid metabolism [PATH:ko00460],map00460,10529.0
+organic horizon [ENVO:03600018],Cysteine and methionine metabolism [PATH:ko00270],map00270,72331.07692307692
+organic horizon [ENVO:03600018],Cytochrome P450 [BR:ko00199],map00199,3180.846153846154
+organic horizon [ENVO:03600018],Cytokine-cytokine receptor interaction [PATH:ko04060],map04060,11.666666666666666
+organic horizon [ENVO:03600018],Cytokines and neuropeptides [BR:ko04052],map04052,258.2307692307692
+organic horizon [ENVO:03600018],Cytoskeleton in muscle cells [PATH:ko04820],map04820,7668.307692307692
+organic horizon [ENVO:03600018],Cytoskeleton proteins [BR:ko04812],map04812,40788.07692307692
+organic horizon [ENVO:03600018],Cytosolic DNA-sensing pathway [PATH:ko04623],map04623,133.53846153846155
+organic horizon [ENVO:03600018],D-Amino acid metabolism [PATH:ko00470],map00470,7679.307692307692
+organic horizon [ENVO:03600018],DNA repair and recombination proteins [BR:ko03400],map03400,281050.6923076923
+organic horizon [ENVO:03600018],DNA replication [PATH:ko03030],map03030,19902.46153846154
+organic horizon [ENVO:03600018],DNA replication proteins [BR:ko03032],map03032,92602.15384615384
+organic horizon [ENVO:03600018],Degradation of flavonoids [PATH:ko00946],map00946,4830.615384615385
+organic horizon [ENVO:03600018],Diabetic cardiomyopathy [PATH:ko05415],map05415,54297.0
+organic horizon [ENVO:03600018],Dilated cardiomyopathy [PATH:ko05414],map05414,3379.5384615384614
+organic horizon [ENVO:03600018],Dioxin degradation [PATH:ko00621],map00621,4294.846153846154
+organic horizon [ENVO:03600018],Diterpenoid biosynthesis [PATH:ko00904],map00904,4.0
+organic horizon [ENVO:03600018],Domain-containing proteins not elsewhere classified [BR:ko04990],map04990,1446.3076923076924
+organic horizon [ENVO:03600018],Dopaminergic synapse [PATH:ko04728],map04728,2363.4615384615386
+organic horizon [ENVO:03600018],Dorso-ventral axis formation [PATH:ko04320],map04320,524.8461538461538
+organic horizon [ENVO:03600018],Drug metabolism - cytochrome P450 [PATH:ko00982],map00982,13474.615384615385
+organic horizon [ENVO:03600018],Drug metabolism - other enzymes [PATH:ko00983],map00983,22355.69230769231
+organic horizon [ENVO:03600018],ECM-receptor interaction [PATH:ko04512],map04512,168.0
+organic horizon [ENVO:03600018],EGFR tyrosine kinase inhibitor resistance [PATH:ko01521],map01521,1085.8461538461538
+organic horizon [ENVO:03600018],Efferocytosis [PATH:ko04148],map04148,7379.538461538462
+organic horizon [ENVO:03600018],Endocrine and other factor-regulated calcium reabsorption [PATH:ko04961],map04961,1314.0
+organic horizon [ENVO:03600018],Endocrine resistance [PATH:ko01522],map01522,616.2307692307693
+organic horizon [ENVO:03600018],Endocytosis [PATH:ko04144],map04144,5857.2307692307695
+organic horizon [ENVO:03600018],Endometrial cancer [PATH:ko05213],map05213,579.9230769230769
+organic horizon [ENVO:03600018],Energy metabolism,map99982,15931.923076923076
+organic horizon [ENVO:03600018],Enzymes with EC numbers,map99980,294034.23076923075
+organic horizon [ENVO:03600018],Epithelial cell signaling in Helicobacter pylori infection [PATH:ko05120],map05120,3350.4615384615386
+organic horizon [ENVO:03600018],Epstein-Barr virus infection [PATH:ko05169],map05169,4845.076923076923
+organic horizon [ENVO:03600018],ErbB signaling pathway [PATH:ko04012],map04012,635.7692307692307
+organic horizon [ENVO:03600018],Estrogen signaling pathway [PATH:ko04915],map04915,6884.384615384615
+organic horizon [ENVO:03600018],Ether lipid metabolism [PATH:ko00565],map00565,4194.076923076923
+organic horizon [ENVO:03600018],Ethylbenzene degradation [PATH:ko00642],map00642,2907.846153846154
+organic horizon [ENVO:03600018],Exopolysaccharide biosynthesis [PATH:ko00543],map00543,8653.846153846154
+organic horizon [ENVO:03600018],Exosome [BR:ko04147],map04147,279398.53846153844
+organic horizon [ENVO:03600018],Fanconi anemia pathway [PATH:ko03460],map03460,125.0
+organic horizon [ENVO:03600018],Fat digestion and absorption [PATH:ko04975],map04975,11122.0
+organic horizon [ENVO:03600018],Fatty acid biosynthesis [PATH:ko00061],map00061,43778.846153846156
+organic horizon [ENVO:03600018],Fatty acid degradation [PATH:ko00071],map00071,48867.53846153846
+organic horizon [ENVO:03600018],Fatty acid elongation [PATH:ko00062],map00062,367.6923076923077
+organic horizon [ENVO:03600018],Fc epsilon RI signaling pathway [PATH:ko04664],map04664,1948.2307692307693
+organic horizon [ENVO:03600018],Fc gamma R-mediated phagocytosis [PATH:ko04666],map04666,3209.6923076923076
+organic horizon [ENVO:03600018],Ferroptosis [PATH:ko04216],map04216,6487.692307692308
+organic horizon [ENVO:03600018],Flagellar assembly [PATH:ko02040],map02040,79876.23076923077
+organic horizon [ENVO:03600018],Flavone and flavonol biosynthesis [PATH:ko00944],map00944,74.23076923076923
+organic horizon [ENVO:03600018],Flavonoid biosynthesis [PATH:ko00941],map00941,283.84615384615387
+organic horizon [ENVO:03600018],Fluid shear stress and atherosclerosis [PATH:ko05418],map05418,27498.153846153848
+organic horizon [ENVO:03600018],Fluorobenzoate degradation [PATH:ko00364],map00364,10135.23076923077
+organic horizon [ENVO:03600018],Focal adhesion [PATH:ko04510],map04510,4460.461538461538
+organic horizon [ENVO:03600018],Folate biosynthesis [PATH:ko00790],map00790,15829.461538461539
+organic horizon [ENVO:03600018],Folate transport and metabolism [PATH:ko04981],map04981,6858.538461538462
+organic horizon [ENVO:03600018],FoxO signaling pathway [PATH:ko04068],map04068,15726.23076923077
+organic horizon [ENVO:03600018],Fructose and mannose metabolism [PATH:ko00051],map00051,32103.0
+organic horizon [ENVO:03600018],Function unknown,map99997,143990.46153846153
+organic horizon [ENVO:03600018],Furfural degradation [PATH:ko00365],map00365,509.0
+organic horizon [ENVO:03600018],G protein-coupled receptors [BR:ko04030],map04030,118.53846153846153
+organic horizon [ENVO:03600018],GABAergic synapse [PATH:ko04727],map04727,12991.307692307691
+organic horizon [ENVO:03600018],GTP-binding proteins [BR:ko04031],map04031,4249.923076923077
+organic horizon [ENVO:03600018],Galactose metabolism [PATH:ko00052],map00052,18060.615384615383
+organic horizon [ENVO:03600018],Gap junction [PATH:ko04540],map04540,6795.307692307692
+organic horizon [ENVO:03600018],Gastric acid secretion [PATH:ko04971],map04971,2873.4615384615386
+organic horizon [ENVO:03600018],Gastric cancer [PATH:ko05226],map05226,933.9230769230769
+organic horizon [ENVO:03600018],General function prediction only,map99996,48986.61538461538
+organic horizon [ENVO:03600018],Glioma [PATH:ko05214],map05214,1377.0
+organic horizon [ENVO:03600018],Global maps only,map09113,8.0
+organic horizon [ENVO:03600018],Glucagon signaling pathway [PATH:ko04922],map04922,17283.153846153848
+organic horizon [ENVO:03600018],Glucosinolate biosynthesis [PATH:ko00966],map00966,7033.461538461538
+organic horizon [ENVO:03600018],Glutamatergic synapse [PATH:ko04724],map04724,11832.461538461539
+organic horizon [ENVO:03600018],Glutathione metabolism [PATH:ko00480],map00480,42471.38461538462
+organic horizon [ENVO:03600018],Glycan metabolism,map99986,1873.6923076923076
+organic horizon [ENVO:03600018],Glycerolipid metabolism [PATH:ko00561],map00561,26346.846153846152
+organic horizon [ENVO:03600018],Glycerophospholipid metabolism [PATH:ko00564],map00564,18731.923076923078
+organic horizon [ENVO:03600018],"Glycine, serine and threonine metabolism [PATH:ko00260]",map00260,47554.38461538462
+organic horizon [ENVO:03600018],Glycolysis / Gluconeogenesis [PATH:ko00010],map00010,144406.84615384616
+organic horizon [ENVO:03600018],Glycosaminoglycan binding proteins [BR:ko00536],map00536,1699.2307692307693
+organic horizon [ENVO:03600018],Glycosaminoglycan biosynthesis - chondroitin sulfate / dermatan sulfate [PATH:ko00532],map00532,10.0
+organic horizon [ENVO:03600018],Glycosaminoglycan biosynthesis - heparan sulfate / heparin [PATH:ko00534],map00534,11.3
+organic horizon [ENVO:03600018],Glycosaminoglycan biosynthesis - keratan sulfate [PATH:ko00533],map00533,3.2
+organic horizon [ENVO:03600018],Glycosaminoglycan degradation [PATH:ko00531],map00531,1369.4615384615386
+organic horizon [ENVO:03600018],Glycosphingolipid biosynthesis - ganglio series [PATH:ko00604],map00604,398.0769230769231
+organic horizon [ENVO:03600018],Glycosphingolipid biosynthesis - globo and isoglobo series [PATH:ko00603],map00603,1596.1538461538462
+organic horizon [ENVO:03600018],Glycosphingolipid biosynthesis - lacto and neolacto series [PATH:ko00601],map00601,4.0
+organic horizon [ENVO:03600018],Glycosylphosphatidylinositol (GPI)-anchor biosynthesis [PATH:ko00563],map00563,318.15384615384613
+organic horizon [ENVO:03600018],Glycosylphosphatidylinositol (GPI)-anchored proteins [BR:ko00537],map00537,2602.3076923076924
+organic horizon [ENVO:03600018],Glycosyltransferases [BR:ko01003],map01003,31900.23076923077
+organic horizon [ENVO:03600018],Glyoxylate and dicarboxylate metabolism [PATH:ko00630],map00630,124813.30769230769
+organic horizon [ENVO:03600018],GnRH secretion [PATH:ko04929],map04929,421.2307692307692
+organic horizon [ENVO:03600018],GnRH signaling pathway [PATH:ko04912],map04912,1333.7692307692307
+organic horizon [ENVO:03600018],"Growth hormone synthesis, secretion and action [PATH:ko04935]",map04935,790.8461538461538
+organic horizon [ENVO:03600018],HIF-1 signaling pathway [PATH:ko04066],map04066,21849.23076923077
+organic horizon [ENVO:03600018],Hedgehog signaling pathway - fly [PATH:ko04341],map04341,722.7692307692307
+organic horizon [ENVO:03600018],Hedgehog signaling pathway [PATH:ko04340],map04340,242.3846153846154
+organic horizon [ENVO:03600018],Hematopoietic cell lineage [PATH:ko04640],map04640,14.75
+organic horizon [ENVO:03600018],Hepatitis B [PATH:ko05161],map05161,2916.6923076923076
+organic horizon [ENVO:03600018],Hepatitis C [PATH:ko05160],map05160,3720.846153846154
+organic horizon [ENVO:03600018],Hepatocellular carcinoma [PATH:ko05225],map05225,7106.7692307692305
+organic horizon [ENVO:03600018],Herpes simplex virus 1 infection [PATH:ko05168],map05168,3094.6153846153848
+organic horizon [ENVO:03600018],Hippo signaling pathway - fly [PATH:ko04391],map04391,2708.0
+organic horizon [ENVO:03600018],Hippo signaling pathway - multiple species [PATH:ko04392],map04392,138.46153846153845
+organic horizon [ENVO:03600018],Hippo signaling pathway [PATH:ko04390],map04390,2941.6153846153848
+organic horizon [ENVO:03600018],Histidine metabolism [PATH:ko00340],map00340,42721.846153846156
+organic horizon [ENVO:03600018],Homologous recombination [PATH:ko03440],map03440,31239.923076923078
+organic horizon [ENVO:03600018],Hormone signaling [PATH:ko04081],map04081,587.7692307692307
+organic horizon [ENVO:03600018],Human T-cell leukemia virus 1 infection [PATH:ko05166],map05166,3361.5384615384614
+organic horizon [ENVO:03600018],Human cytomegalovirus infection [PATH:ko05163],map05163,6103.384615384615
+organic horizon [ENVO:03600018],Human immunodeficiency virus 1 infection [PATH:ko05170],map05170,7023.076923076923
+organic horizon [ENVO:03600018],Human papillomavirus infection [PATH:ko05165],map05165,3610.5384615384614
+organic horizon [ENVO:03600018],Huntington disease [PATH:ko05016],map05016,49256.307692307695
+organic horizon [ENVO:03600018],Hypertrophic cardiomyopathy [PATH:ko05410],map05410,3540.5384615384614
+organic horizon [ENVO:03600018],IL-17 signaling pathway [PATH:ko04657],map04657,3255.923076923077
+organic horizon [ENVO:03600018],Indole alkaloid biosynthesis [PATH:ko00901],map00901,358.6923076923077
+organic horizon [ENVO:03600018],Inflammatory bowel disease [PATH:ko05321],map05321,5.6
+organic horizon [ENVO:03600018],Inflammatory mediator regulation of TRP channels [PATH:ko04750],map04750,958.3846153846154
+organic horizon [ENVO:03600018],Influenza A [PATH:ko05164],map05164,5906.307692307692
+organic horizon [ENVO:03600018],Inositol phosphate metabolism [PATH:ko00562],map00562,17791.0
+organic horizon [ENVO:03600018],Insect hormone biosynthesis [PATH:ko00981],map00981,5839.076923076923
+organic horizon [ENVO:03600018],Insulin resistance [PATH:ko04931],map04931,11562.615384615385
+organic horizon [ENVO:03600018],Insulin secretion [PATH:ko04911],map04911,461.38461538461536
+organic horizon [ENVO:03600018],Insulin signaling pathway [PATH:ko04910],map04910,12332.0
+organic horizon [ENVO:03600018],Ion channels [BR:ko04040],map04040,339.84615384615387
+organic horizon [ENVO:03600018],Isoflavonoid biosynthesis [PATH:ko00943],map00943,171.0
+organic horizon [ENVO:03600018],Isoquinoline alkaloid biosynthesis [PATH:ko00950],map00950,5686.923076923077
+organic horizon [ENVO:03600018],JAK-STAT signaling pathway [PATH:ko04630],map04630,182.6153846153846
+organic horizon [ENVO:03600018],Kaposi sarcoma-associated herpesvirus infection [PATH:ko05167],map05167,11248.692307692309
+organic horizon [ENVO:03600018],Lectins [BR:ko04091],map04091,580.3846153846154
+organic horizon [ENVO:03600018],Legionellosis [PATH:ko05134],map05134,76029.76923076923
+organic horizon [ENVO:03600018],Leishmaniasis [PATH:ko05140],map05140,5253.307692307692
+organic horizon [ENVO:03600018],Leukocyte transendothelial migration [PATH:ko04670],map04670,3729.4615384615386
+organic horizon [ENVO:03600018],Limonene degradation [PATH:ko00903],map00903,9413.76923076923
+organic horizon [ENVO:03600018],Linoleic acid metabolism [PATH:ko00591],map00591,863.2307692307693
+organic horizon [ENVO:03600018],Lipid and atherosclerosis [PATH:ko05417],map05417,62524.46153846154
+organic horizon [ENVO:03600018],Lipid biosynthesis proteins [BR:ko01004],map01004,60290.61538461538
+organic horizon [ENVO:03600018],Lipid metabolism,map99983,341.0
+organic horizon [ENVO:03600018],Lipoarabinomannan (LAM) biosynthesis [PATH:ko00571],map00571,1816.076923076923
+organic horizon [ENVO:03600018],Lipoic acid metabolism [PATH:ko00785],map00785,35056.38461538462
+organic horizon [ENVO:03600018],Lipopolysaccharide biosynthesis [PATH:ko00540],map00540,8369.615384615385
+organic horizon [ENVO:03600018],Lipopolysaccharide biosynthesis proteins [BR:ko01005],map01005,18196.153846153848
+organic horizon [ENVO:03600018],Long-term depression [PATH:ko04730],map04730,730.7692307692307
+organic horizon [ENVO:03600018],Long-term potentiation [PATH:ko04720],map04720,1396.4615384615386
+organic horizon [ENVO:03600018],Longevity regulating pathway - multiple species [PATH:ko04213],map04213,33009.769230769234
+organic horizon [ENVO:03600018],Longevity regulating pathway - worm [PATH:ko04212],map04212,105998.23076923077
+organic horizon [ENVO:03600018],Longevity regulating pathway [PATH:ko04211],map04211,10341.461538461539
+organic horizon [ENVO:03600018],Lysine biosynthesis [PATH:ko00300],map00300,23244.0
+organic horizon [ENVO:03600018],Lysine degradation [PATH:ko00310],map00310,38954.38461538462
+organic horizon [ENVO:03600018],Lysosome [PATH:ko04142],map04142,12194.384615384615
+organic horizon [ENVO:03600018],MAPK signaling pathway - fly [PATH:ko04013],map04013,9707.923076923076
+organic horizon [ENVO:03600018],MAPK signaling pathway - plant [PATH:ko04016],map04016,6722.923076923077
+organic horizon [ENVO:03600018],MAPK signaling pathway - yeast [PATH:ko04011],map04011,5030.461538461538
+organic horizon [ENVO:03600018],MAPK signaling pathway [PATH:ko04010],map04010,4820.0
+organic horizon [ENVO:03600018],Malaria [PATH:ko05144],map05144,15.0
+organic horizon [ENVO:03600018],Mannose type O-glycan biosynthesis [PATH:ko00515],map00515,783.1538461538462
+organic horizon [ENVO:03600018],Maturity onset diabetes of the young [PATH:ko04950],map04950,6.0
+organic horizon [ENVO:03600018],Measles [PATH:ko05162],map05162,5361.615384615385
+organic horizon [ENVO:03600018],Meiosis - yeast [PATH:ko04113],map04113,8133.076923076923
+organic horizon [ENVO:03600018],Melanogenesis [PATH:ko04916],map04916,1734.2307692307693
+organic horizon [ENVO:03600018],Melanoma [PATH:ko05218],map05218,420.7692307692308
+organic horizon [ENVO:03600018],Membrane trafficking [BR:ko04131],map04131,67817.84615384616
+organic horizon [ENVO:03600018],Messenger RNA biogenesis [BR:ko03019],map03019,154120.46153846153
+organic horizon [ENVO:03600018],Metabolism of xenobiotics by cytochrome P450 [PATH:ko00980],map00980,13144.846153846154
+organic horizon [ENVO:03600018],Methane metabolism [PATH:ko00680],map00680,106476.61538461539
+organic horizon [ENVO:03600018],MicroRNAs in cancer [PATH:ko05206],map05206,2647.6923076923076
+organic horizon [ENVO:03600018],Mineral absorption [PATH:ko04978],map04978,1548.4615384615386
+organic horizon [ENVO:03600018],Mismatch repair [PATH:ko03430],map03430,20355.923076923078
+organic horizon [ENVO:03600018],Mitochondrial biogenesis [BR:ko03029],map03029,278604.23076923075
+organic horizon [ENVO:03600018],Mitophagy - animal [PATH:ko04137],map04137,11738.538461538461
+organic horizon [ENVO:03600018],Mitophagy - yeast [PATH:ko04139],map04139,540.8461538461538
+organic horizon [ENVO:03600018],Monobactam biosynthesis [PATH:ko00261],map00261,12644.153846153846
+organic horizon [ENVO:03600018],Monoterpenoid biosynthesis [PATH:ko00902],map00902,10.3
+organic horizon [ENVO:03600018],Morphine addiction [PATH:ko05032],map05032,393.84615384615387
+organic horizon [ENVO:03600018],Motor proteins [PATH:ko04814],map04814,13793.846153846154
+organic horizon [ENVO:03600018],Mucin type O-glycan biosynthesis [PATH:ko00512],map00512,14.636363636363637
+organic horizon [ENVO:03600018],Mycolic acid biosynthesis [PATH:ko00074],map00074,14073.76923076923
+organic horizon [ENVO:03600018],N-Glycan biosynthesis [PATH:ko00510],map00510,3714.6923076923076
+organic horizon [ENVO:03600018],NF-kappa B signaling pathway [PATH:ko04064],map04064,122.38461538461539
+organic horizon [ENVO:03600018],NOD-like receptor signaling pathway [PATH:ko04621],map04621,30297.153846153848
+organic horizon [ENVO:03600018],Naphthalene degradation [PATH:ko00626],map00626,9191.538461538461
+organic horizon [ENVO:03600018],Natural killer cell mediated cytotoxicity [PATH:ko04650],map04650,1990.0
+organic horizon [ENVO:03600018],Necroptosis [PATH:ko04217],map04217,26266.846153846152
+organic horizon [ENVO:03600018],"Neomycin, kanamycin and gentamicin biosynthesis [PATH:ko00524]",map00524,1640.2307692307693
+organic horizon [ENVO:03600018],Neuroactive ligand-receptor interaction [PATH:ko04080],map04080,334.7692307692308
+organic horizon [ENVO:03600018],Neurotrophin signaling pathway [PATH:ko04722],map04722,3642.076923076923
+organic horizon [ENVO:03600018],Neutrophil extracellular trap formation [PATH:ko04613],map04613,17048.46153846154
+organic horizon [ENVO:03600018],Nicotinate and nicotinamide metabolism [PATH:ko00760],map00760,25053.23076923077
+organic horizon [ENVO:03600018],Nicotine addiction [PATH:ko05033],map05033,24.46153846153846
+organic horizon [ENVO:03600018],Nitrogen metabolism [PATH:ko00910],map00910,39967.61538461538
+organic horizon [ENVO:03600018],Nitrotoluene degradation [PATH:ko00633],map00633,12984.538461538461
+organic horizon [ENVO:03600018],Non-alcoholic fatty liver disease [PATH:ko04932],map04932,20169.76923076923
+organic horizon [ENVO:03600018],Non-homologous end-joining [PATH:ko03450],map03450,5614.461538461538
+organic horizon [ENVO:03600018],Non-small cell lung cancer [PATH:ko05223],map05223,500.7692307692308
+organic horizon [ENVO:03600018],Nonribosomal peptide structures [PATH:ko01054],map01054,599.0
+organic horizon [ENVO:03600018],Notch signaling pathway [PATH:ko04330],map04330,145.84615384615384
+organic horizon [ENVO:03600018],Novobiocin biosynthesis [PATH:ko00401],map00401,6514.0
+organic horizon [ENVO:03600018],Nuclear receptors [BR:ko03310],map03310,15.76923076923077
+organic horizon [ENVO:03600018],Nucleocytoplasmic transport [PATH:ko03013],map03013,6204.7692307692305
+organic horizon [ENVO:03600018],Nucleotide excision repair [PATH:ko03420],map03420,14031.76923076923
+organic horizon [ENVO:03600018],Nucleotide metabolism,map99984,16.4
+organic horizon [ENVO:03600018],O-Antigen repeat unit biosynthesis [PATH:ko00542],map00542,1952.3846153846155
+organic horizon [ENVO:03600018],Olfactory transduction [PATH:ko04740],map04740,1039.3846153846155
+organic horizon [ENVO:03600018],One carbon pool by folate [PATH:ko00670],map00670,42187.153846153844
+organic horizon [ENVO:03600018],Oocyte meiosis [PATH:ko04114],map04114,2682.769230769231
+organic horizon [ENVO:03600018],Osteoclast differentiation [PATH:ko04380],map04380,2278.3076923076924
+organic horizon [ENVO:03600018],Other carbon fixation pathways [PATH:ko00720],map00720,95173.53846153847
+organic horizon [ENVO:03600018],Other glycan degradation [PATH:ko00511],map00511,6151.384615384615
+organic horizon [ENVO:03600018],Other types of O-glycan biosynthesis [PATH:ko00514],map00514,1443.6923076923076
+organic horizon [ENVO:03600018],Others,map99994,4426.923076923077
+organic horizon [ENVO:03600018],Others,map99998,5887.076923076923
+organic horizon [ENVO:03600018],Others,map99999,4458.7692307692305
+organic horizon [ENVO:03600018],Ovarian steroidogenesis [PATH:ko04913],map04913,48.61538461538461
+organic horizon [ENVO:03600018],Oxidative phosphorylation [PATH:ko00190],map00190,177843.76923076922
+organic horizon [ENVO:03600018],Oxytocin signaling pathway [PATH:ko04921],map04921,4949.153846153846
+organic horizon [ENVO:03600018],PD-L1 expression and PD-1 checkpoint pathway in cancer [PATH:ko05235],map05235,664.0
+organic horizon [ENVO:03600018],PI3K-Akt signaling pathway [PATH:ko04151],map04151,12079.923076923076
+organic horizon [ENVO:03600018],PPAR signaling pathway [PATH:ko03320],map03320,29698.923076923078
+organic horizon [ENVO:03600018],Pancreatic cancer [PATH:ko05212],map05212,2047.5384615384614
+organic horizon [ENVO:03600018],Pancreatic secretion [PATH:ko04972],map04972,3193.769230769231
+organic horizon [ENVO:03600018],Pantothenate and CoA biosynthesis [PATH:ko00770],map00770,49286.38461538462
+organic horizon [ENVO:03600018],"Parathyroid hormone synthesis, secretion and action [PATH:ko04928]",map04928,540.1538461538462
+organic horizon [ENVO:03600018],Parkinson disease [PATH:ko05012],map05012,59309.46153846154
+organic horizon [ENVO:03600018],Pathogenic Escherichia coli infection [PATH:ko05130],map05130,22361.846153846152
+organic horizon [ENVO:03600018],Pathways in cancer [PATH:ko05200],map05200,15986.23076923077
+organic horizon [ENVO:03600018],Pathways of neurodegeneration - multiple diseases [PATH:ko05022],map05022,55395.61538461538
+organic horizon [ENVO:03600018],Pattern recognition receptors [BR:ko04054],map04054,20.916666666666668
+organic horizon [ENVO:03600018],Penicillin and cephalosporin biosynthesis [PATH:ko00311],map00311,987.2307692307693
+organic horizon [ENVO:03600018],Pentose and glucuronate interconversions [PATH:ko00040],map00040,19278.153846153848
+organic horizon [ENVO:03600018],Pentose phosphate pathway [PATH:ko00030],map00030,73300.84615384616
+organic horizon [ENVO:03600018],Peptidases and inhibitors [BR:ko01002],map01002,234369.46153846153
+organic horizon [ENVO:03600018],Peptidoglycan biosynthesis [PATH:ko00550],map00550,22202.846153846152
+organic horizon [ENVO:03600018],Peptidoglycan biosynthesis and degradation proteins [BR:ko01011],map01011,36854.38461538462
+organic horizon [ENVO:03600018],Peroxisome [PATH:ko04146],map04146,31381.615384615383
+organic horizon [ENVO:03600018],Pertussis [PATH:ko05133],map05133,4852.7692307692305
+organic horizon [ENVO:03600018],Phagosome [PATH:ko04145],map04145,13049.615384615385
+organic horizon [ENVO:03600018],Phenazine biosynthesis [PATH:ko00405],map00405,886.6923076923077
+organic horizon [ENVO:03600018],Phenylalanine metabolism [PATH:ko00360],map00360,36786.53846153846
+organic horizon [ENVO:03600018],"Phenylalanine, tyrosine and tryptophan biosynthesis [PATH:ko00400]",map00400,19570.384615384617
+organic horizon [ENVO:03600018],Phenylpropanoid biosynthesis [PATH:ko00940],map00940,5897.692307692308
+organic horizon [ENVO:03600018],Phosphatidylinositol signaling system [PATH:ko04070],map04070,2351.230769230769
+organic horizon [ENVO:03600018],Phospholipase D signaling pathway [PATH:ko04072],map04072,1624.6923076923076
+organic horizon [ENVO:03600018],Phosphonate and phosphinate metabolism [PATH:ko00440],map00440,679.1538461538462
+organic horizon [ENVO:03600018],Phosphotransferase system (PTS) [PATH:ko02060],map02060,3621.6153846153848
+organic horizon [ENVO:03600018],Photosynthesis - antenna proteins [PATH:ko00196],map00196,3.5
+organic horizon [ENVO:03600018],Photosynthesis [PATH:ko00195],map00195,37403.692307692305
+organic horizon [ENVO:03600018],Photosynthesis proteins [BR:ko00194],map00194,42265.07692307692
+organic horizon [ENVO:03600018],Phototransduction - fly [PATH:ko04745],map04745,2425.923076923077
+organic horizon [ENVO:03600018],Phototransduction [PATH:ko04744],map04744,929.8461538461538
+organic horizon [ENVO:03600018],"Pinene, camphor and geraniol degradation [PATH:ko00907]",map00907,6368.692307692308
+organic horizon [ENVO:03600018],Plant hormone signal transduction [PATH:ko04075],map04075,12218.384615384615
+organic horizon [ENVO:03600018],Plant-pathogen interaction [PATH:ko04626],map04626,58641.07692307692
+organic horizon [ENVO:03600018],Platelet activation [PATH:ko04611],map04611,2544.076923076923
+organic horizon [ENVO:03600018],Platinum drug resistance [PATH:ko01524],map01524,7855.7692307692305
+organic horizon [ENVO:03600018],Polycomb repressive complex [PATH:ko03083],map03083,1483.923076923077
+organic horizon [ENVO:03600018],Polycyclic aromatic hydrocarbon degradation [PATH:ko00624],map00624,5184.615384615385
+organic horizon [ENVO:03600018],Polyketide biosynthesis proteins [BR:ko01008],map01008,12883.692307692309
+organic horizon [ENVO:03600018],Polyketide sugar unit biosynthesis [PATH:ko00523],map00523,5157.0
+organic horizon [ENVO:03600018],Porphyrin metabolism [PATH:ko00860],map00860,31772.69230769231
+organic horizon [ENVO:03600018],Prenyltransferases [BR:ko01006],map01006,9151.076923076924
+organic horizon [ENVO:03600018],Primary bile acid biosynthesis [PATH:ko00120],map00120,520.7692307692307
+organic horizon [ENVO:03600018],Primary immunodeficiency [PATH:ko05340],map05340,595.6153846153846
+organic horizon [ENVO:03600018],Prion disease [PATH:ko05020],map05020,43348.153846153844
+organic horizon [ENVO:03600018],Prodigiosin biosynthesis [PATH:ko00333],map00333,8553.76923076923
+organic horizon [ENVO:03600018],Progesterone-mediated oocyte maturation [PATH:ko04914],map04914,3519.4615384615386
+organic horizon [ENVO:03600018],Prokaryotic defense system [BR:ko02048],map02048,31286.76923076923
+organic horizon [ENVO:03600018],Prolactin signaling pathway [PATH:ko04917],map04917,1070.3846153846155
+organic horizon [ENVO:03600018],Propanoate metabolism [PATH:ko00640],map00640,67176.46153846153
+organic horizon [ENVO:03600018],Prostate cancer [PATH:ko05215],map05215,3677.230769230769
+organic horizon [ENVO:03600018],Proteasome [BR:ko03051],map03051,22659.76923076923
+organic horizon [ENVO:03600018],Proteasome [PATH:ko03050],map03050,13395.076923076924
+organic horizon [ENVO:03600018],Protein digestion and absorption [PATH:ko04974],map04974,1500.3076923076924
+organic horizon [ENVO:03600018],Protein export [PATH:ko03060],map03060,77135.69230769231
+organic horizon [ENVO:03600018],Protein kinases [BR:ko01001],map01001,64261.53846153846
+organic horizon [ENVO:03600018],Protein phosphatases and associated proteins [BR:ko01009],map01009,19100.46153846154
+organic horizon [ENVO:03600018],Protein processing,map99975,20286.46153846154
+organic horizon [ENVO:03600018],Protein processing in endoplasmic reticulum [PATH:ko04141],map04141,35067.0
+organic horizon [ENVO:03600018],Proteoglycans [BR:ko00535],map00535,24.076923076923077
+organic horizon [ENVO:03600018],Proteoglycans in cancer [PATH:ko05205],map05205,8712.846153846154
+organic horizon [ENVO:03600018],Proximal tubule bicarbonate reclamation [PATH:ko04964],map04964,9058.461538461539
+organic horizon [ENVO:03600018],Purine metabolism [PATH:ko00230],map00230,94565.30769230769
+organic horizon [ENVO:03600018],Pyrimidine metabolism [PATH:ko00240],map00240,49349.53846153846
+organic horizon [ENVO:03600018],Pyruvate metabolism [PATH:ko00620],map00620,154775.76923076922
+organic horizon [ENVO:03600018],Quorum sensing [PATH:ko02024],map02024,194118.6923076923
+organic horizon [ENVO:03600018],RIG-I-like receptor signaling pathway [PATH:ko04622],map04622,164.3846153846154
+organic horizon [ENVO:03600018],RNA degradation [PATH:ko03018],map03018,127103.46153846153
+organic horizon [ENVO:03600018],RNA polymerase [PATH:ko03020],map03020,123616.69230769231
+organic horizon [ENVO:03600018],Rap1 signaling pathway [PATH:ko04015],map04015,5080.538461538462
+organic horizon [ENVO:03600018],Ras signaling pathway [PATH:ko04014],map04014,3290.3846153846152
+organic horizon [ENVO:03600018],Regulation of actin cytoskeleton [PATH:ko04810],map04810,6360.153846153846
+organic horizon [ENVO:03600018],Regulation of lipolysis in adipocytes [PATH:ko04923],map04923,315.6923076923077
+organic horizon [ENVO:03600018],Relaxin signaling pathway [PATH:ko04926],map04926,985.3076923076923
+organic horizon [ENVO:03600018],Renal cell carcinoma [PATH:ko05211],map05211,3899.769230769231
+organic horizon [ENVO:03600018],Renin secretion [PATH:ko04924],map04924,1829.923076923077
+organic horizon [ENVO:03600018],Renin-angiotensin system [PATH:ko04614],map04614,1259.1538461538462
+organic horizon [ENVO:03600018],Replication and repair,map99976,25384.69230769231
+organic horizon [ENVO:03600018],Retinol metabolism [PATH:ko00830],map00830,8553.615384615385
+organic horizon [ENVO:03600018],Retrograde endocannabinoid signaling [PATH:ko04723],map04723,4271.846153846154
+organic horizon [ENVO:03600018],Rheumatoid arthritis [PATH:ko05323],map05323,2463.3076923076924
+organic horizon [ENVO:03600018],Riboflavin metabolism [PATH:ko00740],map00740,6002.307692307692
+organic horizon [ENVO:03600018],Ribosome [BR:ko03011],map03011,398045.46153846156
+organic horizon [ENVO:03600018],Ribosome [PATH:ko03010],map03010,397984.76923076925
+organic horizon [ENVO:03600018],Ribosome biogenesis [BR:ko03009],map03009,78473.46153846153
+organic horizon [ENVO:03600018],Ribosome biogenesis in eukaryotes [PATH:ko03008],map03008,3851.3076923076924
+organic horizon [ENVO:03600018],SNARE interactions in vesicular transport [PATH:ko04130],map04130,201.76923076923077
+organic horizon [ENVO:03600018],Salivary secretion [PATH:ko04970],map04970,1734.0
+organic horizon [ENVO:03600018],Salmonella infection [PATH:ko05132],map05132,51507.38461538462
+organic horizon [ENVO:03600018],Secondary bile acid biosynthesis [PATH:ko00121],map00121,112.92307692307692
+organic horizon [ENVO:03600018],Secondary metabolism,map99988,2642.5384615384614
+organic horizon [ENVO:03600018],Secretion system [BR:ko02044],map02044,202354.15384615384
+organic horizon [ENVO:03600018],Selenocompound metabolism [PATH:ko00450],map00450,25906.53846153846
+organic horizon [ENVO:03600018],Serotonergic synapse [PATH:ko04726],map04726,1450.6923076923076
+organic horizon [ENVO:03600018],Sesquiterpenoid and triterpenoid biosynthesis [PATH:ko00909],map00909,3990.230769230769
+organic horizon [ENVO:03600018],Shigellosis [PATH:ko05131],map05131,31691.69230769231
+organic horizon [ENVO:03600018],Signaling pathways regulating pluripotency of stem cells [PATH:ko04550],map04550,522.0
+organic horizon [ENVO:03600018],Signaling proteins,map99995,24565.30769230769
+organic horizon [ENVO:03600018],Small cell lung cancer [PATH:ko05222],map05222,2328.5384615384614
+organic horizon [ENVO:03600018],Sphingolipid metabolism [PATH:ko00600],map00600,4897.692307692308
+organic horizon [ENVO:03600018],Sphingolipid signaling pathway [PATH:ko04071],map04071,3339.230769230769
+organic horizon [ENVO:03600018],Spinocerebellar ataxia [PATH:ko05017],map05017,5540.692307692308
+organic horizon [ENVO:03600018],Spliceosome [BR:ko03041],map03041,18597.615384615383
+organic horizon [ENVO:03600018],Spliceosome [PATH:ko03040],map03040,3964.230769230769
+organic horizon [ENVO:03600018],Staphylococcus aureus infection [PATH:ko05150],map05150,226.23076923076923
+organic horizon [ENVO:03600018],Starch and sucrose metabolism [PATH:ko00500],map00500,52983.307692307695
+organic horizon [ENVO:03600018],Staurosporine biosynthesis [PATH:ko00404],map00404,224.23076923076923
+organic horizon [ENVO:03600018],Steroid biosynthesis [PATH:ko00100],map00100,539.3076923076923
+organic horizon [ENVO:03600018],Steroid degradation [PATH:ko00984],map00984,3267.230769230769
+organic horizon [ENVO:03600018],Steroid hormone biosynthesis [PATH:ko00140],map00140,949.1538461538462
+organic horizon [ENVO:03600018],"Stilbenoid, diarylheptanoid and gingerol biosynthesis [PATH:ko00945]",map00945,282.46153846153845
+organic horizon [ENVO:03600018],Streptomycin biosynthesis [PATH:ko00521],map00521,14230.23076923077
+organic horizon [ENVO:03600018],Structural proteins,map99992,13518.692307692309
+organic horizon [ENVO:03600018],Styrene degradation [PATH:ko00643],map00643,17586.923076923078
+organic horizon [ENVO:03600018],Sulfur metabolism [PATH:ko00920],map00920,39411.307692307695
+organic horizon [ENVO:03600018],Sulfur relay system [PATH:ko04122],map04122,24232.846153846152
+organic horizon [ENVO:03600018],Synaptic vesicle cycle [PATH:ko04721],map04721,2046.7692307692307
+organic horizon [ENVO:03600018],Systemic lupus erythematosus [PATH:ko05322],map05322,16417.30769230769
+organic horizon [ENVO:03600018],T cell receptor signaling pathway [PATH:ko04660],map04660,1010.3846153846154
+organic horizon [ENVO:03600018],TGF-beta signaling pathway [PATH:ko04350],map04350,982.6153846153846
+organic horizon [ENVO:03600018],TNF signaling pathway [PATH:ko04668],map04668,197.3846153846154
+organic horizon [ENVO:03600018],Taste transduction [PATH:ko04742],map04742,43.84615384615385
+organic horizon [ENVO:03600018],Taurine and hypotaurine metabolism [PATH:ko00430],map00430,14201.615384615385
+organic horizon [ENVO:03600018],Teichoic acid biosynthesis [PATH:ko00552],map00552,6406.153846153846
+organic horizon [ENVO:03600018],Terpenoid backbone biosynthesis [PATH:ko00900],map00900,42617.92307692308
+organic horizon [ENVO:03600018],Tetracycline biosynthesis [PATH:ko00253],map00253,245.76923076923077
+organic horizon [ENVO:03600018],Th1 and Th2 cell differentiation [PATH:ko04658],map04658,262.61538461538464
+organic horizon [ENVO:03600018],Th17 cell differentiation [PATH:ko04659],map04659,3184.153846153846
+organic horizon [ENVO:03600018],Thermogenesis [PATH:ko04714],map04714,39474.307692307695
+organic horizon [ENVO:03600018],Thiamine metabolism [PATH:ko00730],map00730,26643.46153846154
+organic horizon [ENVO:03600018],Thyroid cancer [PATH:ko05216],map05216,398.53846153846155
+organic horizon [ENVO:03600018],Thyroid hormone signaling pathway [PATH:ko04919],map04919,8138.076923076923
+organic horizon [ENVO:03600018],Thyroid hormone synthesis [PATH:ko04918],map04918,3261.5384615384614
+organic horizon [ENVO:03600018],Tight junction [PATH:ko04530],map04530,8084.615384615385
+organic horizon [ENVO:03600018],Toll and Imd signaling pathway [PATH:ko04624],map04624,361.84615384615387
+organic horizon [ENVO:03600018],Toll-like receptor signaling pathway [PATH:ko04620],map04620,1624.923076923077
+organic horizon [ENVO:03600018],Toluene degradation [PATH:ko00623],map00623,11074.923076923076
+organic horizon [ENVO:03600018],Toxoplasmosis [PATH:ko05145],map05145,4794.2307692307695
+organic horizon [ENVO:03600018],Transcription,map99973,124951.84615384616
+organic horizon [ENVO:03600018],Transcription factors [BR:ko03000],map03000,174523.84615384616
+organic horizon [ENVO:03600018],Transcription machinery [BR:ko03021],map03021,349341.1538461539
+organic horizon [ENVO:03600018],Transcriptional misregulation in cancer [PATH:ko05202],map05202,4546.307692307692
+organic horizon [ENVO:03600018],Transfer RNA biogenesis [BR:ko03016],map03016,107442.30769230769
+organic horizon [ENVO:03600018],Translation,map99974,501.38461538461536
+organic horizon [ENVO:03600018],Translation factors [BR:ko03012],map03012,146196.76923076922
+organic horizon [ENVO:03600018],Transport,map99977,20638.23076923077
+organic horizon [ENVO:03600018],Transporters [BR:ko02000],map02000,612608.7692307692
+organic horizon [ENVO:03600018],"Tropane, piperidine and pyridine alkaloid biosynthesis [PATH:ko00960]",map00960,7493.384615384615
+organic horizon [ENVO:03600018],Tryptophan metabolism [PATH:ko00380],map00380,40935.153846153844
+organic horizon [ENVO:03600018],Tuberculosis [PATH:ko05152],map05152,85324.23076923077
+organic horizon [ENVO:03600018],Two-component system [BR:ko02022],map02022,69042.23076923077
+organic horizon [ENVO:03600018],Two-component system [PATH:ko02020],map02020,277005.0
+organic horizon [ENVO:03600018],Type I diabetes mellitus [PATH:ko04940],map04940,45705.769230769234
+organic horizon [ENVO:03600018],Type I polyketide structures [PATH:ko01052],map01052,170.23076923076923
+organic horizon [ENVO:03600018],Type II diabetes mellitus [PATH:ko04930],map04930,1430.7692307692307
+organic horizon [ENVO:03600018],Tyrosine metabolism [PATH:ko00350],map00350,38202.92307692308
+organic horizon [ENVO:03600018],Ubiquinone and other terpenoid-quinone biosynthesis [PATH:ko00130],map00130,11524.615384615385
+organic horizon [ENVO:03600018],Ubiquitin mediated proteolysis [PATH:ko04120],map04120,7831.384615384615
+organic horizon [ENVO:03600018],Ubiquitin system [BR:ko04121],map04121,11865.692307692309
+organic horizon [ENVO:03600018],VEGF signaling pathway [PATH:ko04370],map04370,2017.4615384615386
+organic horizon [ENVO:03600018],"Valine, leucine and isoleucine biosynthesis [PATH:ko00290]",map00290,46816.92307692308
+organic horizon [ENVO:03600018],"Valine, leucine and isoleucine degradation [PATH:ko00280]",map00280,59086.769230769234
+organic horizon [ENVO:03600018],Vancomycin resistance [PATH:ko01502],map01502,4533.538461538462
+organic horizon [ENVO:03600018],Various types of N-glycan biosynthesis [PATH:ko00513],map00513,623.4615384615385
+organic horizon [ENVO:03600018],Vascular smooth muscle contraction [PATH:ko04270],map04270,1414.3076923076924
+organic horizon [ENVO:03600018],Vasopressin-regulated water reabsorption [PATH:ko04962],map04962,479.15384615384613
+organic horizon [ENVO:03600018],Vibrio cholerae infection [PATH:ko05110],map05110,3617.4615384615386
+organic horizon [ENVO:03600018],Viral carcinogenesis [PATH:ko05203],map05203,10419.461538461539
+organic horizon [ENVO:03600018],Viral life cycle - HIV-1 [PATH:ko03250],map03250,2032.076923076923
+organic horizon [ENVO:03600018],Viral myocarditis [PATH:ko05416],map05416,6422.615384615385
+organic horizon [ENVO:03600018],Viral proteins [BR:ko03200],map03200,13.5
+organic horizon [ENVO:03600018],Virion - Bacteriophage lambda [PATH:ko03258],map03258,14.222222222222221
+organic horizon [ENVO:03600018],"Virion - Ebolavirus, Lyssavirus and Morbillivirus [PATH:ko03265]",map03265,34.69230769230769
+organic horizon [ENVO:03600018],Virion - Flavivirus and Alphavirus [PATH:ko03264],map03264,44.61538461538461
+organic horizon [ENVO:03600018],Virion - Hepatitis viruses [PATH:ko03272],map03272,606.0769230769231
+organic horizon [ENVO:03600018],Virion - Herpesvirus [PATH:ko03266],map03266,29.0
+organic horizon [ENVO:03600018],Virion - Lassa virus and SFTS virus [PATH:ko03273],map03273,156.53846153846155
+organic horizon [ENVO:03600018],Virion - Rotavirus [PATH:ko03271],map03271,10.11111111111111
+organic horizon [ENVO:03600018],Vitamin B6 metabolism [PATH:ko00750],map00750,10484.153846153846
+organic horizon [ENVO:03600018],Vitamin digestion and absorption [PATH:ko04977],map04977,212.76923076923077
+organic horizon [ENVO:03600018],Wnt signaling pathway [PATH:ko04310],map04310,2531.846153846154
+organic horizon [ENVO:03600018],Xylene degradation [PATH:ko00622],map00622,7108.923076923077
+organic horizon [ENVO:03600018],Yersinia infection [PATH:ko05135],map05135,4364.461538461538
+organic horizon [ENVO:03600018],Zeatin biosynthesis [PATH:ko00908],map00908,544.4615384615385
+organic horizon [ENVO:03600018],alpha-Linolenic acid metabolism [PATH:ko00592],map00592,3119.769230769231
+organic horizon [ENVO:03600018],beta-Alanine metabolism [PATH:ko00410],map00410,20756.153846153848
+organic horizon [ENVO:03600018],beta-Lactam resistance [PATH:ko01501],map01501,24985.46153846154
+organic horizon [ENVO:03600018],cAMP signaling pathway [PATH:ko04024],map04024,3602.076923076923
+organic horizon [ENVO:03600018],cGMP-PKG signaling pathway [PATH:ko04022],map04022,4599.615384615385
+organic horizon [ENVO:03600018],mRNA surveillance pathway [PATH:ko03015],map03015,1640.0
+organic horizon [ENVO:03600018],mTOR signaling pathway [PATH:ko04150],map04150,1868.076923076923
+organic horizon [ENVO:03600018],p53 signaling pathway [PATH:ko04115],map04115,2302.230769230769

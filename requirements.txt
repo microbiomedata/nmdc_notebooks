@@ -10,7 +10,7 @@ scipy==1.15.1
 pycirclize>=1.9.1
 gffpandas==1.2.0
 nbformat>=4.2.0
-## NMDC python package from https://github.com/microbiomedata/nmdc_api_utilities main branch
-nmdc-client== 1.0.0
+nmdc-client==1.0.0
 python-dotenv
 kaleido
+fastcluster
