@@ -21,7 +21,7 @@ A key goal of these notebooks is to provide examples of navigating the NMDC data
 
 The notebooks demonstrate:
 - how to programmatically query and retrieve metadata and data using the NMDC’s API
-- how to use the [nmdc_api_utilities](https://github.com/microbiomedata/nmdc_api_utilities) package to make NMDC API requests easier
+- how to use the [nmdc-client](https://github.com/microbiomedata/nmdc-client) package to make NMDC API requests easier
 - example use cases of querying the NMDC’s (meta)data store to locate data of interest, visualize the data in the context of sample metadata, explore data annotations (e.g., taxonomy, chemical formula assignments), and aggregate related data (e.g., data generated within a comparative study, various omics data from the same sample)
 
 Each notebook’s scope is framed by a straightforward scientific question and has a folder with a `README.md` that outlines the question or analysis posed as well as two sub-folders, one labeled `R`, and the other `python` that comprises the sample notebooks using the R and Python programming languages, respectively. Jupyter Notebook is paired with Google Colab to provide interactive code and data exploration features, language independency, and ease of sharing code. 

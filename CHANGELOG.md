@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - Over Representation (python only)
 
 ### Changed
-- Existing notebooks now utilize nmdc_api_utilities package
+- Existing notebooks now utilize nmdc-client package
 
 ### Fixed
 - Various bugs created with workflow changes

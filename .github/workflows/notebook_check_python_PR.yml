@@ -17,7 +17,7 @@ jobs:
   test-changed-notebooks:
     uses: ./.github/workflows/notebook-test-reusable.yml
     with:
-      environment: 'prod'
+      environment: 'https://api.microbiomedata.org'
       notebook_selection: 'changed'
       base_sha: ${{ github.event.pull_request.base.sha }}
       head_sha: ${{ github.event.pull_request.head.sha }}

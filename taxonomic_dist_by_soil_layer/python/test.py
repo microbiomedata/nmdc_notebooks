@@ -2,14 +2,12 @@ import requests
 import pandas as pd
 from io import StringIO
 import plotly.express as px
-import nmdc_api_utilities
+import nmdc_client
 
-from nmdc_api_utilities.biosample_search import BiosampleSearch
-from nmdc_api_utilities.data_processing import DataProcessing
+from nmdc_client.biosample_search import BiosampleSearch
+
 # Create a BiosampleSearch object
 bs_client = BiosampleSearch()
-# create a DataProcessing object
-dp_client = DataProcessing()
 # define the filter
 filter = '{"soil_horizon":{"$exists": true}, "geo_loc_name.has_raw_value": {"$regex": "Colorado"}}'
 # get the results
@@ -19,7 +17,7 @@ for biosample in bs_results:
     biosample["biosample_id"] = biosample.pop("id")
 
 # convert to df
-biosample_df = dp_client.convert_to_df(bs_results)
+biosample_df = pd.DataFrame(bs_results)
 
 # Adjust geo_loc_name to not be a dictionary
 biosample_df["geo_loc_name"] = biosample_df["geo_loc_name"].apply(lambda x: x.get("has_raw_value"))
@@ -34,7 +32,7 @@ biosample_dataobject_dictionary = bs_client.get_linked_instances_and_associate_i
 
 # Gather all DataObject ids into a single list (from the dictionary of lists), then get their records
 dojs = [item for sublist in biosample_dataobject_dictionary.values() for item in sublist]
-from nmdc_api_utilities.data_object_search import DataObjectSearch
+from nmdc_client.data_object_search import DataObjectSearch
 # create a DataObjectSearch object
 do_client = DataObjectSearch()
 do_results = do_client.get_batch_records(
@@ -42,7 +40,7 @@ do_results = do_client.get_batch_records(
     search_field="id",
     fields="id,data_object_type,url"
 )
-data_object_df = dp_client.convert_to_df(do_results)
+data_object_df = pd.DataFrame(do_results)
 
 # Filter to only include DataObjects of type "scaffold lineage tsv"
 scaffold_lineage_df = data_object_df[data_object_df["data_object_type"] == "Scaffold Lineage tsv"]
@@ -57,11 +55,3 @@ def get_biosample_id(data_object_id, biosample_dataobject_dict):
     return None
 # Apply the function to create a new column in scaffold_lineage_df
 scaffold_lineage_df["biosample_id"] = scaffold_lineage_df["id"].apply(lambda x: get_biosample_id(x, biosample_dataobject_dictionary))
-
-# Get records of type "scaffold lineage tsv"
-dobj_search = nmdc_api_utilities.dataobject_search.DataObjectSearch()
-scaffold_lineage_tsv_records = []
-for doj in dojs:
-    record = dobj_search.get_record_by_id(doj['id'])
-    if record['data_object_type'] == 'scaffold lineage tsv':
-        scaffold_lineage_tsv_records.append(record)
