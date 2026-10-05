@@ -1,3 +1,31 @@
+# The runtime API hides superseded and failed records unless the request asks
+# for them. nmdc-client 1.1.0 sends these flags by default for the collections
+# whose schema has the matching slots (superseded_by, qc_status).
+collection_include_params <- function(collection) {
+  params <- character()
+
+  if (collection %in% c("workflow_execution_set", "data_object_set")) {
+    params <- c(params, "include_superseded=true")
+  }
+
+  if (collection %in% c(
+    "workflow_execution_set",
+    "data_generation_set",
+    "material_processing_set",
+    "storage_process_set",
+    "collecting_biosamples_from_site_set"
+  )) {
+    params <- c(params, "include_failed=true")
+  }
+
+  if (length(params) == 0) {
+    return("")
+  }
+
+  paste0("&", paste(params, collapse = "&"))
+}
+
+
 # This function provides a general-purpose way to make an API request to 
 # NMDC's runtime API. Note that this function will only return the first page 
 # of results. The function's input includes the name of the collection 
@@ -8,7 +36,8 @@
 get_first_page_results <- function(collection, filter, max_page_size, fields) {
   og_url <- paste0(
       'https://api.microbiomedata.org/nmdcschema/', 
-      collection, '?&filter=', filter, '&max_page_size=', max_page_size, '&projection=', fields
+      collection, '?&filter=', filter, '&max_page_size=', max_page_size, '&projection=', fields,
+      collection_include_params(collection)
       )
   
   response <- jsonlite::fromJSON(URLencode(og_url, repeated = TRUE))
@@ -33,7 +62,7 @@ get_all_results <- function(collection, filter_text, max_page_size, fields) {
     next_page_token <- initial_data$next_page_token
     
     while (TRUE) {
-      url <- paste0('https://api.microbiomedata.org/nmdcschema/', collection, '?&filter=', filter_text, '&max_page_size=', max_page_size, '&page_token=', next_page_token, '&projection=', fields)
+      url <- paste0('https://api.microbiomedata.org/nmdcschema/', collection, '?&filter=', filter_text, '&max_page_size=', max_page_size, '&page_token=', next_page_token, '&projection=', fields, collection_include_params(collection))
       response <- jsonlite::fromJSON(URLencode(url, repeated = TRUE))
 
       results_df <- results_df %>% bind_rows(response$resources)
